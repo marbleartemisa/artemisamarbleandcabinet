@@ -160,28 +160,32 @@ gap:20px;
 }
 
 /* ESTADO INICIAL */
-.primary {
-  background: white;
-  color: black;
-}
+/* BOTONES BASE (AMBOS IGUALES) */
+.hero-buttons a {
+  text-decoration: none;
+  display: inline-block;
+  padding: 14px 28px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
 
-.secondary {
-  background: transparent;
+  /* estilo glass / transparente */
+  background: rgba(255, 255, 255, 0.15);
   color: white;
+  border: 1px solid rgba(255, 255, 255, 0.5);
 }
 
-/* HOVER (SOLO afecta al que estás tocando) */
-.hero-buttons a.primary:hover {
-  background: transparent;
-  color: white;
-}
-
-.hero-buttons a.secondary:hover {
-  background: white;
+/* HOVER (más blanco) */
+.hero-buttons a:hover {
+  background: rgba(255, 255, 255, 0.85);
   color: black;
+  border-color: white;
+  transform: translateY(-2px);
 }
 
 /* CLICK */
 .hero-buttons a:active {
-  transform: scale(0.97);
+  transform: scale(0.96);
+  background: rgba(255, 255, 255, 1);
 }
+
