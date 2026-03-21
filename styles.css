@@ -19,7 +19,9 @@ padding:22px 60px;
 font-size:13px;
 display:flex;
 align-items:center;
+z-index:1000;
 }
+
 
 /* direccion izquierda */
 .topbar-left{
@@ -30,8 +32,9 @@ z-index:2;
 .logo-center{
 position:absolute;
 left:50%;
-top:10px;
+top:8px;
 transform:translateX(-50%);
+z-index:2000;
 }
 
 .logo-center img{
@@ -47,9 +50,10 @@ position:relative;
 width:100%;
 display:flex;
 justify-content:center;
-padding:15px 60px;
-z-index:10;
+padding:18px 60px;
 background:transparent;
+z-index:100;
+margin-top:20px;
 }
 
 .navbar nav a{
