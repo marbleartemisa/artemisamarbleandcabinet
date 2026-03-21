@@ -148,48 +148,40 @@ gap:20px;
 }
 
 /* botones */
-/* BASE (estado inicial) */
-.primary {
-  background: white;
-  color: black;
-  border: 1px solid white;
-}
-
-.secondary {
-  background: transparent;
-  color: white;
-  border: 1px solid white;
-}
-
-/* estructura común */
-.primary,
-.secondary {
+/* CONTENEDOR */
+.hero-buttons a {
   text-decoration: none;
   display: inline-block;
   padding: 14px 28px;
   font-size: 14px;
   cursor: pointer;
   transition: all 0.3s ease;
+  border: 1px solid white;
 }
 
-/* HOVER */
-.primary:hover {
-  background: transparent;
-  color: white;
-}
-
-.secondary:hover {
+/* ESTADO INICIAL */
+.primary {
   background: white;
   color: black;
 }
 
-/* ACTIVE (click real) */
-.primary:active {
-  background: #e5e5e5;
+.secondary {
+  background: transparent;
+  color: white;
+}
+
+/* HOVER (SOLO afecta al que estás tocando) */
+.hero-buttons a.primary:hover {
+  background: transparent;
+  color: white;
+}
+
+.hero-buttons a.secondary:hover {
+  background: white;
   color: black;
 }
 
-.secondary:active {
-  background: #e5e5e5;
-  color: black;
+/* CLICK */
+.hero-buttons a:active {
+  transform: scale(0.97);
 }
