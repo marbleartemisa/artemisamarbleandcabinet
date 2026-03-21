@@ -15,53 +15,38 @@ body{
   display:flex;
   justify-content:space-between;
   align-items:center;
-  background: rgba(0,0,0,0.55); /* semitransparente */
-  padding: 15px 60px; /* un poco más alta */
+  background: #111; /* franja negra */
+  padding: 15px 60px;
   color: #fff;
   font-size: 13px;
   z-index: 20;
 }
 
 .topbar-left{
+  font-size:13px;
+}
+
+.topbar-center{
   display:flex;
+  justify-content:center;
   align-items:center;
 }
 
-/* LOGO */
 .logo{
-  position: relative;
-  margin-right: 20px;
-}
-
-.logo-bg{
-  position:absolute;
-  top:50%;
-  left:50%;
-  transform:translate(-50%,-50%);
-  width: 130px;
-  height: 50px;
-  background: rgba(0,0,0,0.35);
-  border-radius: 10px;
-  z-index: -1;
-}
-
-.logo img{
-  height: 95px;
-  width: auto;
-  position: relative;
-  z-index:1;
+  height:95px;
+  width:auto;
   filter: drop-shadow(0 0 15px rgba(0,0,0,0.6));
 }
 
 /* NAVBAR */
 .navbar{
-  position:absolute;
-  top:120px; /* debajo del topbar */
-  width:100%;
+  position: relative;
+  width: 100%;
   display:flex;
   justify-content:center;
   padding:15px 60px;
   z-index:10;
+  background: transparent; /* mantiene hero visible */
 }
 
 .navbar nav a{
@@ -101,26 +86,45 @@ body{
   top:50%;
   left:50%;
   transform:translate(-50%,-50%);
-  text-align:center;
+  width:90%;
+  max-width:1000px;
   color:white;
-  max-width:900px;
-  padding:20px;
 }
 
-.hero-content h1{
-  font-family:'Playfair Display', serif;
-  font-size:52px;
-  font-weight:500;
+/* fila superior: nombre a la izquierda, tagline centrado */
+.hero-top-row{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
   margin-bottom:20px;
 }
 
-.hero-content p{
-  font-size:18px;
-  margin-bottom:30px;
-  opacity:.9;
+.company-name{
+  font-family:'Playfair Display', serif;
+  font-size:36px;
+  font-weight:600;
 }
 
-/* BUTTONS */
+.hero-tagline{
+  font-family:'Playfair Display', serif;
+  font-size:28px;
+  font-weight:400;
+  text-align:center;
+  flex:1;
+  margin-left:-50px; /* para centrar respecto al nombre */
+  opacity:0.9;
+}
+
+/* párrafo descriptivo */
+.hero-content p{
+  font-size:16px;
+  line-height:1.5;
+  margin-bottom:30px;
+  opacity:0.85;
+  text-align:center;
+}
+
+/* botones CTA */
 .hero-buttons{
   display:flex;
   justify-content:center;
