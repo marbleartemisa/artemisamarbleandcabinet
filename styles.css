@@ -168,9 +168,43 @@ font-size:14px;
 
 /* ESTA PARTE AGREGAS */
 .primary,
-.secondary{
-text-decoration:none;
-display:inline-block;
+.secondary {
+  text-decoration: none;
+  display: inline-block;
+  transition: all 0.3s ease;
 }
 
+.primary:hover,
+.secondary:hover {
+  transform: translateY(-2px);
+}
 
+/* HOVER (cuando pasas el mouse) */
+.primary:hover {
+  background: transparent;
+  color: white;
+  border: 1px solid white;
+}
+
+.secondary:hover {
+  background: white;
+  color: black;
+}
+
+/* ACTIVE (cuando haces click / tap) */
+.primary:active {
+  background: #ddd;
+  color: black;
+}
+
+.secondary:active {
+  background: #ccc;
+  color: black;
+}
+
+/* FOCUS (cuando se selecciona con teclado o tap en mobile) */
+.primary:focus,
+.secondary:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(255,255,255,0.6);
+}
