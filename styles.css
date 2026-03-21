@@ -1,1 +1,42 @@
+body {
+margin:0;
+font-family:Arial, Helvetica, sans-serif;
+background:#f5f5f5;
+}
 
+header{
+display:flex;
+justify-content:space-between;
+padding:20px;
+background:white;
+box-shadow:0 2px 5px rgba(0,0,0,0.1);
+}
+
+nav a{
+margin:0 10px;
+text-decoration:none;
+color:#333;
+font-weight:500;
+}
+
+.hero{
+height:80vh;
+display:flex;
+flex-direction:column;
+justify-content:center;
+align-items:center;
+background:linear-gradient(rgba(0,0,0,.5),rgba(0,0,0,.5)),
+url("https://images.unsplash.com/photo-1600585154340-be6161a56a0c");
+background-size:cover;
+color:white;
+text-align:center;
+}
+
+button{
+padding:12px 24px;
+border:none;
+background:black;
+color:white;
+font-size:16px;
+cursor:pointer;
+}
