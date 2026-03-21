@@ -140,14 +140,14 @@ margin-left:auto;
 margin-right:auto;
 }
 
-/* botones */
-
+/* botones CTA */
 .hero-buttons{
 display:flex;
 justify-content:center;
 gap:20px;
 }
 
+/* botones */
 .primary{
 background:white;
 color:black;
@@ -155,7 +155,6 @@ border:none;
 padding:14px 28px;
 cursor:pointer;
 font-size:14px;
-letter-spacing:.5px;
 }
 
 .secondary{
@@ -167,11 +166,11 @@ cursor:pointer;
 font-size:14px;
 }
 
-.primary:hover{
-background:#eee;
+/* ESTA PARTE AGREGAS */
+.primary,
+.secondary{
+text-decoration:none;
+display:inline-block;
 }
 
-.secondary:hover{
-background:white;
-color:black;
-}
+
