@@ -148,42 +148,34 @@ gap:20px;
 }
 
 /* botones */
-.primary{
-background:white;
-color:black;
-border:none;
-padding:14px 28px;
-cursor:pointer;
-font-size:14px;
+/* BASE (estado inicial) */
+.primary {
+  background: white;
+  color: black;
+  border: 1px solid white;
 }
 
-.secondary{
-background:transparent;
-border:1px solid white;
-color:white;
-padding:14px 28px;
-cursor:pointer;
-font-size:14px;
+.secondary {
+  background: transparent;
+  color: white;
+  border: 1px solid white;
 }
 
-/* ESTA PARTE AGREGAS */
+/* estructura común */
 .primary,
 .secondary {
   text-decoration: none;
   display: inline-block;
+  padding: 14px 28px;
+  font-size: 14px;
+  cursor: pointer;
   transition: all 0.3s ease;
 }
 
-.primary:hover,
-.secondary:hover {
-  transform: translateY(-2px);
-}
-
-/* HOVER (cuando pasas el mouse) */
+/* HOVER */
 .primary:hover {
   background: transparent;
   color: white;
-  border: 1px solid white;
 }
 
 .secondary:hover {
@@ -191,20 +183,13 @@ font-size:14px;
   color: black;
 }
 
-/* ACTIVE (cuando haces click / tap) */
+/* ACTIVE (click real) */
 .primary:active {
-  background: #ddd;
+  background: #e5e5e5;
   color: black;
 }
 
 .secondary:active {
-  background: #ccc;
+  background: #e5e5e5;
   color: black;
-}
-
-/* FOCUS (cuando se selecciona con teclado o tap en mobile) */
-.primary:focus,
-.secondary:focus {
-  outline: none;
-  box-shadow: 0 0 0 2px rgba(255,255,255,0.6);
 }
