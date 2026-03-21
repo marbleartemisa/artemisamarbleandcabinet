@@ -11,32 +11,46 @@ body{
 
 /* TOP BAR */
 .topbar{
-  width:100%;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  background: #111; /* franja negra */
-  padding: 15px 60px;
-  color: #fff;
-  font-size: 13px;
-  z-index: 20;
+    position:relative;
+    background:#000;
+    color:white;
+    padding:18px 60px;
+    font-size:13px;
 }
 
-.topbar-left{
-  font-size:13px;
+/* direccion izquierda */
+.topbar{
+    display:flex;
+    align-items:center;
 }
 
-.topbar-center{
-  display:flex;
-  justify-content:center;
-  align-items:center;
+/* LOGO CENTRADO */
+.topbar::after{
+    content:"";
+    position:absolute;
+    left:50%;
+    transform:translateX(-50%);
 }
 
+/* logo centrado */
+.topbar .logo-center{
+    position:absolute;
+    left:50%;
+    top:50%;
+    transform:translate(-50%, -50%);
+}
+
+.logo-center img{
+    height:95px;
+    filter:drop-shadow(0 0 10px rgba(0,0,0,0.6));
+}
 .logo{
   height:95px;
   width:auto;
   filter: drop-shadow(0 0 15px rgba(0,0,0,0.6));
 }
+
+
 
 /* NAVBAR */
 .navbar{
