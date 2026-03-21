@@ -23,18 +23,18 @@ letter-spacing:.5px;
 /* NAVBAR */
 
 .navbar{
-position:absolute;
-top:40px;
-width:100%;
-display:flex;
-justify-content:space-between;
-align-items:center;
-padding:20px 60px;
-z-index:10;
+  position:absolute;
+  top:40px;
+  width:100%;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:20px 60px; /* aumenta un poco para que el logo respire */
+  z-index:10;
 }
 
 .logo img{
-height:40px;
+height:95px;
 }
 
 nav a{
