@@ -10,31 +10,28 @@ color:#222;
 }
 
 /* TOP BAR */
-
-.topbar{
-background:#111;
-color:#ccc;
-text-align:center;
-padding:8px;
-font-size:12px;
-letter-spacing:.5px;
+.topbar {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(0,0,0,0.55); /* semitransparente elegante */
+    padding: 15px 60px; /* un poco más alta */
+    color: #fff;
+    font-size: 13px;
+    z-index: 20;
 }
 
-/* NAVBAR */
-
-.navbar{
-  position:absolute;
-  top:40px;
-  width:100%;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  padding:20px 60px; /* aumenta un poco para que el logo respire */
-  z-index:10;
+/* Topbar left (logo) */
+.topbar-left {
+    display: flex;
+    align-items: center;
 }
 
+/* Logo */
 .logo {
     position: relative;
+    margin-right: 20px;
 }
 
 .logo-bg {
@@ -42,11 +39,11 @@ letter-spacing:.5px;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 120px; /* un poco más que el logo */
-    height: 40px;
-    background: rgba(0,0,0,0.35); /* negro semitransparente */
-    border-radius: 8px; /* esquinas suaves */
-    z-index: -1; /* detrás del logo */
+    width: 130px; /* más ancho que el logo */
+    height: 50px; /* más alto */
+    background: rgba(0,0,0,0.35);
+    border-radius: 10px;
+    z-index: -1;
 }
 
 .logo img {
@@ -54,21 +51,34 @@ letter-spacing:.5px;
     width: auto;
     position: relative;
     z-index: 1;
+    filter: drop-shadow(0 0 15px rgba(0,0,0,0.6));
 }
 
-nav a{
-margin-left:30px;
-text-decoration:none;
-color:white;
-font-size:14px;
-letter-spacing:.5px;
+/* NAVBAR (solo menú) */
+.navbar {
+    position: absolute;
+    top: 120px; /* debajo del topbar */
+    width: 100%;
+    display: flex;
+    justify-content: center; /* centramos menú */
+    padding: 15px 60px;
+    z-index: 10;
 }
 
-.portal-btn{
-border:1px solid white;
-padding:8px 16px;
-border-radius:3px;
+.navbar nav a {
+    margin: 0 25px;
+    text-decoration: none;
+    color: white;
+    font-size: 15px;
+    font-weight: 500;
 }
+
+.portal-btn {
+    border:1px solid white;
+    padding:8px 18px;
+    border-radius:4px;
+}
+
 
 /* HERO */
 
