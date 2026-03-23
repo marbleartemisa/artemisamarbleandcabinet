@@ -1,5 +1,5 @@
 /* RESET GENERAL */
-{
+* {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
@@ -20,14 +20,14 @@ TOP BAR
   width: 100%;
   background: #000;
   color: white;
-  padding: 10px 30px;
+  padding: 8px 30px; /* franja más delgada */
   font-size: 13px;
   z-index: 1000;
 }
 
 .topbar-left {
-  flex: 1 1 auto;
-  min-width: 0;
+  flex: 1;
+  text-align: left;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -68,7 +68,7 @@ TOP BAR
   transform: rotate(-45deg) translate(6px,-6px);
 }
 
-/* Bottom bar móvil */
+/* BOTTOM BAR info móvil */
 .bottombar {
   display: none;
   background: #000;
@@ -84,7 +84,7 @@ TOP BAR
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 18px 60px;
+  padding: 12px 30px;
   background: transparent;
   z-index: 100;
 }
@@ -116,7 +116,7 @@ TOP BAR
   background-image: url("hero.jpg");
   background-size: cover;
   background-position: center;
-  margin-top: 0;
+  margin: 0; /* elimina franja blanca */
 }
 
 .overlay {
@@ -158,10 +158,9 @@ TOP BAR
 .hero-content p {
   font-size: 16px;
   line-height: 1.6;
-  margin-bottom: 30px;
+  margin: 0 auto 30px auto;
   opacity: .9;
   max-width: 900px;
-  margin: 0 auto 30px auto;
 }
 
 .hero-buttons {
@@ -198,16 +197,21 @@ TOP BAR
 MOBILE
 ========================= */
 @media (max-width: 900px) {
+
   .topbar {
-    padding: 8px 20px;
+    padding: 8px 15px;
   }
 
   .topbar-left {
-    display: none; /* dirección no aparece en topbar */
+    display: none; /* desaparece del topbar */
   }
 
   .hamburger {
     display: flex;
+  }
+
+  .logo-center {
+    text-align: left;
   }
 
   .logo-center img {
@@ -215,7 +219,7 @@ MOBILE
   }
 
   .bottombar {
-    display: block; /* dirección visible al final */
+    display: block;
   }
 
   .hero {
@@ -238,12 +242,6 @@ MOBILE
   .hero-buttons {
     flex-direction: column;
     gap: 12px;
-  }
-
-  .navbar {
-    justify-content: center;
-    padding: 12px 20px;
-    margin-top: 10px;
   }
 
   .navbar nav {
