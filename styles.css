@@ -49,74 +49,72 @@ height:90px;
 
 
 /* =========================
-NAVBAR
+NAVBAR - REESRITO
 ========================= */
 
-.navbar{
-position:relative;
-width:100%;
-display:flex;
-justify-content:center;
-align-items:center;
-padding:18px 60px;
-background:transparent;
-z-index:100;
-margin-top:60px;
+.navbar {
+  position: relative;
+  width: 100%;
+  display: flex;
+  justify-content: space-between; /* logo izquierda, hamburger derecha */
+  align-items: center;
+  padding: 18px 60px;
+  background: transparent;
+  z-index: 100;
+  margin-top: 60px;
 }
 
-.navbar nav{
-display:flex;
-align-items:center;
+.navbar nav {
+  display: flex;
+  align-items: center;
+  gap: 25px;
 }
 
-.navbar nav a{
-margin:0 25px;
-text-decoration:none;
-color:white;
-font-size:15px;
-font-weight:500;
-letter-spacing:.5px;
+.navbar nav a {
+  text-decoration: none;
+  color: white;
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: .5px;
 }
 
-.portal-btn{
-border:1px solid white;
-padding:8px 18px;
-border-radius:4px;
+.portal-btn {
+  border: 1px solid white;
+  padding: 8px 18px;
+  border-radius: 4px;
 }
+
 
 
 /* =========================
 HAMBURGER
 ========================= */
 
-.hamburger{
-display:none;
-flex-direction:column;
-cursor:pointer;
-position:absolute;
-right:30px;
-top:22px;
-z-index:3000;
+.hamburger {
+  display: none;
+  flex-direction: column;
+  cursor: pointer;
+  z-index: 3000;
 }
 
-.hamburger span{
-width:25px;
-height:3px;
-background:white;
-margin:4px 0;
-transition:.3s;
+.hamburger span {
+  width: 25px;
+  height: 3px;
+  background: white;
+  margin: 4px 0;
+  transition: .3s;
 }
 
-.hamburger.active span:nth-child(1){
-transform: rotate(45deg) translate(5px,5px);
+.hamburger.active span:nth-child(1) {
+  transform: rotate(45deg) translate(5px, 5px);
 }
 
-.hamburger.active span:nth-child(2){
-opacity:0;
+.hamburger.active span:nth-child(2) {
+  opacity: 0;
 }
 
-.hamburger.active span:nth-child(3){
-transform: rotate(-45deg) translate(6px,-6px);
+.hamburger.active span:nth-child(3) {
+  transform: rotate(-45deg) translate(6px, -6px);
 }
 
 
@@ -220,82 +218,66 @@ background:rgba(255,255,255,1);
 /* =========================
 MOBILE
 ========================= */
+@media (max-width: 900px) {
 
-@media (max-width: 900px){
+  /* navbar flex para que logo izquierda y hamburguer derecha */
+  .navbar {
+    justify-content: space-between;
+    padding: 12px 20px;
+    margin-top: 10px;
+  }
 
-.logo-center img{
-height:70px;
+  /* logo centrado arriba no necesario */
+  .logo-center {
+    position: relative;
+    left: auto;
+    top: auto;
+    transform: none;
+    margin: 0;
+  }
+
+  .logo-center img {
+    height: 65px;
+  }
+
+  /* hamburger siempre visible a la derecha */
+  .hamburger {
+    display: flex;
+    position: relative;
+  }
+
+  /* menú mobile lateral */
+  .navbar nav {
+    position: fixed;
+    top: 0;
+    right: -100%;
+    width: 260px;
+    height: 100vh;
+    background: #000;
+    display: flex;
+    flex-direction: column;
+    padding-top: 120px;
+    transition: .3s;
+    z-index: 2000;
+  }
+
+  .navbar nav.active {
+    right: 0;
+  }
+
+  .navbar nav a {
+    display: block;
+    margin: 18px 30px;
+    font-size: 16px;
+  }
+
+  .portal-btn {
+    margin-top: 10px;
+    text-align: center;
+  }
 }
 
-.logo-center{
-top:12px;
-}
-
-.topbar{
-padding:15px 20px;
-font-size:12px;
-text-align:center;
-}
-
-.navbar{
-justify-content:flex-end;
-padding:18px 20px;
-margin-top:40px;
-}
-
-.hamburger{
-display:flex;
-}
-
-.navbar nav{
-position:fixed;
-top:0;
-right:-100%;
-width:260px;
-height:100vh;
-background:#000;
-display:flex;
-flex-direction:column;
-padding-top:120px;
-transition:.3s;
-z-index:2000;
-}
-
-.navbar nav.active{
-right:0;
-}
-
-.navbar nav a{
-display:block;
-margin:18px 30px;
-font-size:16px;
-}
-
-.portal-btn{
-margin-top:10px;
-text-align:center;
-}
-
-.hero{
-height:90vh;
-}
-
-.company-name{
-font-size:32px;
-}
-
-.hero-tagline{
-font-size:18px;
-}
-
-.hero-content p{
-font-size:14px;
-}
-
-.hero-buttons{
-flex-direction:column;
-gap:12px;
-}
+  
 /* =========================
 FIX MOBILE HEADER
 ========================= */
