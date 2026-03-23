@@ -296,5 +296,43 @@ font-size:14px;
 flex-direction:column;
 gap:12px;
 }
+/* =========================
+FIX MOBILE HEADER
+========================= */
+
+@media (max-width: 900px){
+
+/* topbar en columnas */
+.topbar{
+flex-direction:column;
+text-align:center;
+padding:12px 15px;
+gap:10px;
+}
+
+/* logo deja de ser absoluto */
+.logo-center{
+position:relative;
+left:auto;
+top:auto;
+transform:none;
+margin-top:5px;
+}
+
+.logo-center img{
+height:65px;
+}
+
+/* navbar más arriba */
+.navbar{
+margin-top:10px;
+padding:12px 20px;
+}
+
+/* hamburger siempre visible */
+.hamburger{
+top:18px;
+right:20px;
+}
 
 }
