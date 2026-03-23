@@ -298,5 +298,31 @@ font-size:12px;
 
 }
 
-  
+  /* HAMBURGER BARS */
+.hamburger span {
+  display: block;
+  width: 25px;
+  height: 3px;
+  margin: 5px 0;
+  background: white;
+  transition: 0.3s;
+}
+
+/* ANIMACION ACTIVE */
+.hamburger.active span:nth-child(1) {
+  transform: rotate(45deg) translate(5px, 5px);
+}
+.hamburger.active span:nth-child(2) {
+  opacity: 0;
+}
+.hamburger.active span:nth-child(3) {
+  transform: rotate(-45deg) translate(5px, -5px);
+}
+
+/* HAMBURGER MOBILE */
+@media (max-width: 900px) {
+  .hamburger {
+    display: flex;
+  }
+}
 
