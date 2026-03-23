@@ -248,38 +248,52 @@ MOBILE
 @media (max-width:900px){
 
 .hamburger{
-display:flex;
+display:flex !important;
 position:absolute;
 right:20px;
 top:50%;
 transform:translateY(-50%);
-z-index:3000;
+z-index:9999;
 }
 
 }
+
+  
+}
 /* Visibilidad */
-.desktop-only { display:block; }
-.mobile-only { display:none; }
-@media (max-width:900px) {
-  .desktop-only { display:none; }
-  .mobile-only { display:block; }
+.desktop-only{display:block;}
+.mobile-only{display:none;}
+@media (max-width:900px){
+.desktop-only{display:none;}
+.mobile-only{display:block;}
 }
 
 @media (max-width:900px){
+
+.topbar{
+justify-content:center;
+position:relative;
+}
+
 .topbar-left{
-display:none;
+display:none !important;
+}
+
 }
   
+
 @media (max-width:900px){
 
 .bottombar{
 display:block;
 background:#000;
-color:#fff;
+color:white;
 text-align:center;
-padding:12px 20px;
+padding:12px;
 font-size:12px;
-line-height:1.4;
 }
 
 }
+
+  
+
