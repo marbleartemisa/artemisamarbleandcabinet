@@ -1,29 +1,25 @@
-/* RESET GENERAL */
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
+/* =========================
+RESET GENERAL
+========================= */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-html,body{
-overflow-x:hidden;
-width:100%;
+html, body {
+  overflow-x: hidden;
+  width: 100%;
 }
 
-body{
-  font-family:'Inter', sans-serif;
-  color:#222;
+body {
+  font-family: 'Inter', sans-serif;
+  color: #222;
 }
-
-body{
-overflow-x:hidden;
-}
-
 
 /* =========================
 TOP BAR
 ========================= */
-/* TOPBAR - Desktop */
 .topbar {
   display: flex;
   justify-content: center; /* centra el logo */
@@ -31,64 +27,86 @@ TOP BAR
   background: #000;
   color: #fff;
   padding: 10px 30px;
-  position: relative; /* para poder ubicar topbar-left a la izquierda */
+  position: relative;
   z-index: 1000;
 }
 
-/* Dirección a la izquierda, fuera del flujo central */
-
 .topbar-left.desktop-only {
-position:absolute;
-left:30px;
-right:30px;
-top:50%;
-transform:translateY(-50%);
-white-space:nowrap;
-overflow:hidden;
-text-overflow:ellipsis;
+  position: absolute;
+  left: 30px;
+  top: 50%;
+  transform: translateY(-50%);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-/* Logo centrado */
 .logo-center {
   flex: 0 0 auto;
   text-align: center;
 }
 
-.logo-center img{
-height:100px;
-filter:
-contrast(1.15)
-brightness(1.05)
-drop-shadow(0 1px 0 rgba(255,255,255,.4))
-drop-shadow(0 3px 3px rgba(0,0,0,.85))
-drop-shadow(0 8px 10px rgba(0,0,0,.7))
-drop-shadow(0 18px 28px rgba(0,0,0,.5));
+.logo-center img {
+  height: 100px;
+  filter:
+    contrast(1.15)
+    brightness(1.05)
+    drop-shadow(0 1px 0 rgba(255,255,255,.4))
+    drop-shadow(0 3px 3px rgba(0,0,0,.85))
+    drop-shadow(0 8px 10px rgba(0,0,0,.7))
+    drop-shadow(0 18px 28px rgba(0,0,0,.5));
 }
 
-/* Hamburger oculto en desktop */
-.hamburger.desktop-only {
+/* Hamburger - hidden en desktop */
+.hamburger {
   display: none;
+  flex-direction: column;
+  justify-content: center;
+  cursor: pointer;
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 2001;
 }
 
+.hamburger span {
+  display: block;
+  width: 25px;
+  height: 3px;
+  margin: 5px 0;
+  background: white;
+  transition: 0.3s;
+}
 
-/* Navbar desktop */
+.hamburger.active span:nth-child(1) {
+  transform: rotate(45deg) translate(5px, 5px);
+}
+.hamburger.active span:nth-child(2) {
+  opacity: 0;
+}
+.hamburger.active span:nth-child(3) {
+  transform: rotate(-45deg) translate(5px, -5px);
+}
+
+/* =========================
+NAVBAR
+========================= */
 .navbar {
   width: 100%;
   display: flex;
-  justify-content: center; /* centra el nav */
+  justify-content: center;
   padding: 12px 30px;
-  background: #000;        /* color de fondo negro */
-  z-index: 100;
-  position: relative;      /* necesario para posicionar nav */
-   z-index:1500;   /* ← esto lo trae al frente */
+  background: #000;
+  position: relative;
+  z-index: 1500;
 }
 
-.navbar nav{
-  display:flex;
-  align-items:center;
-  gap:25px;
-  position:relative;
-  z-index:1500;
+.navbar nav {
+  display: flex;
+  align-items: center;
+  gap: 25px;
+  position: relative;
 }
 
 .navbar nav a {
@@ -96,7 +114,7 @@ drop-shadow(0 18px 28px rgba(0,0,0,.5));
   color: white;
   font-size: 15px;
   font-weight: 500;
-  letter-spacing: .5px;
+  letter-spacing: 0.5px;
 }
 
 .portal-btn {
@@ -105,8 +123,121 @@ drop-shadow(0 18px 28px rgba(0,0,0,.5));
   border-radius: 4px;
 }
 
-/* Mobile sigue igual, lateral oculto */
+/* =========================
+HERO
+========================= */
+.hero {
+  height: 100vh;
+  position: relative;
+  background-image: url("hero.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  width: 100%;
+  overflow: hidden;
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.25);
+  z-index: 1;
+}
+
+.hero-content {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 90%;
+  max-width: 1100px;
+  color: #fff;
+  text-align: center;
+  z-index: 2;
+  padding: 0 20px;
+}
+
+.company-name { 
+  font-family:'Playfair Display', serif; 
+  font-size: 46px; 
+  font-weight: 600; 
+  margin-bottom: 8px; 
+}
+.hero-tagline { 
+  font-family:'Playfair Display', serif; 
+  font-size: 24px; 
+  opacity: .9; 
+}
+.hero-content p { 
+  font-size: 16px; 
+  line-height: 1.6; 
+  margin: 0 auto 30px auto; 
+  max-width: 900px; 
+  opacity: .9; 
+}
+.hero-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+.hero-buttons a {
+  text-decoration: none;
+  padding: 14px 28px;
+  font-size: 14px;
+  background: rgba(255,255,255,0.15);
+  color: #fff;
+  border: 1px solid rgba(255,255,255,0.5);
+  transition: 0.3s;
+}
+.hero-buttons a:hover {
+  background: rgba(255,255,255,0.85);
+  color: black;
+  border-color: white;
+  transform: translateY(-2px);
+}
+.hero-buttons a:active {
+  transform: scale(0.96);
+  background: rgba(255,255,255,1);
+}
+
+/* =========================
+MOBILE STYLES
+========================= */
 @media (max-width: 900px) {
+
+  .topbar {
+    padding: 8px 15px;
+    justify-content: center;
+    position: relative;
+  }
+
+  .topbar-left {
+    display: none !important;
+  }
+
+  .logo-center {
+    text-align: left;
+  }
+
+  .logo-center img {
+    height: 60px;
+  }
+
+  .hamburger {
+    display: flex;
+  }
+
+  .hero { height: 80vh; }
+  .company-name { font-size: 28px; }
+  .hero-tagline { font-size: 16px; }
+  .hero-content p { font-size: 14px; line-height: 1.4; }
+  .hero-buttons { flex-direction: column; gap: 12px; }
+
+  /* Navbar lateral */
   .navbar nav {
     position: fixed;
     top: 0;
@@ -129,200 +260,24 @@ drop-shadow(0 18px 28px rgba(0,0,0,.5));
     margin: 18px 30px;
     font-size: 16px;
   }
-}
 
-.portal-btn {
-  border: 1px solid white;
-  padding: 8px 18px;
-  border-radius: 4px;
-}
-
-/* Mobile - lateral oculto */
-@media (max-width: 900px) {
-  .navbar nav {
-    position: fixed;
-    top: 0;
-    right: -100%;  /* fuera de pantalla */
-    width: 260px;
-    height: 100vh;
-    background: #000;
-    flex-direction: column;
-    padding-top: 120px;
-    transition: 0.3s;
-    z-index: 2000;
-  }
-
-  .navbar nav.active {
-    right: 0;
-  }
-
-  .navbar nav a {
+  .bottombar {
     display: block;
-    margin: 18px 30px;
-    font-size: 16px;
+    background: #000;
+    color: white;
+    text-align: center;
+    padding: 12px;
+    font-size: 12px;
   }
 }
-
-
-/* BOTTOM BAR móvil */
-@media (max-width:900px){
-
-.bottombar{
-display:block;
-background:#000;
-color:white;
-text-align:center;
-padding:12px;
-font-size:12px;
-}
-}
-
-
-/* HERO */
-.hero{
-height:100vh;
-position:relative;
-background-image:url("hero.jpg");
-background-size:cover;
-background-position:center;
-background-repeat:no-repeat;
-width:100%;
-overflow:hidden;
-}
-
-.overlay{
-position:absolute;
-top:0;
-left:0;
-right:0;
-bottom:0;
-background:rgba(0,0,0,0.25);
-z-index:1;
-}
-
-.hero-content{
-position:absolute;
-top:50%;
-left:50%;
-transform:translate(-50%,-50%);
-width:90%;
-max-width:1100px;
-color:#fff;
-text-align:center;
-z-index:2;
-padding:0 20px;
-}
-
-.company-name { font-family:'Playfair Display', serif; font-size:46px; font-weight:600; margin-bottom:8px; }
-.hero-tagline { font-family:'Playfair Display', serif; font-size:24px; opacity:.9; }
-.hero-content p { font-size:16px; line-height:1.6; margin:0 auto 30px auto; max-width:900px; opacity:.9; }
-.hero-buttons{
-display:flex;
-justify-content:center;
-gap:20px;
-flex-wrap:wrap;
-}
-.hero-buttons a { text-decoration:none; padding:14px 28px; font-size:14px; background: rgba(255,255,255,0.15); color:#fff; border:1px solid rgba(255,255,255,0.5); transition:0.3s; }
-.hero-buttons a:hover { background: rgba(255,255,255,0.85); color:black; border-color:white; transform:translateY(-2px); }
-.hero-buttons a:active { transform:scale(0.96); background: rgba(255,255,255,1); }
 
 /* =========================
-MOBILE
+VISIBILIDAD
 ========================= */
-@media (max-width:900px) {
-  .topbar { padding:8px 15px; }
-  .topbar-left { display:none; }
-  .logo-center { text-align:left; }
-  .logo-center img { height:60px; }
-  .hamburger { display:flex; }
-  .bottombar { display:block; }
-  
-  .hero { height:80vh; }
-  .company-name { font-size:28px; }
-  .hero-tagline { font-size:16px; }
-  .hero-content p { font-size:14px; line-height:1.4; }
-  .hero-buttons { flex-direction:column; gap:12px; }
+.desktop-only { display: block; }
+.mobile-only { display: none; }
 
-  .navbar nav { position:fixed; top:0; right:-100%; width:260px; height:100vh; background:#000; flex-direction:column; padding-top:120px; transition:0.3s; z-index:2000; }
-  .navbar nav.active { right:0; }
-  .navbar nav a { display:block; margin:18px 30px; font-size:16px; }
-}
-
-@media (max-width:900px){
-
-.hamburger{
-display:flex !important;
-position:absolute;
-right:20px;
-top:50%;
-transform:translateY(-50%);
-z-index:9999;
-}
-
-}
-
-  
-}
-/* Visibilidad */
-.desktop-only{display:block;}
-.mobile-only{display:none;}
-@media (max-width:900px){
-.desktop-only{display:none;}
-.mobile-only{display:block;}
-}
-
-@media (max-width:900px){
-
-.topbar{
-justify-content:center;
-position:relative;
-}
-
-.topbar-left{
-display:none !important;
-}
-
-}
-  
-
-@media (max-width:900px){
-
-.bottombar{
-display:block;
-background:#000;
-color:white;
-text-align:center;
-padding:12px;
-font-size:12px;
-}
-
-}
-
-  /* HAMBURGER BARS */
-.hamburger span {
-  display: block;
-  width: 25px;
-  height: 3px;
-  margin: 5px 0;
-  background: white;
-  transition: 0.3s;
-}
-
-/* ANIMACION ACTIVE */
-.hamburger.active span:nth-child(1) {
-  transform: rotate(45deg) translate(5px, 5px);
-}
-.hamburger.active span:nth-child(2) {
-  opacity: 0;
-}
-.hamburger.active span:nth-child(3) {
-  transform: rotate(-45deg) translate(5px, -5px);
-}
-
-/* HAMBURGER MOBILE */
 @media (max-width: 900px) {
-  .hamburger {
-    display: flex;
-  }
+  .desktop-only { display: none; }
+  .mobile-only { display: block; }
 }
-
