@@ -1,4 +1,4 @@
-{
+*{
 margin:0;
 padding:0;
 box-sizing:border-box;
@@ -9,7 +9,10 @@ font-family:'Inter', sans-serif;
 color:#222;
 }
 
-/* TOP BAR */
+
+/* =========================
+TOP BAR
+========================= */
 
 .topbar{
 position:relative;
@@ -23,12 +26,15 @@ justify-content:flex-start;
 z-index:1000;
 }
 
-/* direccion izquierda */
 .topbar-left{
 z-index:2;
 }
 
-/* LOGO CENTRADO */
+
+/* =========================
+LOGO CENTER
+========================= */
+
 .logo-center{
 position:absolute;
 left:50%;
@@ -40,17 +46,27 @@ z-index:2000;
 .logo-center img{
 height:90px;
 }
-/* NAVBAR */
+
+
+/* =========================
+NAVBAR
+========================= */
 
 .navbar{
 position:relative;
 width:100%;
 display:flex;
 justify-content:center;
+align-items:center;
 padding:18px 60px;
 background:transparent;
 z-index:100;
-margin-top:60px;   /* ← ESTA LINEA LO BAJA */
+margin-top:60px;
+}
+
+.navbar nav{
+display:flex;
+align-items:center;
 }
 
 .navbar nav a{
@@ -68,7 +84,45 @@ padding:8px 18px;
 border-radius:4px;
 }
 
-/* HERO */
+
+/* =========================
+HAMBURGER
+========================= */
+
+.hamburger{
+display:none;
+flex-direction:column;
+cursor:pointer;
+position:absolute;
+right:30px;
+top:22px;
+z-index:3000;
+}
+
+.hamburger span{
+width:25px;
+height:3px;
+background:white;
+margin:4px 0;
+transition:.3s;
+}
+
+.hamburger.active span:nth-child(1){
+transform: rotate(45deg) translate(5px,5px);
+}
+
+.hamburger.active span:nth-child(2){
+opacity:0;
+}
+
+.hamburger.active span:nth-child(3){
+transform: rotate(-45deg) translate(6px,-6px);
+}
+
+
+/* =========================
+HERO
+========================= */
 
 .hero{
 height:100vh;
@@ -76,11 +130,9 @@ position:relative;
 background-image:url("hero.jpg");
 background-size:cover;
 background-position:center;
-  margin-top:-80px;
+margin-top:-80px;
 }
 
-
-/* overlay oscuro elegante */
 .overlay{
 position:absolute;
 top:0;
@@ -90,8 +142,6 @@ height:100%;
 background:rgba(0,0,0,0.25);
 z-index:1;
 }
-
-/* HERO CONTENT */
 
 .hero-content{
 position:absolute;
@@ -104,8 +154,6 @@ color:white;
 z-index:2;
 text-align:center;
 }
-
-/* fila superior */
 
 .hero-top-row{
 display:flex;
@@ -128,8 +176,6 @@ font-weight:400;
 opacity:.9;
 }
 
-/* párrafo */
-
 .hero-content p{
 font-size:16px;
 line-height:1.6;
@@ -140,52 +186,115 @@ margin-left:auto;
 margin-right:auto;
 }
 
-/* botones CTA */
 .hero-buttons{
 display:flex;
 justify-content:center;
 gap:20px;
 }
 
-/* botones */
-/* CONTENEDOR */
-.hero-buttons a {
-  text-decoration: none;
-  display: inline-block;
-  padding: 14px 28px;
-  font-size: 14px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  border: 1px solid white;
+.hero-buttons a{
+text-decoration:none;
+display:inline-block;
+padding:14px 28px;
+font-size:14px;
+cursor:pointer;
+transition:all 0.3s ease;
+background:rgba(255,255,255,0.15);
+color:white;
+border:1px solid rgba(255,255,255,0.5);
 }
 
-/* ESTADO INICIAL */
-/* BOTONES BASE (AMBOS IGUALES) */
-.hero-buttons a {
-  text-decoration: none;
-  display: inline-block;
-  padding: 14px 28px;
-  font-size: 14px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-
-  /* estilo glass / transparente */
-  background: rgba(255, 255, 255, 0.15);
-  color: white;
-  border: 1px solid rgba(255, 255, 255, 0.5);
+.hero-buttons a:hover{
+background:rgba(255,255,255,0.85);
+color:black;
+border-color:white;
+transform:translateY(-2px);
 }
 
-/* HOVER (más blanco) */
-.hero-buttons a:hover {
-  background: rgba(255, 255, 255, 0.85);
-  color: black;
-  border-color: white;
-  transform: translateY(-2px);
+.hero-buttons a:active{
+transform:scale(0.96);
+background:rgba(255,255,255,1);
 }
 
-/* CLICK */
-.hero-buttons a:active {
-  transform: scale(0.96);
-  background: rgba(255, 255, 255, 1);
+
+/* =========================
+MOBILE
+========================= */
+
+@media (max-width: 900px){
+
+.logo-center img{
+height:70px;
 }
 
+.logo-center{
+top:12px;
+}
+
+.topbar{
+padding:15px 20px;
+font-size:12px;
+text-align:center;
+}
+
+.navbar{
+justify-content:flex-end;
+padding:18px 20px;
+margin-top:40px;
+}
+
+.hamburger{
+display:flex;
+}
+
+.navbar nav{
+position:fixed;
+top:0;
+right:-100%;
+width:260px;
+height:100vh;
+background:#000;
+display:flex;
+flex-direction:column;
+padding-top:120px;
+transition:.3s;
+z-index:2000;
+}
+
+.navbar nav.active{
+right:0;
+}
+
+.navbar nav a{
+display:block;
+margin:18px 30px;
+font-size:16px;
+}
+
+.portal-btn{
+margin-top:10px;
+text-align:center;
+}
+
+.hero{
+height:90vh;
+}
+
+.company-name{
+font-size:32px;
+}
+
+.hero-tagline{
+font-size:18px;
+}
+
+.hero-content p{
+font-size:14px;
+}
+
+.hero-buttons{
+flex-direction:column;
+gap:12px;
+}
+
+}
