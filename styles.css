@@ -132,6 +132,8 @@ NAVBAR
   border-radius: 4px;
 }
 
+
+
 /* =========================
 HERO
 ========================= */
@@ -187,12 +189,7 @@ HERO
   max-width: 900px; 
   opacity: .9; 
 }
-.hero-buttons {
-  display: flex;
-  justify-content: center;
-  gap: 20px;
-  flex-wrap: wrap;
-}
+
 .hero-buttons a {
   text-decoration: none;
   padding: 14px 28px;
@@ -212,6 +209,52 @@ HERO
   transform: scale(0.96);
   background: rgba(255,255,255,1);
 }
+
+
+.hero-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.hero-buttons a.primary {
+  background: rgba(255,255,255,0.15);
+  color: #fff;
+  border: 1px solid rgba(255,255,255,0.5);
+  text-decoration: none;
+  padding: 14px 28px;
+  font-size: 14px;
+  border-radius: 4px;
+  transition: 0.3s;
+}
+
+.hero-buttons a.primary:hover {
+  background: rgba(255,255,255,0.85);
+  color: black;
+  border-color: white;
+  transform: translateY(-2px);
+}
+
+.hero-buttons a.secondary {
+  background: transparent;
+  border: 1px solid white;
+  color: white;
+  text-decoration: none;
+  padding: 14px 28px;
+  font-size: 14px;
+  border-radius: 4px;
+  transition: 0.3s;
+}
+
+.hero-buttons a.secondary:hover {
+  background: rgba(255,255,255,0.85);
+  color: black;
+  border-color: white;
+  transform: translateY(-2px);
+}
+
+
 
 /* =========================
 MOBILE STYLES
