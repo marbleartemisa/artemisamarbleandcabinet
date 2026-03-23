@@ -1,13 +1,16 @@
 <!-- TOP BAR -->
 <div class="topbar">
+  <!-- Dirección desktop solo -->
   <div class="topbar-left desktop-only">
     830 W 19th ST, Hialeah Florida 33010 • (305) 884-1223 • info@artemisamarble.com
   </div>
 
+  <!-- Logo -->
   <div class="logo-center">
     <img src="logo.png" alt="Artemisa Marble & Cabinet">
   </div>
 
+  <!-- Hamburger móvil -->
   <div class="hamburger mobile-only" id="hamburger" aria-label="menu" role="button">
     <span></span>
     <span></span>
@@ -15,7 +18,7 @@
   </div>
 </div>
 
-<!-- Bottom bar móvil -->
+<!-- Bottom bar info móvil -->
 <div class="bottombar mobile-only">
   830 W 19th ST, Hialeah Florida 33010 • (305) 884-1223 • info@artemisamarble.com
 </div>
@@ -49,7 +52,9 @@
     </p>
     <div class="hero-buttons">
       <a href="#" class="primary">View Projects</a>
-      <a href="https://artemisa_marble_cabinets_inc.quotekitchenandbath.com/kitchen#/materials/countertops/countertop" class="secondary" target="_blank">Get Quote</a>
+      <a href="https://artemisa_marble_cabinets_inc.quotekitchenandbath.com/kitchen#/materials/countertops/countertop"
+         class="secondary"
+         target="_blank">Get Quote</a>
     </div>
   </div>
 </section>
@@ -57,6 +62,7 @@
 <script>
 const hamburger = document.getElementById("hamburger");
 const nav = document.getElementById("navMenu");
+
 hamburger.addEventListener("click", () => {
   nav.classList.toggle("active");
   hamburger.classList.toggle("active");
