@@ -89,6 +89,15 @@ TOP BAR
   transform: rotate(-45deg) translate(5px, -5px);
 }
 
+.hamburger span {
+  display: block;
+  width: 30px;       /* ancho de cada barra */
+  height: 3px;       /* grosor de la barra */
+  margin: 5px 0;     /* espacio entre barras */
+  background: white; /* color */
+  transition: all 0.3s ease;
+}
+
 /* =========================
 NAVBAR
 ========================= */
