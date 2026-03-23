@@ -283,4 +283,80 @@ MOBILE
     margin-top: 10px;
     text-align: center;
   }
+/* Mostrar u ocultar según pantalla */
+.desktop-only {
+  display: block;
+}
+.mobile-only {
+  display: none;
+}
+
+@media (max-width: 900px) {
+  .desktop-only {
+    display: none;
+  }
+  .mobile-only {
+    display: block;
+  }
+}
+
+/* Topbar general */
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  background: #000;
+  color: white;
+  padding: 12px 30px;
+  z-index: 1000;
+  flex-wrap: wrap;
+}
+
+/* Logo centrado */
+.logo-center {
+  flex: 0 0 auto;
+  text-align: center;
+}
+
+.logo-center img {
+  height: 70px;
+}
+
+/* Hamburger */
+.hamburger {
+  cursor: pointer;
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.hamburger span {
+  width: 25px;
+  height: 3px;
+  background: white;
+  margin: 4px 0;
+  transition: 0.3s;
+}
+
+/* Bottombar móvil */
+.bottombar {
+  background: #000;
+  color: white;
+  text-align: center;
+  font-size: 12px;
+  padding: 10px 20px;
+}
+
+/* Animación hamburger */
+.hamburger.active span:nth-child(1) {
+  transform: rotate(45deg) translate(5px,5px);
+}
+.hamburger.active span:nth-child(2) {
+  opacity: 0;
+}
+.hamburger.active span:nth-child(3) {
+  transform: rotate(-45deg) translate(6px,-6px);
+}
+  
 }
