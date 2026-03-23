@@ -5,25 +5,30 @@ body { font-family:'Inter', sans-serif; color:#222; }
 /* =========================
 TOP BAR
 ========================= */
+/* TOPBAR - Desktop */
 .topbar {
   display: flex;
-  justify-content: space-between;
+  justify-content: center; /* centra el logo */
   align-items: center;
-  width: 100%;
   background: #000;
   color: #fff;
-  padding: 10px 30px; /* menos alto */
+  padding: 10px 30px;
+  position: relative; /* para poder ubicar topbar-left a la izquierda */
   z-index: 1000;
 }
 
-.topbar-left {
-  flex: 1;
-  text-align: left;
+/* Dirección a la izquierda, fuera del flujo central */
+.topbar-left.desktop-only {
+  position: absolute;
+  left: 30px;
+  top: 50%;
+  transform: translateY(-50%);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
+/* Logo centrado */
 .logo-center {
   flex: 0 0 auto;
   text-align: center;
@@ -33,23 +38,39 @@ TOP BAR
   height: 70px;
 }
 
-.hamburger {
+/* Hamburger oculto en desktop */
+.hamburger.desktop-only {
   display: none;
-  flex-direction: column;
-  cursor: pointer;
 }
 
-.hamburger span {
-  width: 25px;
-  height: 3px;
-  background: white;
-  margin: 4px 0;
-  transition: 0.3s;
+/* NAVBAR desktop */
+.navbar {
+  display: flex;
+  justify-content: center; /* centrado */
+  padding: 12px 30px;
+  background: transparent;
+  z-index: 100;
 }
 
-.hamburger.active span:nth-child(1) { transform: rotate(45deg) translate(5px,5px); }
-.hamburger.active span:nth-child(2) { opacity: 0; }
-.hamburger.active span:nth-child(3) { transform: rotate(-45deg) translate(6px,-6px); }
+.navbar nav {
+  display: flex;
+  gap: 25px;
+}
+
+.navbar nav a {
+  color: white;
+  text-decoration: none;
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: .5px;
+}
+
+.portal-btn {
+  border: 1px solid white;
+  padding: 8px 18px;
+  border-radius: 4px;
+}
+
 
 /* BOTTOM BAR móvil */
 .bottombar {
@@ -61,35 +82,6 @@ TOP BAR
   padding: 8px 20px;
 }
 
-/* NAVBAR */
-.navbar {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  padding: 12px 30px;
-  background: transparent;
-  z-index: 100;
-}
-
-.navbar nav {
-  display: flex;
-  align-items: center;
-  gap: 25px;
-}
-
-.navbar nav a {
-  text-decoration: none;
-  color: white;
-  font-size: 15px;
-  font-weight: 500;
-  letter-spacing: .5px;
-}
-
-.portal-btn {
-  border: 1px solid white;
-  padding: 8px 18px;
-  border-radius: 4px;
-}
 
 /* HERO */
 .hero {
