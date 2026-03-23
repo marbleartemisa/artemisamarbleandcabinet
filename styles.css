@@ -1,391 +1,303 @@
+/* =========================
+RESET GENERAL
+========================= */
 *{
-margin:0;
-padding:0;
-box-sizing:border-box;
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
 }
 
 body{
-font-family:'Inter', sans-serif;
-color:#222;
+  font-family:'Inter', sans-serif;
+  color:#222;
 }
-
 
 /* =========================
 TOP BAR
 ========================= */
-
 .topbar{
-position:relative;
-background:#000;
-color:white;
-padding:18px 60px;
-font-size:13px;
-display:flex;
-align-items:center;
-justify-content:flex-start;
-z-index:1000;
+  display:flex;
+  justify-content:space-between; /* logo izquierda, hamburger/derecha */
+  align-items:center;
+  background:#000;
+  color:white;
+  padding:18px 60px;
+  font-size:13px;
+  z-index:1000;
 }
 
 .topbar-left{
-z-index:2;
+  flex:1;
+  text-align:left;
 }
 
-
 /* =========================
-LOGO CENTER
+LOGO CENTER / HERO LOGO
 ========================= */
-
 .logo-center{
-position:absolute;
-left:50%;
-top:8px;
-transform:translateX(-50%);
-z-index:2000;
+  position:relative;
+  margin:10px auto 0 auto;
+  text-align:center;
+  z-index:2000;
 }
 
 .logo-center img{
-height:90px;
+  height:90px;
 }
-
 
 /* =========================
-NAVBAR - REESRITO
+NAVBAR
 ========================= */
-
-.navbar {
-  position: relative;
-  width: 100%;
-  display: flex;
-  justify-content: space-between; /* logo izquierda, hamburger derecha */
-  align-items: center;
-  padding: 18px 60px;
-  background: transparent;
-  z-index: 100;
-  margin-top: 60px;
+.navbar{
+  position:relative;
+  width:100%;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  padding:18px 60px;
+  background:transparent;
+  z-index:100;
+  margin-top:20px;
 }
 
-.navbar nav {
-  display: flex;
-  align-items: center;
-  gap: 25px;
+.navbar nav{
+  display:flex;
+  align-items:center;
+  gap:25px;
 }
 
-.navbar nav a {
-  text-decoration: none;
-  color: white;
-  font-size: 15px;
-  font-weight: 500;
-  letter-spacing: .5px;
+.navbar nav a{
+  text-decoration:none;
+  color:white;
+  font-size:15px;
+  font-weight:500;
+  letter-spacing:.5px;
 }
 
-.portal-btn {
-  border: 1px solid white;
-  padding: 8px 18px;
-  border-radius: 4px;
+.portal-btn{
+  border:1px solid white;
+  padding:8px 18px;
+  border-radius:4px;
 }
-
-
 
 /* =========================
 HAMBURGER
 ========================= */
-
-.hamburger {
-  display: none;
-  flex-direction: column;
-  cursor: pointer;
-  z-index: 3000;
+.hamburger{
+  display:none;
+  flex-direction:column;
+  cursor:pointer;
+  z-index:3000;
 }
 
-.hamburger span {
-  width: 25px;
-  height: 3px;
-  background: white;
-  margin: 4px 0;
-  transition: .3s;
+.hamburger span{
+  width:25px;
+  height:3px;
+  background:white;
+  margin:4px 0;
+  transition:.3s;
 }
 
-.hamburger.active span:nth-child(1) {
-  transform: rotate(45deg) translate(5px, 5px);
+.hamburger.active span:nth-child(1){
+  transform: rotate(45deg) translate(5px,5px);
 }
 
-.hamburger.active span:nth-child(2) {
-  opacity: 0;
+.hamburger.active span:nth-child(2){
+  opacity:0;
 }
 
-.hamburger.active span:nth-child(3) {
-  transform: rotate(-45deg) translate(6px, -6px);
+.hamburger.active span:nth-child(3){
+  transform: rotate(-45deg) translate(6px,-6px);
 }
-
 
 /* =========================
 HERO
 ========================= */
-
 .hero{
-height:100vh;
-position:relative;
-background-image:url("hero.jpg");
-background-size:cover;
-background-position:center;
-margin-top:-80px;
+  height:100vh;
+  position:relative;
+  background-image:url("hero.jpg");
+  background-size:cover;
+  background-position:center;
+  margin-top:-80px;
 }
 
 .overlay{
-position:absolute;
-top:0;
-left:0;
-width:100%;
-height:100%;
-background:rgba(0,0,0,0.25);
-z-index:1;
+  position:absolute;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background:rgba(0,0,0,0.25);
+  z-index:1;
 }
 
 .hero-content{
-position:absolute;
-top:50%;
-left:50%;
-transform:translate(-50%,-50%);
-width:90%;
-max-width:1100px;
-color:white;
-z-index:2;
-text-align:center;
+  position:absolute;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  width:90%;
+  max-width:1100px;
+  color:white;
+  z-index:2;
+  text-align:center;
 }
 
 .hero-top-row{
-display:flex;
-flex-direction:column;
-align-items:center;
-margin-bottom:20px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  margin-bottom:20px;
 }
 
 .company-name{
-font-family:'Playfair Display', serif;
-font-size:46px;
-font-weight:600;
-margin-bottom:8px;
+  font-family:'Playfair Display', serif;
+  font-size:46px;
+  font-weight:600;
+  margin-bottom:8px;
 }
 
 .hero-tagline{
-font-family:'Playfair Display', serif;
-font-size:24px;
-font-weight:400;
-opacity:.9;
+  font-family:'Playfair Display', serif;
+  font-size:24px;
+  font-weight:400;
+  opacity:.9;
 }
 
 .hero-content p{
-font-size:16px;
-line-height:1.6;
-margin-bottom:30px;
-opacity:.9;
-max-width:900px;
-margin-left:auto;
-margin-right:auto;
+  font-size:16px;
+  line-height:1.6;
+  margin-bottom:30px;
+  opacity:.9;
+  max-width:900px;
+  margin-left:auto;
+  margin-right:auto;
 }
 
 .hero-buttons{
-display:flex;
-justify-content:center;
-gap:20px;
+  display:flex;
+  justify-content:center;
+  gap:20px;
 }
 
 .hero-buttons a{
-text-decoration:none;
-display:inline-block;
-padding:14px 28px;
-font-size:14px;
-cursor:pointer;
-transition:all 0.3s ease;
-background:rgba(255,255,255,0.15);
-color:white;
-border:1px solid rgba(255,255,255,0.5);
+  text-decoration:none;
+  display:inline-block;
+  padding:14px 28px;
+  font-size:14px;
+  cursor:pointer;
+  transition:all 0.3s ease;
+  background:rgba(255,255,255,0.15);
+  color:white;
+  border:1px solid rgba(255,255,255,0.5);
 }
 
 .hero-buttons a:hover{
-background:rgba(255,255,255,0.85);
-color:black;
-border-color:white;
-transform:translateY(-2px);
+  background:rgba(255,255,255,0.85);
+  color:black;
+  border-color:white;
+  transform:translateY(-2px);
 }
 
 .hero-buttons a:active{
-transform:scale(0.96);
-background:rgba(255,255,255,1);
+  transform:scale(0.96);
+  background:rgba(255,255,255,1);
 }
-
 
 /* =========================
 MOBILE
 ========================= */
-@media (max-width: 900px) {
-
-  /* navbar flex para que logo izquierda y hamburguer derecha */
-  .navbar {
-    justify-content: space-between;
-    padding: 12px 20px;
-    margin-top: 10px;
-  }
-
-  /* logo centrado arriba no necesario */
-  .logo-center {
-    position: relative;
-    left: auto;
-    top: auto;
-    transform: none;
-    margin: 0;
-  }
-
-  .logo-center img {
-    height: 65px;
-  }
-
-  /* hamburger siempre visible a la derecha */
-  .hamburger {
-    display: flex;
-    position: relative;
-  }
-
-  /* menú mobile lateral */
-  .navbar nav {
-    position: fixed;
-    top: 0;
-    right: -100%;
-    width: 260px;
-    height: 100vh;
-    background: #000;
-    display: flex;
-    flex-direction: column;
-    padding-top: 120px;
-    transition: .3s;
-    z-index: 2000;
-  }
-
-  .navbar nav.active {
-    right: 0;
-  }
-
-  .navbar nav a {
-    display: block;
-    margin: 18px 30px;
-    font-size: 16px;
-  }
-
-  .portal-btn {
-    margin-top: 10px;
-    text-align: center;
-  }
-}
-
-  
-/* =========================
-FIX MOBILE HEADER
-========================= */
-
 @media (max-width: 900px){
 
-/* topbar en columnas */
-.topbar{
-flex-direction:column;
-text-align:center;
-padding:12px 15px;
-gap:10px;
-}
-
-/* logo deja de ser absoluto */
-.logo-center{
-position:relative;
-left:auto;
-top:auto;
-transform:none;
-margin-top:5px;
-}
-
-.logo-center img{
-height:65px;
-}
-
-/* navbar más arriba */
-.navbar{
-margin-top:10px;
-padding:12px 20px;
-}
-
-/* hamburger siempre visible */
-.hamburger{
-top:18px;
-right:20px;
-}
-
-/* =========================
-FIX MOBILE HEADER (LOGO + HAMBURGER)
-========================= */
-@media (max-width: 900px){
-
-  /* topbar en columna */
+  /* TOPBAR */
   .topbar{
-    flex-direction: column;
-    text-align: center;
-    padding: 12px 15px;
-    gap: 8px;
+    flex-direction:row;
+    justify-content:space-between;
+    align-items:center;
+    padding:12px 20px;
+    gap:0;
   }
 
-  /* logo deja de ser absoluto */
+  .topbar-left{
+    text-align:left;
+  }
+
+  .hamburger{
+    display:flex;
+    position:relative;
+    margin:0;
+  }
+
+  /* LOGO */
   .logo-center{
-    position: relative;  /* deja de ser absolute */
-    left: auto;
-    top: auto;
-    transform: none;
-    margin: 0 auto 5px auto;
+    position:relative;
+    left:auto;
+    top:auto;
+    transform:none;
+    margin:0 auto 5px auto;
   }
 
   .logo-center img{
-    height: 65px;
+    height:60px;
   }
 
-  /* navbar más compacto */
+  /* HERO más compacto */
+  .hero{
+    height:80vh;
+  }
+
+  .company-name{
+    font-size:28px;
+  }
+
+  .hero-tagline{
+    font-size:16px;
+  }
+
+  .hero-content p{
+    font-size:14px;
+    line-height:1.4;
+  }
+
+  .hero-buttons{
+    flex-direction:column;
+    gap:12px;
+  }
+
+  /* NAV MOBILE lateral */
   .navbar{
-    margin-top: 10px;
-    padding: 12px 20px;
-    justify-content: flex-end;
+    justify-content:center;
+    margin-top:10px;
+    padding:12px 20px;
   }
 
-  /* Hamburger siempre visible */
-  .hamburger{
-    display: flex;
-    top: 18px;
-    right: 20px;
-    position: absolute; /* flota sobre navbar */
-  }
-
-  /* menú mobile lateral */
   .navbar nav{
-    position: fixed;
-    top: 0;
-    right: -100%;
-    width: 260px;
-    height: 100vh;
-    background: #000;
-    display: flex;
-    flex-direction: column;
-    padding-top: 120px;
-    transition: .3s;
-    z-index: 2000;
+    position:fixed;
+    top:0;
+    right:-100%;
+    width:260px;
+    height:100vh;
+    background:#000;
+    display:flex;
+    flex-direction:column;
+    padding-top:120px;
+    transition:.3s;
+    z-index:2000;
   }
 
   .navbar nav.active{
-    right: 0;
+    right:0;
   }
 
   .navbar nav a{
-    display: block;
-    margin: 18px 30px;
-    font-size: 16px;
+    display:block;
+    margin:18px 30px;
+    font-size:16px;
   }
 
   .portal-btn{
-    margin-top: 10px;
-    text-align: center;
+    margin-top:10px;
+    text-align:center;
   }
-
 }
