@@ -1,6 +1,4 @@
-/* =========================
-RESET GENERAL
-========================= */
+/* RESET GENERAL */
 * {
   margin: 0;
   padding: 0;
@@ -22,21 +20,21 @@ TOP BAR
   width: 100%;
   background: #000;
   color: white;
-  padding: 12px 30px;
+  padding: 10px 30px;
   font-size: 13px;
-  flex-wrap: wrap; /* permite wrap de la dirección en móvil */
   z-index: 1000;
 }
 
-/* IZQUIERDA: dirección/contacto */
+/* Desktop only: dirección */
 .topbar-left {
   flex: 1 1 auto;
   min-width: 0;
-  white-space: normal; /* permite wrap */
-  overflow-wrap: break-word;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-/* CENTRO: logo */
+/* Logo centrado */
 .logo-center {
   flex: 0 0 auto;
   text-align: center;
@@ -46,10 +44,10 @@ TOP BAR
   height: 70px;
 }
 
-/* DERECHA: hamburger */
+/* Hamburger (solo móvil) */
 .hamburger {
-  display: none; /* solo visible en móvil */
-  flex: 0 0 auto;
+  display: none;
+  flex-direction: column;
   cursor: pointer;
 }
 
@@ -69,6 +67,16 @@ TOP BAR
 }
 .hamburger.active span:nth-child(3) {
   transform: rotate(-45deg) translate(6px,-6px);
+}
+
+/* Bottom bar móvil */
+.bottombar {
+  display: none;
+  background: #000;
+  color: white;
+  text-align: center;
+  font-size: 12px;
+  padding: 8px 20px;
 }
 
 /* =========================
@@ -203,26 +211,26 @@ HERO
 MOBILE
 ========================= */
 @media (max-width: 900px) {
-
-  /* Topbar flex */
+  /* Topbar más compacto */
   .topbar {
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-    padding: 12px 20px;
+    padding: 8px 20px;
   }
 
   .topbar-left {
-    font-size: 12px;
-    line-height: 1.2;
+    display: none; /* ocultamos dirección en topbar */
+  }
+
+  .hamburger {
+    display: flex;
   }
 
   .logo-center img {
     height: 60px;
   }
 
-  .hamburger {
-    display: flex;
+  /* Bottom bar visible */
+  .bottombar {
+    display: block;
   }
 
   /* Hero más compacto */
@@ -283,80 +291,4 @@ MOBILE
     margin-top: 10px;
     text-align: center;
   }
-/* Mostrar u ocultar según pantalla */
-.desktop-only {
-  display: block;
-}
-.mobile-only {
-  display: none;
-}
-
-@media (max-width: 900px) {
-  .desktop-only {
-    display: none;
-  }
-  .mobile-only {
-    display: block;
-  }
-}
-
-/* Topbar general */
-.topbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
-  background: #000;
-  color: white;
-  padding: 12px 30px;
-  z-index: 1000;
-  flex-wrap: wrap;
-}
-
-/* Logo centrado */
-.logo-center {
-  flex: 0 0 auto;
-  text-align: center;
-}
-
-.logo-center img {
-  height: 70px;
-}
-
-/* Hamburger */
-.hamburger {
-  cursor: pointer;
-  flex: 0 0 auto;
-  display: flex;
-  flex-direction: column;
-}
-
-.hamburger span {
-  width: 25px;
-  height: 3px;
-  background: white;
-  margin: 4px 0;
-  transition: 0.3s;
-}
-
-/* Bottombar móvil */
-.bottombar {
-  background: #000;
-  color: white;
-  text-align: center;
-  font-size: 12px;
-  padding: 10px 20px;
-}
-
-/* Animación hamburger */
-.hamburger.active span:nth-child(1) {
-  transform: rotate(45deg) translate(5px,5px);
-}
-.hamburger.active span:nth-child(2) {
-  opacity: 0;
-}
-.hamburger.active span:nth-child(3) {
-  transform: rotate(-45deg) translate(6px,-6px);
-}
-  
 }
