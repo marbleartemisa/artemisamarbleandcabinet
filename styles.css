@@ -54,8 +54,12 @@ text-overflow:ellipsis;
   text-align: center;
 }
 
-.logo-center img {
-  height: 70px;
+.logo-center img{
+height:80px;
+filter:
+drop-shadow(0 1px 0 rgba(255,255,255,.25))
+drop-shadow(0 2px 3px rgba(0,0,0,.7))
+drop-shadow(0 12px 20px rgba(0,0,0,.4));
 }
 
 /* Hamburger oculto en desktop */
