@@ -15,7 +15,6 @@ body{
 /* =========================
 TOP BAR
 ========================= */
-/* Topbar full width con tres zonas */
 .topbar {
   display: flex;
   justify-content: space-between;
@@ -25,27 +24,35 @@ TOP BAR
   color: white;
   padding: 12px 30px;
   font-size: 13px;
-  flex-wrap: wrap; /* permite que la dirección se rompa en móvil */
+  flex-wrap: wrap; /* permite que la dirección haga wrap */
   z-index: 1000;
+  box-sizing: border-box;
 }
 
-/* Zona izquierda - dirección/contacto */
+/* IZQUIERDA - dirección/contacto */
 .topbar-left {
-  flex: 1;
-  text-align: left;
-  white-space: normal; /* permite que haga wrap */
+  flex: 1 1 auto; /* ocupa todo el espacio disponible a la izquierda */
   min-width: 0; /* evita overflow */
+  white-space: normal; /* permite wrap */
+  font-size: 13px;
+  line-height: 1.2;
+  overflow-wrap: break-word;
 }
 
-/* Zona centro - logo */
+/* CENTRO - logo */
 .logo-center {
-  flex: 0 0 auto; /* tamaño fijo según imagen */
+  flex: 0 0 auto; /* tamaño según imagen */
   text-align: center;
 }
 
-/* Zona derecha - hamburger */
+/* LOGO imagen */
+.logo-center img {
+  height: 70px;
+}
+
+/* DERECHA - hamburger */
 .hamburger {
-  display: none; /* por defecto oculto */
+  display: none; /* por defecto solo visible en móvil */
   flex: 0 0 auto;
   cursor: pointer;
 }
@@ -55,8 +62,37 @@ TOP BAR
   height: 3px;
   background: white;
   margin: 4px 0;
-  transition: .3s;
+  transition: 0.3s;
 }
+
+/* HAMBURGER ANIMACIONES */
+.hamburger.active span:nth-child(1) {
+  transform: rotate(45deg) translate(5px,5px);
+}
+.hamburger.active span:nth-child(2) {
+  opacity: 0;
+}
+.hamburger.active span:nth-child(3) {
+  transform: rotate(-45deg) translate(6px,-6px);
+}
+
+/* MOBILE */
+@media (max-width: 900px) {
+
+  .hamburger {
+    display: flex; /* siempre visible */
+  }
+
+  .logo-center img {
+    height: 60px; /* logo más pequeño en móvil */
+  }
+
+  .topbar-left {
+    font-size: 12px;
+    line-height: 1.2;
+  }
+}
+
 
 /* MOBILE */
 @media (max-width: 900px){
@@ -75,6 +111,7 @@ TOP BAR
     height: 60px;
   }
 }
+
 
 
 /* =========================
