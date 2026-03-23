@@ -1,14 +1,6 @@
 /* RESET GENERAL */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-body {
-  font-family: 'Inter', sans-serif;
-  color: #222;
-}
+{ margin:0; padding:0; box-sizing:border-box; }
+body { font-family:'Inter', sans-serif; color:#222; }
 
 /* =========================
 TOP BAR
@@ -19,9 +11,8 @@ TOP BAR
   align-items: center;
   width: 100%;
   background: #000;
-  color: white;
-  padding: 8px 30px; /* franja más delgada */
-  font-size: 13px;
+  color: #fff;
+  padding: 10px 30px; /* menos alto */
   z-index: 1000;
 }
 
@@ -33,7 +24,6 @@ TOP BAR
   text-overflow: ellipsis;
 }
 
-/* Logo centrado */
 .logo-center {
   flex: 0 0 auto;
   text-align: center;
@@ -43,7 +33,6 @@ TOP BAR
   height: 70px;
 }
 
-/* Hamburger */
 .hamburger {
   display: none;
   flex-direction: column;
@@ -58,21 +47,15 @@ TOP BAR
   transition: 0.3s;
 }
 
-.hamburger.active span:nth-child(1) {
-  transform: rotate(45deg) translate(5px,5px);
-}
-.hamburger.active span:nth-child(2) {
-  opacity: 0;
-}
-.hamburger.active span:nth-child(3) {
-  transform: rotate(-45deg) translate(6px,-6px);
-}
+.hamburger.active span:nth-child(1) { transform: rotate(45deg) translate(5px,5px); }
+.hamburger.active span:nth-child(2) { opacity: 0; }
+.hamburger.active span:nth-child(3) { transform: rotate(-45deg) translate(6px,-6px); }
 
-/* BOTTOM BAR info móvil */
+/* BOTTOM BAR móvil */
 .bottombar {
   display: none;
   background: #000;
-  color: white;
+  color: #fff;
   text-align: center;
   font-size: 12px;
   padding: 8px 20px;
@@ -83,7 +66,6 @@ TOP BAR
   width: 100%;
   display: flex;
   justify-content: center;
-  align-items: center;
   padding: 12px 30px;
   background: transparent;
   z-index: 100;
@@ -116,169 +98,56 @@ TOP BAR
   background-image: url("hero.jpg");
   background-size: cover;
   background-position: center;
-  margin: 0; /* elimina franja blanca */
 }
 
-.overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0,0,0,0.25);
-  z-index: 1;
-}
+.overlay { position: absolute; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.25); z-index:1; }
 
 .hero-content {
   position: absolute;
-  top: 50%;
-  left: 50%;
+  top:50%;
+  left:50%;
   transform: translate(-50%,-50%);
-  width: 90%;
-  max-width: 1100px;
-  color: white;
-  z-index: 2;
-  text-align: center;
+  width:90%;
+  max-width:1100px;
+  color:#fff;
+  text-align:center;
+  z-index:2;
 }
 
-.company-name {
-  font-family: 'Playfair Display', serif;
-  font-size: 46px;
-  font-weight: 600;
-  margin-bottom: 8px;
-}
-
-.hero-tagline {
-  font-family: 'Playfair Display', serif;
-  font-size: 24px;
-  font-weight: 400;
-  opacity: .9;
-}
-
-.hero-content p {
-  font-size: 16px;
-  line-height: 1.6;
-  margin: 0 auto 30px auto;
-  opacity: .9;
-  max-width: 900px;
-}
-
-.hero-buttons {
-  display: flex;
-  justify-content: center;
-  gap: 20px;
-}
-
-.hero-buttons a {
-  text-decoration: none;
-  display: inline-block;
-  padding: 14px 28px;
-  font-size: 14px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  background: rgba(255,255,255,0.15);
-  color: white;
-  border: 1px solid rgba(255,255,255,0.5);
-}
-
-.hero-buttons a:hover {
-  background: rgba(255,255,255,0.85);
-  color: black;
-  border-color: white;
-  transform: translateY(-2px);
-}
-
-.hero-buttons a:active {
-  transform: scale(0.96);
-  background: rgba(255,255,255,1);
-}
+.company-name { font-family:'Playfair Display', serif; font-size:46px; font-weight:600; margin-bottom:8px; }
+.hero-tagline { font-family:'Playfair Display', serif; font-size:24px; opacity:.9; }
+.hero-content p { font-size:16px; line-height:1.6; margin:0 auto 30px auto; max-width:900px; opacity:.9; }
+.hero-buttons { display:flex; justify-content:center; gap:20px; }
+.hero-buttons a { text-decoration:none; padding:14px 28px; font-size:14px; background: rgba(255,255,255,0.15); color:#fff; border:1px solid rgba(255,255,255,0.5); transition:0.3s; }
+.hero-buttons a:hover { background: rgba(255,255,255,0.85); color:black; border-color:white; transform:translateY(-2px); }
+.hero-buttons a:active { transform:scale(0.96); background: rgba(255,255,255,1); }
 
 /* =========================
 MOBILE
 ========================= */
-@media (max-width: 900px) {
+@media (max-width:900px) {
+  .topbar { padding:8px 15px; }
+  .topbar-left { display:none; }
+  .logo-center { text-align:left; }
+  .logo-center img { height:60px; }
+  .hamburger { display:flex; }
+  .bottombar { display:block; }
 
-  .topbar {
-    padding: 8px 15px;
-  }
+  .hero { height:80vh; }
+  .company-name { font-size:28px; }
+  .hero-tagline { font-size:16px; }
+  .hero-content p { font-size:14px; line-height:1.4; }
+  .hero-buttons { flex-direction:column; gap:12px; }
 
-  .topbar-left {
-    display: none; /* desaparece del topbar */
-  }
-
-  .hamburger {
-    display: flex;
-  }
-
-  .logo-center {
-    text-align: left;
-  }
-
-  .logo-center img {
-    height: 60px;
-  }
-
-  .bottombar {
-    display: block;
-  }
-
-  .hero {
-    height: 80vh;
-  }
-
-  .company-name {
-    font-size: 28px;
-  }
-
-  .hero-tagline {
-    font-size: 16px;
-  }
-
-  .hero-content p {
-    font-size: 14px;
-    line-height: 1.4;
-  }
-
-  .hero-buttons {
-    flex-direction: column;
-    gap: 12px;
-  }
-
-  .navbar nav {
-    position: fixed;
-    top: 0;
-    right: -100%;
-    width: 260px;
-    height: 100vh;
-    background: #000;
-    display: flex;
-    flex-direction: column;
-    padding-top: 120px;
-    transition: 0.3s;
-    z-index: 2000;
-  }
-
-  .navbar nav.active {
-    right: 0;
-  }
-
-  .navbar nav a {
-    display: block;
-    margin: 18px 30px;
-    font-size: 16px;
-  }
-
-  .portal-btn {
-    margin-top: 10px;
-    text-align: center;
-  }
+  .navbar nav { position:fixed; top:0; right:-100%; width:260px; height:100vh; background:#000; flex-direction:column; padding-top:120px; transition:0.3s; z-index:2000; }
+  .navbar nav.active { right:0; }
+  .navbar nav a { display:block; margin:18px 30px; font-size:16px; }
 }
 
-/* Clases de visibilidad */
-.desktop-only { display: block; }
-.mobile-only { display: none; }
-
-@media (max-width: 900px) {
-  .desktop-only { display: none; }
-  .mobile-only { display: block; }
+/* Visibilidad */
+.desktop-only { display:block; }
+.mobile-only { display:none; }
+@media (max-width:900px) {
+  .desktop-only { display:none; }
+  .mobile-only { display:block; }
 }
