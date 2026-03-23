@@ -1,14 +1,21 @@
 /* RESET GENERAL */
-{
-  margin:0;
-  padding:0;
-  box-sizing:border-box;
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+}
+
+html,body{
+overflow-x:hidden;
+width:100%;
 }
 
 body{
   font-family:'Inter', sans-serif;
   color:#222;
 }
+
+
 
 
 /* =========================
@@ -27,14 +34,16 @@ TOP BAR
 }
 
 /* Dirección a la izquierda, fuera del flujo central */
+
 .topbar-left.desktop-only {
-  position: absolute;
-  left: 30px;
-  top: 50%;
-  transform: translateY(-50%);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+position:absolute;
+left:30px;
+right:30px;
+top:50%;
+transform:translateY(-50%);
+white-space:nowrap;
+overflow:hidden;
+text-overflow:ellipsis;
 }
 
 /* Logo centrado */
