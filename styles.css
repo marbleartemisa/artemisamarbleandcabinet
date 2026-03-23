@@ -335,4 +335,75 @@ top:18px;
 right:20px;
 }
 
+/* =========================
+FIX MOBILE HEADER (LOGO + HAMBURGER)
+========================= */
+@media (max-width: 900px){
+
+  /* topbar en columna */
+  .topbar{
+    flex-direction: column;
+    text-align: center;
+    padding: 12px 15px;
+    gap: 8px;
+  }
+
+  /* logo deja de ser absoluto */
+  .logo-center{
+    position: relative;  /* deja de ser absolute */
+    left: auto;
+    top: auto;
+    transform: none;
+    margin: 0 auto 5px auto;
+  }
+
+  .logo-center img{
+    height: 65px;
+  }
+
+  /* navbar más compacto */
+  .navbar{
+    margin-top: 10px;
+    padding: 12px 20px;
+    justify-content: flex-end;
+  }
+
+  /* Hamburger siempre visible */
+  .hamburger{
+    display: flex;
+    top: 18px;
+    right: 20px;
+    position: absolute; /* flota sobre navbar */
+  }
+
+  /* menú mobile lateral */
+  .navbar nav{
+    position: fixed;
+    top: 0;
+    right: -100%;
+    width: 260px;
+    height: 100vh;
+    background: #000;
+    display: flex;
+    flex-direction: column;
+    padding-top: 120px;
+    transition: .3s;
+    z-index: 2000;
+  }
+
+  .navbar nav.active{
+    right: 0;
+  }
+
+  .navbar nav a{
+    display: block;
+    margin: 18px 30px;
+    font-size: 16px;
+  }
+
+  .portal-btn{
+    margin-top: 10px;
+    text-align: center;
+  }
+
 }
