@@ -1,6 +1,15 @@
 /* RESET GENERAL */
-{ margin:0; padding:0; box-sizing:border-box; }
-body { font-family:'Inter', sans-serif; color:#222; }
+{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
+
+body{
+  font-family:'Inter', sans-serif;
+  color:#222;
+}
+
 
 /* =========================
 TOP BAR
@@ -53,12 +62,15 @@ TOP BAR
   background: #000;        /* color de fondo negro */
   z-index: 100;
   position: relative;      /* necesario para posicionar nav */
+   z-index:1500;   /* ← esto lo trae al frente */
 }
 
-.navbar nav {
-  display: flex;           /* horizontal */
-  align-items: center;
-  gap: 25px;
+.navbar nav{
+  display:flex;
+  align-items:center;
+  gap:25px;
+  position:relative;
+  z-index:1500;
 }
 
 .navbar nav a {
@@ -68,6 +80,42 @@ TOP BAR
   font-weight: 500;
   letter-spacing: .5px;
 }
+
+.portal-btn {
+  border: 1px solid white;
+  padding: 8px 18px;
+  border-radius: 4px;
+}
+
+/* Mobile sigue igual, lateral oculto */
+@media (max-width: 900px) {
+  .navbar nav {
+    position: fixed;
+    top: 0;
+    right: -100%;
+    width: 260px;
+    height: 100vh;
+    background: #000;
+    flex-direction: column;
+    padding-top: 120px;
+    transition: 0.3s;
+    z-index: 2000;
+  }
+
+  .navbar nav.active {
+    right: 0;
+  }
+
+  .navbar nav a {
+    display: block;
+    margin: 18px 30px;
+    font-size: 16px;
+  }
+}
+
+
+
+
 
 .portal-btn {
   border: 1px solid white;
