@@ -1,15 +1,15 @@
 /* =========================
 RESET GENERAL
 ========================= */
-*{
-  margin:0;
-  padding:0;
-  box-sizing:border-box;
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-body{
-  font-family:'Inter', sans-serif;
-  color:#222;
+body {
+  font-family: 'Inter', sans-serif;
+  color: #222;
 }
 
 /* =========================
@@ -24,35 +24,31 @@ TOP BAR
   color: white;
   padding: 12px 30px;
   font-size: 13px;
-  flex-wrap: wrap; /* permite que la dirección haga wrap */
+  flex-wrap: wrap; /* permite wrap de la dirección en móvil */
   z-index: 1000;
-  box-sizing: border-box;
 }
 
-/* IZQUIERDA - dirección/contacto */
+/* IZQUIERDA: dirección/contacto */
 .topbar-left {
-  flex: 1 1 auto; /* ocupa todo el espacio disponible a la izquierda */
-  min-width: 0; /* evita overflow */
+  flex: 1 1 auto;
+  min-width: 0;
   white-space: normal; /* permite wrap */
-  font-size: 13px;
-  line-height: 1.2;
   overflow-wrap: break-word;
 }
 
-/* CENTRO - logo */
+/* CENTRO: logo */
 .logo-center {
-  flex: 0 0 auto; /* tamaño según imagen */
+  flex: 0 0 auto;
   text-align: center;
 }
 
-/* LOGO imagen */
 .logo-center img {
   height: 70px;
 }
 
-/* DERECHA - hamburger */
+/* DERECHA: hamburger */
 .hamburger {
-  display: none; /* por defecto solo visible en móvil */
+  display: none; /* solo visible en móvil */
   flex: 0 0 auto;
   cursor: pointer;
 }
@@ -65,7 +61,6 @@ TOP BAR
   transition: 0.3s;
 }
 
-/* HAMBURGER ANIMACIONES */
 .hamburger.active span:nth-child(1) {
   transform: rotate(45deg) translate(5px,5px);
 }
@@ -76,311 +71,216 @@ TOP BAR
   transform: rotate(-45deg) translate(6px,-6px);
 }
 
-/* MOBILE */
-@media (max-width: 900px) {
-
-  .hamburger {
-    display: flex; /* siempre visible */
-  }
-
-  .logo-center img {
-    height: 60px; /* logo más pequeño en móvil */
-  }
-
-  .topbar-left {
-    font-size: 12px;
-    line-height: 1.2;
-  }
-}
-
-
-/* MOBILE */
-@media (max-width: 900px){
-  .hamburger {
-    display: flex; /* siempre visible en móvil */
-  }
-
-  /* Dirección puede ocupar varias líneas */
-  .topbar-left {
-    font-size: 12px;
-    line-height: 1.2;
-  }
-
-  /* Logo más pequeño en móvil */
-  .logo-center img {
-    height: 60px;
-  }
-}
-
-
-
-/* =========================
-LOGO CENTER / HERO LOGO
-========================= */
-.logo-center{
-  position:relative;
-  margin:10px auto 0 auto;
-  text-align:center;
-  z-index:2000;
-}
-
-.logo-center img{
-  height:90px;
-}
-
 /* =========================
 NAVBAR
 ========================= */
-.navbar{
-  position:relative;
-  width:100%;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  padding:18px 60px;
-  background:transparent;
-  z-index:100;
-  margin-top:20px;
+.navbar {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 18px 60px;
+  background: transparent;
+  z-index: 100;
 }
 
-.navbar nav{
-  display:flex;
-  align-items:center;
-  gap:25px;
+.navbar nav {
+  display: flex;
+  align-items: center;
+  gap: 25px;
 }
 
-.navbar nav a{
-  text-decoration:none;
-  color:white;
-  font-size:15px;
-  font-weight:500;
-  letter-spacing:.5px;
+.navbar nav a {
+  text-decoration: none;
+  color: white;
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: .5px;
 }
 
-.portal-btn{
-  border:1px solid white;
-  padding:8px 18px;
-  border-radius:4px;
-}
-
-/* =========================
-HAMBURGER
-========================= */
-.hamburger{
-  display:none;
-  flex-direction:column;
-  cursor:pointer;
-  z-index:3000;
-}
-
-.hamburger span{
-  width:25px;
-  height:3px;
-  background:white;
-  margin:4px 0;
-  transition:.3s;
-}
-
-.hamburger.active span:nth-child(1){
-  transform: rotate(45deg) translate(5px,5px);
-}
-
-.hamburger.active span:nth-child(2){
-  opacity:0;
-}
-
-.hamburger.active span:nth-child(3){
-  transform: rotate(-45deg) translate(6px,-6px);
+.portal-btn {
+  border: 1px solid white;
+  padding: 8px 18px;
+  border-radius: 4px;
 }
 
 /* =========================
 HERO
 ========================= */
-.hero{
-  height:100vh;
-  position:relative;
-  background-image:url("hero.jpg");
-  background-size:cover;
-  background-position:center;
-  margin-top:-80px;
+.hero {
+  height: 100vh;
+  position: relative;
+  background-image: url("hero.jpg");
+  background-size: cover;
+  background-position: center;
+  margin-top: 0;
 }
 
-.overlay{
-  position:absolute;
-  top:0;
-  left:0;
-  width:100%;
-  height:100%;
-  background:rgba(0,0,0,0.25);
-  z-index:1;
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.25);
+  z-index: 1;
 }
 
-.hero-content{
-  position:absolute;
-  top:50%;
-  left:50%;
-  transform:translate(-50%,-50%);
-  width:90%;
-  max-width:1100px;
-  color:white;
-  z-index:2;
-  text-align:center;
+.hero-content {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%,-50%);
+  width: 90%;
+  max-width: 1100px;
+  color: white;
+  z-index: 2;
+  text-align: center;
 }
 
-.hero-top-row{
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  margin-bottom:20px;
+.hero-top-row {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 20px;
 }
 
-.company-name{
-  font-family:'Playfair Display', serif;
-  font-size:46px;
-  font-weight:600;
-  margin-bottom:8px;
+.company-name {
+  font-family: 'Playfair Display', serif;
+  font-size: 46px;
+  font-weight: 600;
+  margin-bottom: 8px;
 }
 
-.hero-tagline{
-  font-family:'Playfair Display', serif;
-  font-size:24px;
-  font-weight:400;
-  opacity:.9;
+.hero-tagline {
+  font-family: 'Playfair Display', serif;
+  font-size: 24px;
+  font-weight: 400;
+  opacity: .9;
 }
 
-.hero-content p{
-  font-size:16px;
-  line-height:1.6;
-  margin-bottom:30px;
-  opacity:.9;
-  max-width:900px;
-  margin-left:auto;
-  margin-right:auto;
+.hero-content p {
+  font-size: 16px;
+  line-height: 1.6;
+  margin-bottom: 30px;
+  opacity: .9;
+  max-width: 900px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
-.hero-buttons{
-  display:flex;
-  justify-content:center;
-  gap:20px;
+.hero-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
 }
 
-.hero-buttons a{
-  text-decoration:none;
-  display:inline-block;
-  padding:14px 28px;
-  font-size:14px;
-  cursor:pointer;
-  transition:all 0.3s ease;
-  background:rgba(255,255,255,0.15);
-  color:white;
-  border:1px solid rgba(255,255,255,0.5);
+.hero-buttons a {
+  text-decoration: none;
+  display: inline-block;
+  padding: 14px 28px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background: rgba(255,255,255,0.15);
+  color: white;
+  border: 1px solid rgba(255,255,255,0.5);
 }
 
-.hero-buttons a:hover{
-  background:rgba(255,255,255,0.85);
-  color:black;
-  border-color:white;
-  transform:translateY(-2px);
+.hero-buttons a:hover {
+  background: rgba(255,255,255,0.85);
+  color: black;
+  border-color: white;
+  transform: translateY(-2px);
 }
 
-.hero-buttons a:active{
-  transform:scale(0.96);
-  background:rgba(255,255,255,1);
+.hero-buttons a:active {
+  transform: scale(0.96);
+  background: rgba(255,255,255,1);
 }
 
 /* =========================
 MOBILE
 ========================= */
-@media (max-width: 900px){
+@media (max-width: 900px) {
 
-  /* TOPBAR */
-  .topbar{
-    flex-direction:row;
-    justify-content:space-between;
-    align-items:center;
-    padding:12px 20px;
-    gap:0;
+  /* Topbar flex */
+  .topbar {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 20px;
   }
 
-  .topbar-left{
-    text-align:left;
+  .topbar-left {
+    font-size: 12px;
+    line-height: 1.2;
   }
 
-  .hamburger{
-    display:flex;
-    position:relative;
-    margin:0;
+  .logo-center img {
+    height: 60px;
   }
 
-  /* LOGO */
-  .logo-center{
-    position:relative;
-    left:auto;
-    top:auto;
-    transform:none;
-    margin:0 auto 5px auto;
+  .hamburger {
+    display: flex;
   }
 
-  .logo-center img{
-    height:60px;
+  /* Hero más compacto */
+  .hero {
+    height: 80vh;
   }
 
-  /* HERO más compacto */
-  .hero{
-    height:80vh;
+  .company-name {
+    font-size: 28px;
   }
 
-  .company-name{
-    font-size:28px;
+  .hero-tagline {
+    font-size: 16px;
   }
 
-  .hero-tagline{
-    font-size:16px;
+  .hero-content p {
+    font-size: 14px;
+    line-height: 1.4;
   }
 
-  .hero-content p{
-    font-size:14px;
-    line-height:1.4;
+  .hero-buttons {
+    flex-direction: column;
+    gap: 12px;
   }
 
-  .hero-buttons{
-    flex-direction:column;
-    gap:12px;
+  /* Navbar lateral */
+  .navbar {
+    justify-content: center;
+    padding: 12px 20px;
+    margin-top: 10px;
   }
 
-  /* NAV MOBILE lateral */
-  .navbar{
-    justify-content:center;
-    margin-top:10px;
-    padding:12px 20px;
+  .navbar nav {
+    position: fixed;
+    top: 0;
+    right: -100%;
+    width: 260px;
+    height: 100vh;
+    background: #000;
+    display: flex;
+    flex-direction: column;
+    padding-top: 120px;
+    transition: 0.3s;
+    z-index: 2000;
   }
 
-  .navbar nav{
-    position:fixed;
-    top:0;
-    right:-100%;
-    width:260px;
-    height:100vh;
-    background:#000;
-    display:flex;
-    flex-direction:column;
-    padding-top:120px;
-    transition:.3s;
-    z-index:2000;
+  .navbar nav.active {
+    right: 0;
   }
 
-  .navbar nav.active{
-    right:0;
+  .navbar nav a {
+    display: block;
+    margin: 18px 30px;
+    font-size: 16px;
   }
 
-  .navbar nav a{
-    display:block;
-    margin:18px 30px;
-    font-size:16px;
-  }
-
-  .portal-btn{
-    margin-top:10px;
-    text-align:center;
+  .portal-btn {
+    margin-top: 10px;
+    text-align: center;
   }
 }
