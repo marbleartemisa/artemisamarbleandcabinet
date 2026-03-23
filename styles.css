@@ -25,7 +25,6 @@ TOP BAR
   z-index: 1000;
 }
 
-/* Desktop only: dirección */
 .topbar-left {
   flex: 1 1 auto;
   min-width: 0;
@@ -44,7 +43,7 @@ TOP BAR
   height: 70px;
 }
 
-/* Hamburger (solo móvil) */
+/* Hamburger */
 .hamburger {
   display: none;
   flex-direction: column;
@@ -79,9 +78,7 @@ TOP BAR
   padding: 8px 20px;
 }
 
-/* =========================
-NAVBAR
-========================= */
+/* NAVBAR */
 .navbar {
   width: 100%;
   display: flex;
@@ -112,9 +109,7 @@ NAVBAR
   border-radius: 4px;
 }
 
-/* =========================
-HERO
-========================= */
+/* HERO */
 .hero {
   height: 100vh;
   position: relative;
@@ -146,13 +141,6 @@ HERO
   text-align: center;
 }
 
-.hero-top-row {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-bottom: 20px;
-}
-
 .company-name {
   font-family: 'Playfair Display', serif;
   font-size: 46px;
@@ -173,8 +161,7 @@ HERO
   margin-bottom: 30px;
   opacity: .9;
   max-width: 900px;
-  margin-left: auto;
-  margin-right: auto;
+  margin: 0 auto 30px auto;
 }
 
 .hero-buttons {
@@ -211,13 +198,12 @@ HERO
 MOBILE
 ========================= */
 @media (max-width: 900px) {
-  /* Topbar más compacto */
   .topbar {
     padding: 8px 20px;
   }
 
   .topbar-left {
-    display: none; /* ocultamos dirección en topbar */
+    display: none; /* dirección no aparece en topbar */
   }
 
   .hamburger {
@@ -228,12 +214,10 @@ MOBILE
     height: 60px;
   }
 
-  /* Bottom bar visible */
   .bottombar {
-    display: block;
+    display: block; /* dirección visible al final */
   }
 
-  /* Hero más compacto */
   .hero {
     height: 80vh;
   }
@@ -256,7 +240,6 @@ MOBILE
     gap: 12px;
   }
 
-  /* Navbar lateral */
   .navbar {
     justify-content: center;
     padding: 12px 20px;
@@ -291,4 +274,13 @@ MOBILE
     margin-top: 10px;
     text-align: center;
   }
+}
+
+/* Clases de visibilidad */
+.desktop-only { display: block; }
+.mobile-only { display: none; }
+
+@media (max-width: 900px) {
+  .desktop-only { display: none; }
+  .mobile-only { display: block; }
 }
