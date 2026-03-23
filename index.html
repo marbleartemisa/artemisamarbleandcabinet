@@ -11,19 +11,19 @@
 
 <body>
 
- <!-- TOP BAR -->
+<!-- TOP BAR -->
 <div class="topbar">
-  <!-- DIRECCION (solo visible en desktop) -->
+  <!-- DIRECCION solo visible desktop -->
   <div class="topbar-left desktop-only">
     830 W 19th ST, Hialeah Florida 33010 • (305) 884-1223 • info@artemisamarble.com
   </div>
 
-  <!-- LOGO -->
+  <!-- LOGO centrado -->
   <div class="logo-center">
     <img src="logo.png" alt="Artemisa Marble & Cabinet">
   </div>
 
-  <!-- HAMBURGER (solo móvil) -->
+  <!-- HAMBURGER solo móvil -->
   <div class="hamburger mobile-only" id="hamburger" aria-label="menu" role="button">
     <span></span>
     <span></span>
@@ -31,60 +31,46 @@
   </div>
 </div>
 
-<!-- BOTTOM BAR / Footer info móvil -->
+<!-- BOTTOM BAR info móvil -->
 <div class="bottombar mobile-only">
   830 W 19th ST, Hialeah Florida 33010 • (305) 884-1223 • info@artemisamarble.com
-</div> 
+</div>
 
-  
-  
 <!-- NAVBAR -->
 <header class="navbar">
-
-<nav id="navMenu">
-<a href="#">Home</a>
-<a href="#">Kitchen</a>
-<a href="#">Bathroom</a>
-<a href="#">Cabinets</a>
-<a href="#">Closets</a>
-<a href="#">Contact</a>
-<a class="portal-btn" href="/portal">Portal-SOP</a>
-</nav>
-
+  <nav id="navMenu">
+    <a href="#">Home</a>
+    <a href="#">Kitchen</a>
+    <a href="#">Bathroom</a>
+    <a href="#">Cabinets</a>
+    <a href="#">Closets</a>
+    <a href="#">Contact</a>
+    <a class="portal-btn" href="/portal">Portal-SOP</a>
+  </nav>
 </header>
-
 
 <!-- HERO -->
 <section class="hero">
+  <div class="overlay"></div>
+  <div class="hero-content">
+    <div class="hero-top-row">
+      <div class="company-name">Artemisa Marble & Cabinet</div>
+      <div class="hero-tagline">Luxury Stone & Custom Interiors</div>
+    </div>
 
-<div class="overlay"></div>
+    <p>
+      Crafting high-end kitchens with precision, elegance, and natural beauty.
+      We specialize in custom-made kitchen cabinets, bathrooms, closets,
+      TV walls, fireplaces, and more, using premium materials like granite,
+      quartz, marble, dekton, gemstone, and semi-precious stones.
+    </p>
 
-<div class="hero-content">
-
-<div class="hero-top-row">
-<div class="company-name">Artemisa Marble & Cabinet</div>
-<div class="hero-tagline">Luxury Stone & Custom Interiors</div>
-</div>
-
-<p>
-Crafting high-end kitchens with precision, elegance, and natural beauty.
-We specialize in custom-made kitchen cabinets, bathrooms, closets,
-TV walls, fireplaces, and more, using premium materials like granite,
-quartz, marble, dekton, gemstone, and semi-precious stones.
-</p>
-
-<div class="hero-buttons">
-<a href="#" class="primary">View Projects</a>
-
-<a href="https://artemisa_marble_cabinets_inc.quotekitchenandbath.com/kitchen#/materials/countertops/countertop"
-class="secondary"
-target="_blank">
-Get Quote
-</a>
-
-</div>
-
-</div>
+    <div class="hero-buttons">
+      <a href="#" class="primary">View Projects</a>
+      <a href="https://artemisa_marble_cabinets_inc.quotekitchenandbath.com/kitchen#/materials/countertops/countertop"
+         class="secondary" target="_blank">Get Quote</a>
+    </div>
+  </div>
 </section>
 
 <script>
@@ -92,8 +78,8 @@ const hamburger = document.getElementById("hamburger");
 const nav = document.getElementById("navMenu");
 
 hamburger.addEventListener("click", () => {
-nav.classList.toggle("active");
-hamburger.classList.toggle("active");
+  nav.classList.toggle("active");
+  hamburger.classList.toggle("active");
 });
 </script>
 
