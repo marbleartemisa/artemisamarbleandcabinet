@@ -43,23 +43,27 @@ TOP BAR
   display: none;
 }
 
-/* NAVBAR desktop */
+
+/* Navbar desktop */
 .navbar {
+  width: 100%;
   display: flex;
-  justify-content: center; /* centrado */
+  justify-content: center; /* centra el nav */
   padding: 12px 30px;
-  background: transparent;
+  background: #000;        /* color de fondo negro */
   z-index: 100;
+  position: relative;      /* necesario para posicionar nav */
 }
 
 .navbar nav {
-  display: flex;
+  display: flex;           /* horizontal */
+  align-items: center;
   gap: 25px;
 }
 
 .navbar nav a {
-  color: white;
   text-decoration: none;
+  color: white;
   font-size: 15px;
   font-weight: 500;
   letter-spacing: .5px;
@@ -69,6 +73,32 @@ TOP BAR
   border: 1px solid white;
   padding: 8px 18px;
   border-radius: 4px;
+}
+
+/* Mobile - lateral oculto */
+@media (max-width: 900px) {
+  .navbar nav {
+    position: fixed;
+    top: 0;
+    right: -100%;  /* fuera de pantalla */
+    width: 260px;
+    height: 100vh;
+    background: #000;
+    flex-direction: column;
+    padding-top: 120px;
+    transition: 0.3s;
+    z-index: 2000;
+  }
+
+  .navbar nav.active {
+    right: 0;
+  }
+
+  .navbar nav a {
+    display: block;
+    margin: 18px 30px;
+    font-size: 16px;
+  }
 }
 
 
