@@ -15,29 +15,67 @@ body{
 /* =========================
 TOP BAR
 ========================= */
-.topbar{
-  display:flex;
-  justify-content:space-between; /* logo izquierda, hamburger/derecha */
-  align-items:center;
-  background:#000;
-  color:white;
-  padding:18px 60px;
-  font-size:13px;
-  z-index:1000;
-}
-
-.topbar-left{
-  flex:1;
-  text-align:left;
-}
-
-/* Hamburger dentro de topbar */
-
-.hamburger {
+/* Topbar full width con tres zonas */
+.topbar {
   display: flex;
-  cursor: pointer;
-  z-index: 3000;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  background: #000;
+  color: white;
+  padding: 12px 30px;
+  font-size: 13px;
+  flex-wrap: wrap; /* permite que la dirección se rompa en móvil */
+  z-index: 1000;
 }
+
+/* Zona izquierda - dirección/contacto */
+.topbar-left {
+  flex: 1;
+  text-align: left;
+  white-space: normal; /* permite que haga wrap */
+  min-width: 0; /* evita overflow */
+}
+
+/* Zona centro - logo */
+.logo-center {
+  flex: 0 0 auto; /* tamaño fijo según imagen */
+  text-align: center;
+}
+
+/* Zona derecha - hamburger */
+.hamburger {
+  display: none; /* por defecto oculto */
+  flex: 0 0 auto;
+  cursor: pointer;
+}
+
+.hamburger span {
+  width: 25px;
+  height: 3px;
+  background: white;
+  margin: 4px 0;
+  transition: .3s;
+}
+
+/* MOBILE */
+@media (max-width: 900px){
+  .hamburger {
+    display: flex; /* siempre visible en móvil */
+  }
+
+  /* Dirección puede ocupar varias líneas */
+  .topbar-left {
+    font-size: 12px;
+    line-height: 1.2;
+  }
+
+  /* Logo más pequeño en móvil */
+  .logo-center img {
+    height: 60px;
+  }
+}
+
 
 /* =========================
 LOGO CENTER / HERO LOGO
