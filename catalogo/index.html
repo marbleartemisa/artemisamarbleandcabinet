@@ -32,13 +32,16 @@ header nav a:hover { text-decoration:underline; }
 <header>
   <div class="logo"><img src="logo.png" height="50"></div>
   <nav>
-    <a href="#">Home</a>
-    <a href="#">Kitchen</a>
-    <a href="#">Bathroom</a>
-    <a href="#">Cabinets</a>
-    <a href="#">Closets</a>
-    <a href="#">Contact</a>
+   <a href="/artemisamarbleandcabinet/">Home</a>
+    <a href="/artemisamarbleandcabinet/kitchen/">Kitchen</a>
+    <a href="/artemisamarbleandcabinet/bathroom/">Bathroom</a>
+    <a href="/artemisamarbleandcabinet/cabinets/">Cabinets</a>
+    <a href="/artemisamarbleandcabinet/closets">Closets</a>
+    <a href=""/artemisamarbleandcabinet/contacts"">Contact</a>
+    <a class="portal-btn" href="https://marbleartemisa.github.io/sop-site/">Portal-SOP</a>
   </nav>
+
+  
 </header>
 
 <div class="filters">
@@ -49,44 +52,146 @@ header nav a:hover { text-decoration:underline; }
   <button class="filter-btn" data-category="Closets">Closets</button>
 </div>
 
+  
+
 <div class="grid" id="gallery">
   <!-- Aquí van las fotos -->
 </div>
 
 <!-- Fancybox -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/4.0.35/fancybox.umd.js"></script>
+
+  
 <script>
-// Ejemplo de fotos (puedes cargar desde tu Sheet/JSON)
-const photos = [
-  {url:'https://drive.google.com/uc?export=view&id=1x642Mmh0QHjKsyZxOLZR48hpXlxygTYq', category:'Kitchen'},
-  {url:'https://drive.google.com/uc?export=view&id=1zSjYxR0CTx3VJaew5gX_LSjo_G5TksXA', category:'Bathroom'},
-  {url:'https://drive.google.com/uc?export=view&id=1JRFaPIFXoQtq1-egzH67_uNw27HVW5u5', category:'Cabinets'},
-  // agregar más fotos...
-];
+const API = "https://script.google.com/macros/s/AKfycbwGGvL1ox8ZXJ08fRxKXgyJHQxzDOfwnCfpxcabCGJht5dh6R5ViTAeiGPQfa0LAXB2/exec";
+
+let allData = [];
+let photos = [];
 
 const gallery = document.getElementById('gallery');
-function renderGallery(category='all'){
-  gallery.innerHTML='';
-  photos.forEach(p=>{
-    if(category==='all' || p.category===category){
-      const item = document.createElement('div');
-      item.classList.add('grid-item');
-      item.innerHTML = `<a data-fancybox="gallery" href="${p.url}"><img src="${p.url}" alt=""></a>`;
-      gallery.appendChild(item);
-    }
-  });
-}
+const filtersContainer = document.querySelector('.filters');
+
+// orden prioritario
+const priorityOrder = [
+"Kitchen",
+"Bathroom",
+"Laundry",
+"Closets & Shelves",
+"Outdoor",
+"BBQ Area",
+"Office",
+"Powder Room",
+"Fireplace",
+"Wall TV",
+"Front desk"
+];
+
+async function loadPhotos(){
+
+const res = await fetch(API);
+const data = await res.json();
+
+allData = data;
+
+// solo fotos principales
+photos = data.filter(item => !item.PARENTCHILD);
+
+createFilters();
 renderGallery();
 
-// Filtros
-document.querySelectorAll('.filter-btn').forEach(btn=>{
-  btn.addEventListener('click',()=>{
-    document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
-    btn.classList.add('active');
-    renderGallery(btn.dataset.category);
-  });
+}
+
+function createFilters(){
+
+const tipos = [...new Set(
+photos.map(p => p.TIPO).filter(Boolean)
+)];
+
+// ordenar
+tipos.sort((a,b)=>{
+
+const ia = priorityOrder.indexOf(a);
+const ib = priorityOrder.indexOf(b);
+
+if(ia === -1 && ib === -1) return a.localeCompare(b);
+if(ia === -1) return 1;
+if(ib === -1) return -1;
+
+return ia - ib;
+
 });
+
+filtersContainer.innerHTML = `
+<button class="filter-btn active" data-category="all">All</button>
+`;
+
+tipos.forEach(tipo => {
+
+const btn = document.createElement('button');
+
+btn.className = "filter-btn";
+btn.dataset.category = tipo;
+btn.textContent = tipo;
+
+filtersContainer.appendChild(btn);
+
+});
+
+document.querySelectorAll('.filter-btn').forEach(btn=>{
+btn.addEventListener('click',()=>{
+document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+btn.classList.add('active');
+renderGallery(btn.dataset.category);
+});
+});
+
+}
+
+function renderGallery(category='all'){
+
+gallery.innerHTML='';
+
+photos.forEach(p=>{
+
+if(category === 'all' || p.TIPO === category){
+
+const item = document.createElement('div');
+item.classList.add('grid-item');
+
+item.innerHTML = `
+<a data-fancybox="gallery-${p.ID}" href="${p.LINK}" data-caption="${p.STONE || ''}">
+<img src="${p.LINK}" loading="lazy">
+</a>
+`;
+
+gallery.appendChild(item);
+
+// fotos relacionadas
+allData
+.filter(x => x.PARENTCHILD == p.ID)
+.forEach(rel => {
+
+const hidden = document.createElement('a');
+
+hidden.href = rel.LINK;
+hidden.setAttribute('data-fancybox', `gallery-${p.ID}`);
+hidden.style.display = "none";
+
+item.appendChild(hidden);
+
+});
+
+}
+
+});
+
+}
+
+loadPhotos();
+
 </script>
 
 </body>
 </html>
+
+
