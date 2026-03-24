@@ -158,46 +158,63 @@ open3D(e.target.dataset.full);
 
 }
 
-  
-  
-  
 function open3D(imgSrc){
-  viewer3D.style.display = 'block';
 
-  // Limpiar antes
-  viewer3D.innerHTML = '<div id="close3D">&times;</div>';
+viewer3D.style.display = 'block';
+viewer3D.innerHTML = '<div id="close3D">&times;</div>';
 
-  const closeBtn = viewer3D.querySelector('#close3D');
-  closeBtn.addEventListener('click', ()=> viewer3D.style.display='none');
+const closeBtn = viewer3D.querySelector('#close3D');
+closeBtn.onclick = ()=> viewer3D.style.display='none';
 
-  // Three.js
-  const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(70, window.innerWidth/window.innerHeight, 0.1, 1000);
-  const renderer = new THREE.WebGLRenderer({antialias:true});
-  renderer.setSize(window.innerWidth, window.innerHeight);
-  viewer3D.appendChild(renderer.domElement);
+const scene = new THREE.Scene();
 
-  // Luz
-  const light = new THREE.DirectionalLight(0xffffff,1);
-  light.position.set(0,1,1).normalize();
-  scene.add(light);
+const camera = new THREE.PerspectiveCamera(
+75,
+window.innerWidth/window.innerHeight,
+0.1,
+1000
+);
 
-  // Textura
-  const loader = new THREE.TextureLoader();
-  loader.load(imgSrc, texture=>{
-    const geometry = new THREE.PlaneGeometry(4,4*texture.image.height/texture.image.width);
-    const material = new THREE.MeshPhongMaterial({map:texture});
-    const plane = new THREE.Mesh(geometry, material);
-    scene.add(plane);
-    camera.position.z = 5;
+const renderer = new THREE.WebGLRenderer({antialias:true});
+renderer.setSize(window.innerWidth, window.innerHeight);
+viewer3D.appendChild(renderer.domElement);
 
-    function animate(){
-      requestAnimationFrame(animate);
-      plane.rotation.y += 0.01; // rotación suave
-      renderer.render(scene, camera);
-    }
-    animate();
-  });
+camera.position.z = 5;
+
+const light = new THREE.AmbientLight(0xffffff, 1);
+scene.add(light);
+
+// IMPORTANTE: permitir cargar desde drive
+const loader = new THREE.TextureLoader();
+loader.setCrossOrigin("anonymous");
+
+loader.load(imgSrc, function(texture){
+
+const ratio = texture.image.height / texture.image.width;
+
+const geometry = new THREE.PlaneGeometry(4, 4 * ratio);
+
+const material = new THREE.MeshBasicMaterial({
+map: texture,
+side: THREE.DoubleSide
+});
+
+const plane = new THREE.Mesh(geometry, material);
+scene.add(plane);
+
+function animate(){
+requestAnimationFrame(animate);
+
+plane.rotation.y += 0.003;
+plane.rotation.x += 0.001;
+
+renderer.render(scene, camera);
+}
+
+animate();
+
+});
+
 }
 
 loadPhotos();
