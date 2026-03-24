@@ -75,43 +75,83 @@ let photos = [];
 const gallery = document.getElementById('gallery');
 const filtersContainer = document.querySelector('.filters');
 const viewer3D = document.getElementById('viewer3D');
-const close3D = document.getElementById('close3D');
 
-const priorityOrder = ["Kitchen","Bathroom","Laundry","Closets & Shelves","Outdoor","BBQ Area","Office","Powder Room","Fireplace","Wall TV","Front desk"];
+const priorityOrder = [
+"Kitchen",
+"Bathroom",
+"Laundry",
+"Closets & Shelves",
+"Outdoor",
+"BBQ Area",
+"Office",
+"Powder Room",
+"Fireplace",
+"Wall TV",
+"Front desk"
+];
 
 async function loadPhotos(){
-  const res = await fetch(API);
-  const data = await res.json();
-  allData = data;
-  photos = data.filter(item => !item.PARENTCHILD);
-  createFilters();
-  renderGallery();
+const res = await fetch(API);
+const data = await res.json();
+
+allData = data;
+photos = data.filter(item => !item.PARENTCHILD);
+
+createFilters();
+renderGallery();
 }
 
 function createFilters(){
-  const tipos = [...new Set(photos.map(p => p.TIPO).filter(Boolean))];
-  tipos.sort((a,b)=>{
-    const ia = priorityOrder.indexOf(a); const ib = priorityOrder.indexOf(b);
-    if(ia === -1 && ib === -1) return a.localeCompare(b);
-    if(ia === -1) return 1;
-    if(ib === -1) return -1;
-    return ia - ib;
-  });
-  filtersContainer.innerHTML = `<button class="filter-btn active" data-category="all">All</button>`;
-  tipos.forEach(tipo=>{
-    const btn = document.createElement('button');
-    btn.className = "filter-btn"; btn.dataset.category = tipo; btn.textContent = tipo;
-    filtersContainer.appendChild(btn);
-  });
-  document.querySelectorAll('.filter-btn').forEach(btn=>{
-    btn.addEventListener('click',()=>{
-      document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
-      btn.classList.add('active');
-      renderGallery(btn.dataset.category);
-    });
-  });
-}
 
+const tipos = [...new Set(
+photos.map(p => p.TIPO).filter(Boolean)
+)];
+
+tipos.sort((a,b)=>{
+
+const ia = priorityOrder.indexOf(a);
+const ib = priorityOrder.indexOf(b);
+
+if(ia === -1 && ib === -1) return a.localeCompare(b);
+if(ia === -1) return 1;
+if(ib === -1) return -1;
+
+return ia - ib;
+
+});
+
+filtersContainer.innerHTML = `
+<button class="filter-btn active" data-category="all">All</button>
+`;
+
+tipos.forEach(tipo=>{
+
+const btn = document.createElement('button');
+
+btn.className = "filter-btn";
+btn.dataset.category = tipo;
+btn.textContent = tipo;
+
+filtersContainer.appendChild(btn);
+
+});
+
+document.querySelectorAll('.filter-btn').forEach(btn=>{
+
+btn.addEventListener('click',()=>{
+
+document.querySelectorAll('.filter-btn')
+.forEach(b=>b.classList.remove('active'));
+
+btn.classList.add('active');
+
+renderGallery(btn.dataset.category);
+
+});
+
+});
+
+}
 
 function renderGallery(category='all'){
 
@@ -124,7 +164,6 @@ if(category === 'all' || p.TIPO === category){
 const item = document.createElement('div');
 item.classList.add('grid-item');
 
-// extraer ID de drive
 let fileId = null;
 
 if(p.LINK.includes("drive.google.com")){
@@ -132,7 +171,6 @@ const match = p.LINK.match(/id=([^&]+)/);
 if(match) fileId = match[1];
 }
 
-// URLs correctas
 let thumb = p.LINK;
 let full = p.LINK;
 
@@ -147,9 +185,8 @@ item.innerHTML = `
 
 gallery.appendChild(item);
 
-// CLICK → abrir 3D
 item.querySelector("img").addEventListener("click", (e)=>{
-open3D(e.target.src);
+open3D(e.target.dataset.full);
 });
 
 }
@@ -158,8 +195,6 @@ open3D(e.target.src);
 
 }
 
-
-  
 function open3D(imgSrc){
 
 viewer3D.style.display = 'block';
@@ -177,7 +212,11 @@ window.innerWidth/window.innerHeight,
 1000
 );
 
-const renderer = new THREE.WebGLRenderer({antialias:true});
+const renderer = new THREE.WebGLRenderer({
+antialias:true,
+alpha:true
+});
+
 renderer.setSize(window.innerWidth, window.innerHeight);
 viewer3D.appendChild(renderer.domElement);
 
@@ -186,15 +225,20 @@ camera.position.z = 5;
 const light = new THREE.AmbientLight(0xffffff, 1);
 scene.add(light);
 
-// IMPORTANTE: permitir cargar desde drive
 const loader = new THREE.TextureLoader();
-loader.setCrossOrigin("anonymous");
+loader.crossOrigin = "anonymous";
 
-loader.load(imgSrc, function(texture){
+loader.load(
+imgSrc,
+
+function(texture){
 
 const ratio = texture.image.height / texture.image.width;
 
-const geometry = new THREE.PlaneGeometry(4, 4 * ratio);
+const geometry = new THREE.PlaneGeometry(
+4,
+4 * ratio
+);
 
 const material = new THREE.MeshBasicMaterial({
 map: texture,
@@ -202,27 +246,41 @@ side: THREE.DoubleSide
 });
 
 const plane = new THREE.Mesh(geometry, material);
+
 scene.add(plane);
 
 function animate(){
+
 requestAnimationFrame(animate);
 
 plane.rotation.y += 0.003;
 plane.rotation.x += 0.001;
 
 renderer.render(scene, camera);
+
 }
 
 animate();
 
-});
+},
+
+undefined,
+
+function(error){
+console.error("Error loading image:", imgSrc);
+}
+
+);
 
 }
 
 loadPhotos();
+
+/* Hover 3D cards */
 document.addEventListener("mousemove", e=>{
 
-document.querySelectorAll(".grid-item img").forEach(img=>{
+document.querySelectorAll(".grid-item img")
+.forEach(img=>{
 
 const rect = img.getBoundingClientRect();
 
@@ -241,16 +299,20 @@ e.clientX < rect.right &&
 e.clientY > rect.top &&
 e.clientY < rect.bottom
 ){
+
 img.style.transform =
 `rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.05)`;
+
 }else{
-img.style.transform = "rotateX(0) rotateY(0) scale(1)";
+
+img.style.transform =
+"rotateX(0) rotateY(0) scale(1)";
+
 }
 
 });
 
 });
-  
 </script>
 </body>
 </html>
