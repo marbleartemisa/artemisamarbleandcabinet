@@ -375,3 +375,9 @@ MOBILE
   border-color:#f15a24;
   transform:translateY(-2px);
 }
+
+.fancybox__content img {
+  transition: transform 0.1s ease;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
