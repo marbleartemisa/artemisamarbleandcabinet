@@ -22,7 +22,7 @@ TOP BAR
 ========================= */
 .topbar {
   display: flex;
-  justify-content: center; /* centra el logo */
+  justify-content: center;
   align-items: center;
   background: #000;
   color: #fff;
@@ -57,7 +57,9 @@ TOP BAR
     drop-shadow(0 18px 28px rgba(0,0,0,.5));
 }
 
-/* Hamburger - hidden en desktop */
+/* =========================
+HAMBURGER
+========================= */
 .hamburger {
   display: none;
   flex-direction: column;
@@ -72,11 +74,11 @@ TOP BAR
 
 .hamburger span {
   display: block;
-  width: 25px;
+  width: 30px;
   height: 3px;
   margin: 5px 0;
   background: white;
-  transition: 0.3s;
+  transition: all 0.3s ease;
 }
 
 .hamburger.active span:nth-child(1) {
@@ -87,15 +89,6 @@ TOP BAR
 }
 .hamburger.active span:nth-child(3) {
   transform: rotate(-45deg) translate(5px, -5px);
-}
-
-.hamburger span {
-  display: block;
-  width: 30px;       /* ancho de cada barra */
-  height: 3px;       /* grosor de la barra */
-  margin: 5px 0;     /* espacio entre barras */
-  background: white; /* color */
-  transition: all 0.3s ease;
 }
 
 /* =========================
@@ -115,7 +108,6 @@ NAVBAR
   display: flex;
   align-items: center;
   gap: 25px;
-  position: relative;
 }
 
 .navbar nav a {
@@ -131,8 +123,6 @@ NAVBAR
   padding: 8px 18px;
   border-radius: 4px;
 }
-
-
 
 /* =========================
 HERO
@@ -150,10 +140,7 @@ HERO
 
 .overlay {
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  inset: 0;
   background: rgba(0,0,0,0.25);
   z-index: 1;
 }
@@ -177,11 +164,13 @@ HERO
   font-weight: 600; 
   margin-bottom: 8px; 
 }
+
 .hero-tagline { 
   font-family:'Playfair Display', serif; 
   font-size: 24px; 
   opacity: .9; 
 }
+
 .hero-content p { 
   font-size: 16px; 
   line-height: 1.6; 
@@ -190,27 +179,9 @@ HERO
   opacity: .9; 
 }
 
-.hero-buttons a {
-  text-decoration: none;
-  padding: 14px 28px;
-  font-size: 14px;
-  background: rgba(255,255,255,0.15);
-  color: #fff;
-  border: 1px solid rgba(255,255,255,0.5);
-  transition: 0.3s;
-}
-.hero-buttons a:hover {
-  background: rgba(255,255,255,0.85);
-  color: black;
-  border-color: white;
-  transform: translateY(-2px);
-}
-.hero-buttons a:active {
-  transform: scale(0.96);
-  background: rgba(255,255,255,1);
-}
-
-
+/* =========================
+HERO BUTTONS
+========================= */
 .hero-buttons {
   display: flex;
   justify-content: center;
@@ -218,10 +189,7 @@ HERO
   flex-wrap: wrap;
 }
 
-.hero-buttons a.primary {
-  background: rgba(255,255,255,0.15);
-  color: #fff;
-  border: 1px solid rgba(255,255,255,0.5);
+.hero-buttons a {
   text-decoration: none;
   padding: 14px 28px;
   font-size: 14px;
@@ -229,50 +197,70 @@ HERO
   transition: 0.3s;
 }
 
-.hero-buttons a.primary:hover {
-  background: rgba(255,255,255,0.85);
-  color: black;
-  border-color: white;
-  transform: translateY(-2px);
+.hero-buttons a.primary {
+  background: rgba(255,255,255,0.15);
+  color: #fff;
+  border: 1px solid rgba(255,255,255,0.5);
 }
 
 .hero-buttons a.secondary {
   background: transparent;
   border: 1px solid white;
   color: white;
-  text-decoration: none;
-  padding: 14px 28px;
-  font-size: 14px;
-  border-radius: 4px;
-  transition: 0.3s;
 }
 
-.hero-buttons a.secondary:hover {
+.hero-buttons a:hover {
   background: rgba(255,255,255,0.85);
   color: black;
   border-color: white;
   transform: translateY(-2px);
 }
 
-
+.hero-buttons a:active {
+  transform: scale(0.96);
+}
 
 /* =========================
-MOBILE STYLES
+GALLERY 3D EFFECT
+========================= */
+.grid-item {
+  perspective: 1000px;
+  transform-style: preserve-3d;
+}
+
+.grid-item img {
+  width: 100%;
+  border-radius: 6px;
+  transition: transform .25s ease, box-shadow .25s ease;
+  transform-style: preserve-3d;
+  will-change: transform;
+  backface-visibility: hidden;
+}
+
+.grid-item:hover img {
+  box-shadow:
+    0 10px 20px rgba(0,0,0,.25),
+    0 25px 40px rgba(0,0,0,.25),
+    0 40px 80px rgba(0,0,0,.25);
+}
+
+/* =========================
+VISIBILIDAD
+========================= */
+.desktop-only { display: block; }
+.mobile-only { display: none; }
+
+/* =========================
+MOBILE
 ========================= */
 @media (max-width: 900px) {
 
   .topbar {
     padding: 8px 15px;
-    justify-content: center;
-    position: relative;
   }
 
   .topbar-left {
     display: none !important;
-  }
-
-  .logo-center {
-    text-align: left;
   }
 
   .logo-center img {
@@ -287,9 +275,12 @@ MOBILE STYLES
   .company-name { font-size: 28px; }
   .hero-tagline { font-size: 16px; }
   .hero-content p { font-size: 14px; line-height: 1.4; }
-  .hero-buttons { flex-direction: column; gap: 12px; }
 
-  /* Navbar lateral */
+  .hero-buttons {
+    flex-direction: column;
+    gap: 12px;
+  }
+
   .navbar nav {
     position: fixed;
     top: 0;
@@ -313,36 +304,7 @@ MOBILE STYLES
     font-size: 16px;
   }
 
-  .bottombar {
-    display: block;
-    background: #000;
-    color: white;
-    text-align: center;
-    padding: 12px;
-    font-size: 12px;
-  }
-}
-
-.grid-item {
-perspective:1000px;
-}
-
-.grid-item img{
-transition: transform .25s ease, box-shadow .25s ease;
-transform-style: preserve-3d;
-}
-
-.grid-item:hover img{
-box-shadow:0 25px 40px rgba(0,0,0,.35);
-}
-
-/* =========================
-VISIBILIDAD
-========================= */
-.desktop-only { display: block; }
-.mobile-only { display: none; }
-
-@media (max-width: 900px) {
   .desktop-only { display: none; }
   .mobile-only { display: block; }
+
 }
