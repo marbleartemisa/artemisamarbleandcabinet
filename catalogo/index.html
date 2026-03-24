@@ -84,18 +84,12 @@ function getImageSrc(photo) {
   return `https://drive.google.com/uc?export=view&id=${id}`;
 }
 
-async function loadPhotos() {
-  try {
-    const res = await fetch(API);
-    const data = await res.json();
-    allPhotos = data || [];
-    parentPhotos = allPhotos.filter(p => !p.PARENTCHILD);
-    renderGallery();
-  } catch(e) {
-    viewerEmpty.style.display="block";
-    viewerEmpty.textContent="Error cargando fotos";
-    console.error(e);
-  }
+async function loadPhotos(){
+  const res = await fetch(API);
+  const data = await res.json();
+  photos = data.filter(item => !item.PARENTCHILD);
+  createFilters();
+  renderGallery();
 }
 
 function renderGallery(category='all') {
