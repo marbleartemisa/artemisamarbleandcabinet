@@ -18,9 +18,12 @@ header nav a:hover { text-decoration:underline; }
 .filters button.active, .filters button:hover { background:#f15a24; }
 
 .grid { column-count: 4; column-gap: 10px; max-width:1200px; margin:0 auto; }
-.grid-item { break-inside: avoid; margin-bottom:10px; cursor:pointer; }
-.grid-item img { width:100%; border-radius:6px; transition: transform 0.3s ease; }
-.grid-item img:hover { transform: scale(1.05); }
+.grid-item { break-inside: avoid; margin-bottom:10px; cursor:pointer; perspective:1000px; }
+.grid-item img { width:100%; border-radius:6px; transition: transform 0.3s ease; transform-style: preserve-3d; }
+.grid-item img:hover { transform: rotateX(5deg) rotateY(5deg) scale(1.05); }
+
+@media(max-width:900px){ .grid { column-count: 2; } }
+@media(max-width:600px){ .grid { column-count: 1; } }
 </style>
 </head>
 <body>
@@ -56,7 +59,6 @@ const API = "https://script.google.com/macros/s/AKfycbwGGvL1ox8ZXJ08fRxKXgyJHQxz
 let photos = [];
 const gallery = document.getElementById('gallery');
 const filtersContainer = document.querySelector('.filters');
-
 const priorityOrder = ["Kitchen","Bathroom","Laundry","Closets & Shelves","Outdoor","BBQ Area","Office","Powder Room","Fireplace","Wall TV","Front desk"];
 
 async function loadPhotos(){
@@ -105,8 +107,10 @@ function renderGallery(category='all'){
         if(match) fileId = match[1];
       }
       if(!fileId) return;
+
       const thumb = `https://drive.google.com/thumbnail?id=${fileId}&sz=w800`;
-      const full  = `https://drive.google.com/uc?export=view&id=${fileId}`;
+      const full  = `https://drive.google.com/uc?export=download&id=${fileId}`;
+
       const item = document.createElement('div');
       item.classList.add('grid-item');
       item.innerHTML = `<a data-fancybox="gallery" href="${full}"><img src="${thumb}" loading="lazy"></a>`;
@@ -114,35 +118,12 @@ function renderGallery(category='all'){
     }
   });
 
-  // Activar Fancybox
+  // Inicializar Fancybox
   Fancybox.bind("[data-fancybox='gallery']", {
     dragToClose: true,
     infinite: false,
-    Toolbar: {
-      display: ["zoom","close"]
-    },
-    Image: {
-      zoom: true,
-      Pan: true,
-      wheel: "zoom"
-    },
-    on: {
-      reveal: (fancybox, slide) => {
-        const img = slide.$el.querySelector("img");
-        if(!img) return;
-        img.addEventListener("mousemove", e=>{
-          const rect = img.getBoundingClientRect();
-          const x = e.clientX - rect.left;
-          const y = e.clientY - rect.top;
-          const centerX = rect.width/2;
-          const centerY = rect.height/2;
-          const rotateX = (y - centerY)/30;
-          const rotateY = (centerX - x)/30;
-          img.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.05)`;
-        });
-        img.addEventListener("mouseleave", ()=>{ img.style.transform="rotateX(0) rotateY(0) scale(1)"; });
-      }
-    }
+    Toolbar: { display: ["zoom","close"] },
+    Image: { zoom: true, Pan: true, wheel: "zoom" }
   });
 }
 
