@@ -3,140 +3,90 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Artemisa Marble & Cabinet</title>
+<title>Galería Artemisa Marble</title>
 
-<link rel="stylesheet" href="styles.css">
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<!-- Masonry y Lightbox -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/4.0.35/fancybox.min.css"/>
+<style>
+body { font-family: 'Inter', sans-serif; margin:0; padding:0; background:#f8f8f8;}
+header { background:#000; color:#fff; padding:12px 20px; display:flex; justify-content:space-between; align-items:center;}
+header nav a { color:#fff; margin:0 12px; text-decoration:none; font-weight:500; }
+header nav a:hover { text-decoration:underline; }
+
+.filters { text-align:center; margin:20px 0; }
+.filters button { padding:10px 20px; margin:5px; border:none; background:#222; color:#fff; cursor:pointer; border-radius:4px; transition:0.3s;}
+.filters button.active, .filters button:hover { background:#f15a24; }
+
+.grid { column-count: 4; column-gap: 10px; max-width:1200px; margin:0 auto; }
+.grid-item { break-inside: avoid; margin-bottom:10px; cursor:pointer; }
+.grid-item img { width:100%; border-radius:6px; transition:0.3s; }
+.grid-item img:hover { transform:scale(1.05); }
+
+/* Responsive */
+@media(max-width:900px){ .grid { column-count: 2; } }
+@media(max-width:600px){ .grid { column-count: 1; } }
+</style>
 </head>
-
 <body>
 
-<!-- TOP BAR -->
-<div class="topbar">
-  <div class="topbar-left desktop-only">
-    830 W 19th ST, Hialeah Florida 33010 • (305) 884-1223 • info@artemisamarble.com
-  </div>
-
-  <div class="logo-center">
-    <img src="/artemisamarbleandcabinet/logo.png" alt="Artemisa Marble & Cabinet">
-  </div>
-
-  <div class="hamburger mobile-only" id="hamburger">
-    <span></span>
-    <span></span>
-    <span></span>
-  </div>
-</div>
-
-<!-- NAVBAR -->
-<header class="navbar">
-  <nav id="navMenu">
-    <a href="/artemisamarbleandcabinet/">Home</a>
-    <a href="/artemisamarbleandcabinet/kitchen/">Kitchen</a>
-    <a href="/artemisamarbleandcabinet/bathroom/">Bathroom</a>
-    <a href="/artemisamarbleandcabinet/cabinets/">Cabinets</a>
-    <a href="/artemisamarbleandcabinet/closets">Closets</a>
-    <a href=""/artemisamarbleandcabinet/contacts"">Contact</a>
-    <a class="portal-btn" href="https://marbleartemisa.github.io/sop-site/">Portal-SOP</a>
+<header>
+  <div class="logo"><img src="logo.png" height="50"></div>
+  <nav>
+    <a href="#">Home</a>
+    <a href="#">Kitchen</a>
+    <a href="#">Bathroom</a>
+    <a href="#">Cabinets</a>
+    <a href="#">Closets</a>
+    <a href="#">Contact</a>
   </nav>
 </header>
 
-<!-- HERO -->
-<section class="hero">
-  <div class="overlay"></div>
-  <div class="hero-content">
-    <div class="hero-top-row">
-      <div class="company-name">Artemisa Marble & Cabinet</div>
-      <div class="hero-tagline">Luxury Stone & Custom Interiors</div>
-    </div>
-
-    <p>
-      Crafting high-end kitchens with precision, elegance, and natural beauty.
-    </p>
-
-    <div class="hero-buttons">
-      <a href="catalogo/index.html" class="primary">Explore Catalog</a>
-      <a href="https://artemisa_marble_cabinets_inc.quotekitchenandbath.com/kitchen#/materials/countertops/countertop" class="secondary" target="_blank">Get Quote</a>
-    </div>
-  </div>
-</section>
-
-<!-- FOOTER MOBILE -->
-<div class="bottombar mobile-only">
-830 W 19th ST, Hialeah Florida 33010 • (305) 884-1223 • info@artemisamarble.com
+<div class="filters">
+  <button class="filter-btn active" data-category="all">All</button>
+  <button class="filter-btn" data-category="Kitchen">Kitchen</button>
+  <button class="filter-btn" data-category="Bathroom">Bathroom</button>
+  <button class="filter-btn" data-category="Cabinets">Cabinets</button>
+  <button class="filter-btn" data-category="Closets">Closets</button>
 </div>
 
-script>
-const API = "https://script.google.com/macros/s/AKfycbwGGvL1ox8ZXJ08fRxKXgyJHQxzDOfwnCfpxcabCGJht5dh6R5ViTAeiGPQfa0LAXB2/exec";
+<div class="grid" id="gallery">
+  <!-- Aquí van las fotos -->
+</div>
 
-let allData = [];
-let photos = [];
+<!-- Fancybox -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/4.0.35/fancybox.umd.js"></script>
+<script>
+// Ejemplo de fotos (puedes cargar desde tu Sheet/JSON)
+const photos = [
+  {url:'https://drive.google.com/uc?export=view&id=1x642Mmh0QHjKsyZxOLZR48hpXlxygTYq', category:'Kitchen'},
+  {url:'https://drive.google.com/uc?export=view&id=1zSjYxR0CTx3VJaew5gX_LSjo_G5TksXA', category:'Bathroom'},
+  {url:'https://drive.google.com/uc?export=view&id=1JRFaPIFXoQtq1-egzH67_uNw27HVW5u5', category:'Cabinets'},
+  // agregar más fotos...
+];
 
 const gallery = document.getElementById('gallery');
-
-async function loadPhotos(){
-
-const res = await fetch(API);
-const data = await res.json();
-
-allData = data;
-
-// SOLO FOTOS PRINCIPALES (sin PARENTCHILD)
-photos = data.filter(item => !item.PARENTCHILD);
-
+function renderGallery(category='all'){
+  gallery.innerHTML='';
+  photos.forEach(p=>{
+    if(category==='all' || p.category===category){
+      const item = document.createElement('div');
+      item.classList.add('grid-item');
+      item.innerHTML = `<a data-fancybox="gallery" href="${p.url}"><img src="${p.url}" alt=""></a>`;
+      gallery.appendChild(item);
+    }
+  });
+}
 renderGallery();
 
-}
-
-function renderGallery(category='all'){
-
-gallery.innerHTML='';
-
-photos.forEach(p=>{
-
-if(category === 'all' || p.TIPO === category){
-
-const item = document.createElement('div');
-item.classList.add('grid-item');
-
-item.innerHTML = `
-<a data-fancybox="gallery-${p.ID}" href="${p.LINK}">
-<img src="${p.LINK}" loading="lazy">
-</a>
-`;
-
-gallery.appendChild(item);
-
-// agregar fotos relacionadas
-allData
-.filter(x => x.PARENTCHILD == p.ID)
-.forEach(rel => {
-
-const hidden = document.createElement('a');
-
-hidden.href = rel.LINK;
-hidden.setAttribute('data-fancybox', `gallery-${p.ID}`);
-hidden.style.display = "none";
-
-item.appendChild(hidden);
-
-});
-
-}
-
-});
-
-}
-
-// filtros
+// Filtros
 document.querySelectorAll('.filter-btn').forEach(btn=>{
-btn.addEventListener('click',()=>{
-document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
-btn.classList.add('active');
-renderGallery(btn.dataset.category);
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    renderGallery(btn.dataset.category);
+  });
 });
-});
-
-loadPhotos();
-
 </script>
+
+</body>
+</html>
