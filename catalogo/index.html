@@ -4,12 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Galería Artemisa Marble - 3D Viewer</title>
-
-<!-- Fancybox CSS -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/4.0.35/fancybox.min.css"/>
-
 <style>
-body { font-family: 'Inter', sans-serif; margin:0; padding:0; background:#f8f8f8; }
+body { margin:0; font-family:'Inter', sans-serif; background:#f8f8f8; }
 header { background:#000; color:#fff; padding:12px 20px; display:flex; justify-content:space-between; align-items:center;}
 header nav a { color:#fff; margin:0 12px; text-decoration:none; font-weight:500; }
 header nav a:hover { text-decoration:underline; }
@@ -22,13 +18,14 @@ header nav a:hover { text-decoration:underline; }
 .grid-item { break-inside: avoid; margin-bottom:10px; cursor:pointer; }
 .grid-item img { width:100%; border-radius:6px; transition: transform 0.3s ease, box-shadow 0.3s ease; }
 
-.grid-item img:hover {
-  box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+#viewer3D {
+  display:none;
+  position:fixed; top:0; left:0; width:100%; height:100%;
+  background: rgba(0,0,0,0.95); z-index:9999;
 }
-
-/* Responsive */
-@media(max-width:900px){ .grid { column-count: 2; } }
-@media(max-width:600px){ .grid { column-count: 1; } }
+#close3D {
+  position:absolute; top:20px; right:20px; font-size:30px; color:white; cursor:pointer; z-index:1000;
+}
 </style>
 </head>
 <body>
@@ -56,101 +53,95 @@ header nav a:hover { text-decoration:underline; }
 
 <div class="grid" id="gallery"></div>
 
-<!-- Scripts -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/4.0.35/fancybox.umd.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/vanilla-tilt@1.7.0/dist/vanilla-tilt.min.js"></script>
+<!-- 3D Viewer -->
+<div id="viewer3D">
+  <div id="close3D">&times;</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/three@0.161.0/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.161.0/examples/js/controls/OrbitControls.js"></script>
 
 <script>
 const API = "https://script.google.com/macros/s/AKfycbwGGvL1ox8ZXJ08fRxKXgyJHQxzDOfwnCfpxcabCGJht5dh6R5ViTAeiGPQfa0LAXB2/exec";
-
-let allData = [];
-let photos = [];
-
+let allData = [], photos = [];
 const gallery = document.getElementById('gallery');
+const viewer3D = document.getElementById('viewer3D');
+const close3D = document.getElementById('close3D');
 const filtersContainer = document.querySelector('.filters');
-
-const priorityOrder = [
-"Kitchen", "Bathroom", "Laundry", "Closets & Shelves",
-"Outdoor", "BBQ Area", "Office", "Powder Room",
-"Fireplace", "Wall TV", "Front desk"
-];
 
 async function loadPhotos() {
   const res = await fetch(API);
   const data = await res.json();
   allData = data;
   photos = data.filter(item => !item.PARENTCHILD);
-  createFilters();
   renderGallery();
 }
 
-function createFilters() {
-  const tipos = [...new Set(photos.map(p => p.TIPO).filter(Boolean))];
-  tipos.sort((a,b)=>{
-    const ia = priorityOrder.indexOf(a);
-    const ib = priorityOrder.indexOf(b);
-    if(ia === -1 && ib === -1) return a.localeCompare(b);
-    if(ia === -1) return 1;
-    if(ib === -1) return -1;
-    return ia - ib;
-  });
+function renderGallery() {
+  gallery.innerHTML = '';
+  photos.forEach(p => {
+    let fileId = null;
+    if(p.LINK.includes("drive.google.com")){
+      const match = p.LINK.match(/id=([^&]+)/);
+      if(match) fileId = match[1];
+    }
+    let full = p.LINK;
+    if(fileId) full = `https://drive.google.com/uc?export=view&id=${fileId}`;
+    
+    const item = document.createElement('div');
+    item.classList.add('grid-item');
+    item.innerHTML = `<img src="${full}" alt="Foto" loading="lazy">`;
+    gallery.appendChild(item);
 
-  filtersContainer.innerHTML = `<button class="filter-btn active" data-category="all">All</button>`;
-  tipos.forEach(tipo => {
-    const btn = document.createElement('button');
-    btn.className = "filter-btn";
-    btn.dataset.category = tipo;
-    btn.textContent = tipo;
-    filtersContainer.appendChild(btn);
-  });
-
-  document.querySelectorAll('.filter-btn').forEach(btn=>{
-    btn.addEventListener('click', ()=>{
-      document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
-      btn.classList.add('active');
-      renderGallery(btn.dataset.category);
+    item.querySelector('img').addEventListener('click', ()=>{
+      open3D(full);
     });
   });
 }
 
-function renderGallery(category='all') {
-  gallery.innerHTML = '';
+function open3D(imgUrl) {
+  viewer3D.style.display = 'block';
+  viewer3D.innerHTML = '<div id="close3D">&times;</div>';
 
-  photos.forEach(p => {
-    if(category === 'all' || p.TIPO === category){
-      const item = document.createElement('div');
-      item.classList.add('grid-item');
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(70, window.innerWidth/window.innerHeight, 0.1, 1000);
+  camera.position.z = 3;
 
-      let fileId = null;
-      if(p.LINK.includes("drive.google.com")){
-        const match = p.LINK.match(/id=([^&]+)/);
-        if(match) fileId = match[1];
-      }
+  const renderer = new THREE.WebGLRenderer({antialias:true, alpha:true});
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  viewer3D.appendChild(renderer.domElement);
 
-      let thumb = p.LINK;
-      let full = p.LINK;
+  const controls = new THREE.OrbitControls(camera, renderer.domElement);
+  controls.enableZoom = true;
+  controls.enablePan = true;
+  controls.enableDamping = true;
+  controls.dampingFactor = 0.1;
+  controls.rotateSpeed = 0.5;
 
-      if(fileId){
-        thumb = `https://drive.google.com/thumbnail?id=${fileId}&sz=w1000`;
-        full = `https://drive.google.com/uc?export=view&id=${fileId}`;
-      }
+  const light = new THREE.AmbientLight(0xffffff, 1);
+  scene.add(light);
 
-      item.innerHTML = `
-        <a data-fancybox="gallery" href="${full}">
-          <img src="${thumb}" alt="Foto" loading="lazy">
-        </a>
-      `;
+  const loader = new THREE.TextureLoader();
+  loader.crossOrigin = "anonymous";
+  loader.load(imgUrl, function(texture){
+    const ratio = texture.image.height / texture.image.width;
+    const geometry = new THREE.PlaneGeometry(2, 2 * ratio);
+    const material = new THREE.MeshBasicMaterial({ map: texture, side: THREE.DoubleSide });
+    const plane = new THREE.Mesh(geometry, material);
+    scene.add(plane);
 
-      gallery.appendChild(item);
+    function animate() {
+      requestAnimationFrame(animate);
+      controls.update();
+      renderer.render(scene, camera);
     }
+    animate();
   });
 
-  // Inicializar VanillaTilt en las nuevas imágenes
-  VanillaTilt.init(document.querySelectorAll(".grid-item img"), {
-    max: 15,
-    speed: 400,
-    scale: 1.05
-  });
+  viewer3D.querySelector('#close3D').onclick = () => {
+    viewer3D.style.display = 'none';
+    viewer3D.innerHTML = '';
+  };
 }
 
 loadPhotos();
