@@ -3,9 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Galería Artemisa Marble</title>
+<title>Galería Artemisa Marble - 3D Viewer</title>
 
-<!-- Masonry y Lightbox -->
+<!-- Fancybox -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/4.0.35/fancybox.min.css"/>
 <style>
 body { font-family: 'Inter', sans-serif; margin:0; padding:0; background:#f8f8f8;}
@@ -22,6 +22,11 @@ header nav a:hover { text-decoration:underline; }
 .grid-item img { width:100%; border-radius:6px; transition:0.3s; }
 .grid-item img:hover { transform:scale(1.05); }
 
+/* 3D Viewer Overlay */
+#viewer3D { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); z-index:9999; }
+#viewer3D canvas { display:block; }
+#close3D { position:absolute; top:20px; right:20px; color:white; font-size:30px; cursor:pointer; z-index:10000; }
+
 /* Responsive */
 @media(max-width:900px){ .grid { column-count: 2; } }
 @media(max-width:600px){ .grid { column-count: 1; } }
@@ -32,16 +37,14 @@ header nav a:hover { text-decoration:underline; }
 <header>
   <div class="logo"><img src="/artemisamarbleandcabinet/logo.png" height="100"></div>
   <nav>
-   <a href="/artemisamarbleandcabinet/">Home</a>
-    <a href="/artemisamarbleandcabinet/kitchen/">Kitchen</a>
-    <a href="/artemisamarbleandcabinet/bathroom/">Bathroom</a>
-    <a href="/artemisamarbleandcabinet/cabinets/">Cabinets</a>
-    <a href="/artemisamarbleandcabinet/closets">Closets</a>
-    <a href=""/artemisamarbleandcabinet/contacts"">Contact</a>
+    <a href="/">Home</a>
+    <a href="/kitchen/">Kitchen</a>
+    <a href="/bathroom/">Bathroom</a>
+    <a href="/cabinets/">Cabinets</a>
+    <a href="/closets">Closets</a>
+    <a href="/contacts">Contact</a>
     <a class="portal-btn" href="https://marbleartemisa.github.io/sop-site/">Portal-SOP</a>
   </nav>
-
-  
 </header>
 
 <div class="filters">
@@ -52,16 +55,17 @@ header nav a:hover { text-decoration:underline; }
   <button class="filter-btn" data-category="Closets">Closets</button>
 </div>
 
-  
+<div class="grid" id="gallery"></div>
 
-<div class="grid" id="gallery">
-  <!-- Aquí van las fotos -->
+<!-- 3D Viewer -->
+<div id="viewer3D">
+  <div id="close3D">&times;</div>
 </div>
 
-<!-- Fancybox -->
+<!-- Scripts -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/4.0.35/fancybox.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.161.0/build/three.min.js"></script>
 
-  
 <script>
 const API = "https://script.google.com/macros/s/AKfycbwGGvL1ox8ZXJ08fRxKXgyJHQxzDOfwnCfpxcabCGJht5dh6R5ViTAeiGPQfa0LAXB2/exec";
 
@@ -70,137 +74,106 @@ let photos = [];
 
 const gallery = document.getElementById('gallery');
 const filtersContainer = document.querySelector('.filters');
+const viewer3D = document.getElementById('viewer3D');
+const close3D = document.getElementById('close3D');
 
-// orden prioritario
-const priorityOrder = [
-"Kitchen",
-"Bathroom",
-"Laundry",
-"Closets & Shelves",
-"Outdoor",
-"BBQ Area",
-"Office",
-"Powder Room",
-"Fireplace",
-"Wall TV",
-"Front desk"
-];
+const priorityOrder = ["Kitchen","Bathroom","Laundry","Closets & Shelves","Outdoor","BBQ Area","Office","Powder Room","Fireplace","Wall TV","Front desk"];
 
 async function loadPhotos(){
-
-const res = await fetch(API);
-const data = await res.json();
-
-allData = data;
-
-// solo fotos principales
-photos = data.filter(item => !item.PARENTCHILD);
-
-createFilters();
-renderGallery();
-
+  const res = await fetch(API);
+  const data = await res.json();
+  allData = data;
+  photos = data.filter(item => !item.PARENTCHILD);
+  createFilters();
+  renderGallery();
 }
 
 function createFilters(){
-
-const tipos = [...new Set(
-photos.map(p => p.TIPO).filter(Boolean)
-)];
-
-// ordenar
-tipos.sort((a,b)=>{
-
-const ia = priorityOrder.indexOf(a);
-const ib = priorityOrder.indexOf(b);
-
-if(ia === -1 && ib === -1) return a.localeCompare(b);
-if(ia === -1) return 1;
-if(ib === -1) return -1;
-
-return ia - ib;
-
-});
-
-filtersContainer.innerHTML = `
-<button class="filter-btn active" data-category="all">All</button>
-`;
-
-tipos.forEach(tipo => {
-
-const btn = document.createElement('button');
-
-btn.className = "filter-btn";
-btn.dataset.category = tipo;
-btn.textContent = tipo;
-
-filtersContainer.appendChild(btn);
-
-});
-
-document.querySelectorAll('.filter-btn').forEach(btn=>{
-btn.addEventListener('click',()=>{
-document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
-btn.classList.add('active');
-renderGallery(btn.dataset.category);
-});
-});
-
+  const tipos = [...new Set(photos.map(p => p.TIPO).filter(Boolean))];
+  tipos.sort((a,b)=>{
+    const ia = priorityOrder.indexOf(a); const ib = priorityOrder.indexOf(b);
+    if(ia === -1 && ib === -1) return a.localeCompare(b);
+    if(ia === -1) return 1;
+    if(ib === -1) return -1;
+    return ia - ib;
+  });
+  filtersContainer.innerHTML = `<button class="filter-btn active" data-category="all">All</button>`;
+  tipos.forEach(tipo=>{
+    const btn = document.createElement('button');
+    btn.className = "filter-btn"; btn.dataset.category = tipo; btn.textContent = tipo;
+    filtersContainer.appendChild(btn);
+  });
+  document.querySelectorAll('.filter-btn').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      renderGallery(btn.dataset.category);
+    });
+  });
 }
 
 function renderGallery(category='all'){
+  gallery.innerHTML='';
+  photos.forEach(p=>{
+    if(category==='all' || p.TIPO===category){
+      const item = document.createElement('div');
+      item.classList.add('grid-item');
 
-gallery.innerHTML='';
+      let imgSrc = p.LINK;
+      if(p.LINK.includes("drive.google.com")){
+        const match = p.LINK.match(/[-\w]{25,}/);
+        if(match) imgSrc = `https://drive.google.com/uc?export=view&id=${match[0]}`;
+      }
 
-photos.forEach(p=>{
+      item.innerHTML = `<img src="${imgSrc}" alt="${p.STONE || 'Image'}" loading="lazy">`;
+      gallery.appendChild(item);
 
-if(category === 'all' || p.TIPO === category){
-
-const item = document.createElement('div');
-item.classList.add('grid-item');
-
-// Si tu LINK es Google Drive, conviértelo a miniatura directa
-let imgSrc = p.LINK;
-
-// ejemplo para Google Drive
-if(p.LINK.includes("drive.google.com")) {
-  const fileIdMatch = p.LINK.match(/[-\w]{25,}/);
-  if(fileIdMatch) imgSrc = `https://drive.google.com/uc?export=view&id=${fileIdMatch[0]}`;
+      // Evento 3D al click
+      item.querySelector('img').addEventListener('click', ()=> open3D(imgSrc));
+    }
+  });
 }
 
-item.innerHTML = `
-<a data-fancybox="gallery-${p.ID}" href="${p.LINK}" data-caption="${p.STONE || ''}">
-  <img src="${imgSrc}" loading="lazy" alt="${p.STONE || 'Image'}">
-</a>
-`;
+function open3D(imgSrc){
+  viewer3D.style.display = 'block';
 
-gallery.appendChild(item);
+  // Limpiar antes
+  viewer3D.innerHTML = '<div id="close3D">&times;</div>';
 
-// fotos relacionadas
-allData
-.filter(x => x.PARENTCHILD == p.ID)
-.forEach(rel => {
+  const closeBtn = viewer3D.querySelector('#close3D');
+  closeBtn.addEventListener('click', ()=> viewer3D.style.display='none');
 
-const hidden = document.createElement('a');
+  // Three.js
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(70, window.innerWidth/window.innerHeight, 0.1, 1000);
+  const renderer = new THREE.WebGLRenderer({antialias:true});
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  viewer3D.appendChild(renderer.domElement);
 
-hidden.href = rel.LINK;
-hidden.setAttribute('data-fancybox', `gallery-${p.ID}`);
-hidden.style.display = "none";
+  // Luz
+  const light = new THREE.DirectionalLight(0xffffff,1);
+  light.position.set(0,1,1).normalize();
+  scene.add(light);
 
-item.appendChild(hidden);
+  // Textura
+  const loader = new THREE.TextureLoader();
+  loader.load(imgSrc, texture=>{
+    const geometry = new THREE.PlaneGeometry(4,4*texture.image.height/texture.image.width);
+    const material = new THREE.MeshPhongMaterial({map:texture});
+    const plane = new THREE.Mesh(geometry, material);
+    scene.add(plane);
+    camera.position.z = 5;
 
-});
-
-}
-
-});
-
+    function animate(){
+      requestAnimationFrame(animate);
+      plane.rotation.y += 0.01; // rotación suave
+      renderer.render(scene, camera);
+    }
+    animate();
+  });
 }
 
 loadPhotos();
-
 </script>
-
 </body>
 </html>
-
-
