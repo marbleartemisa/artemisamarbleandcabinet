@@ -114,26 +114,35 @@ function createFilters(){
 
 function renderGallery(category='all'){
   gallery.innerHTML='';
+
   photos.forEach(p=>{
     if(category==='all' || p.TIPO===category){
       const item = document.createElement('div');
       item.classList.add('grid-item');
 
+      // Convertir Drive a URL directa para <img>
       let imgSrc = p.LINK;
       if(p.LINK.includes("drive.google.com")){
         const match = p.LINK.match(/[-\w]{25,}/);
         if(match) imgSrc = `https://drive.google.com/uc?export=view&id=${match[0]}`;
       }
 
-      item.innerHTML = `<img src="${imgSrc}" alt="${p.STONE || 'Image'}" loading="lazy">`;
+      // Mantener <a> para Fancybox
+      item.innerHTML = `
+        <a data-fancybox="gallery-${p.ID}" href="${p.LINK}" data-caption="${p.STONE || ''}">
+          <img src="${imgSrc}" loading="lazy" alt="${p.STONE || 'Image'}">
+        </a>
+      `;
+
       gallery.appendChild(item);
 
-      // Evento 3D al click
-      item.querySelector('img').addEventListener('click', ()=> open3D(imgSrc));
+      // Si quieres 3D, puedes agregarlo así:
+      // item.querySelector('img').addEventListener('click', ()=> open3D(imgSrc));
+      // O comentarlo si prefieres solo Fancybox
     }
   });
 }
-
+  
 function open3D(imgSrc){
   viewer3D.style.display = 'block';
 
