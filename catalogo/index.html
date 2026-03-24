@@ -132,24 +132,25 @@ const match = p.LINK.match(/id=([^&]+)/);
 if(match) fileId = match[1];
 }
 
-// URLs correctas para Drive
+// URLs correctas
 let thumb = p.LINK;
 let full = p.LINK;
 
 if(fileId){
 thumb = `https://drive.google.com/thumbnail?id=${fileId}&sz=w1000`;
-  full  = `https://drive.google.com/uc?export=view&id=${fileId}`;
+full  = `https://drive.google.com/uc?export=view&id=${fileId}`;
 }
 
-
-
 item.innerHTML = `
-<a data-fancybox="gallery-${p.ID}" href="${full}">
-<img src="${thumb}" loading="lazy">
-</a>
+<img src="${thumb}" data-full="${full}" loading="lazy">
 `;
 
 gallery.appendChild(item);
+
+// CLICK → abrir 3D
+item.querySelector("img").addEventListener("click", (e)=>{
+open3D(e.target.dataset.full);
+});
 
 }
 
@@ -157,7 +158,7 @@ gallery.appendChild(item);
 
 }
 
-
+  
   
   
 function open3D(imgSrc){
