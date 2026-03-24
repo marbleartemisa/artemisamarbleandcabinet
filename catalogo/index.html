@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Galería Artemisa Marble - Viewer</title>
+<title>Galería Artemisa Marble - 3D Viewer</title>
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/4.0.35/fancybox.min.css"/>
 <style>
@@ -22,7 +22,9 @@ header nav a:hover { text-decoration:underline; }
 .grid-item img:hover { transform:scale(1.05); }
 
 /* Fancybox overrides */
-.fancybox__container { z-index:9999; }
+.fancybox__container { z-index:9999; display:flex; justify-content:center; align-items:center; }
+.fancybox__content { max-width:90%; max-height:90%; display:flex; justify-content:center; align-items:center; }
+.fancybox__image { cursor: grab; transition: transform 0.2s ease; }
 
 /* Responsive */
 @media(max-width:900px){ .grid { column-count: 2; } }
@@ -59,7 +61,6 @@ header nav a:hover { text-decoration:underline; }
 const API = "https://script.google.com/macros/s/AKfycbwGGvL1ox8ZXJ08fRxKXgyJHQxzDOfwnCfpxcabCGJht5dh6R5ViTAeiGPQfa0LAXB2/exec";
 
 let photos = [];
-
 const gallery = document.getElementById('gallery');
 const filtersContainer = document.querySelector('.filters');
 const priorityOrder = ["Kitchen","Bathroom","Laundry","Closets & Shelves","Outdoor","BBQ Area","Office","Powder Room","Fireplace","Wall TV","Front desk"];
@@ -118,6 +119,27 @@ function renderGallery(category='all'){
       item.classList.add('grid-item');
       item.innerHTML = `<a data-fancybox="gallery" href="${full}"><img src="${thumb}" loading="lazy"></a>`;
       gallery.appendChild(item);
+    }
+  });
+
+  // Habilitar efecto 3D simulado al mover el mouse sobre la imagen en Fancybox
+  Fancybox.bind("[data-fancybox='gallery']", {
+    on: {
+      reveal: (fancybox, slide) => {
+        const img = slide.$el.querySelector("img");
+        if(!img) return;
+        img.addEventListener("mousemove", e => {
+          const rect = img.getBoundingClientRect();
+          const x = e.clientX - rect.left;
+          const y = e.clientY - rect.top;
+          const centerX = rect.width/2;
+          const centerY = rect.height/2;
+          const rotateX = (y - centerY)/30;
+          const rotateY = (centerX - x)/30;
+          img.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.05)`;
+        });
+        img.addEventListener("mouseleave", ()=>{ img.style.transform="rotateX(0) rotateY(0) scale(1)"; });
+      }
     }
   });
 }
