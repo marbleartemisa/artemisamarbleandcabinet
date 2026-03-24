@@ -112,36 +112,51 @@ function createFilters(){
   });
 }
 
+
 function renderGallery(category='all'){
-  gallery.innerHTML='';
 
-  photos.forEach(p=>{
-    if(category==='all' || p.TIPO===category){
-      const item = document.createElement('div');
-      item.classList.add('grid-item');
+gallery.innerHTML='';
 
-      // Convertir Drive a URL directa para <img>
-      let imgSrc = p.LINK;
-      if(p.LINK.includes("drive.google.com")){
-        const match = p.LINK.match(/[-\w]{25,}/);
-        if(match) imgSrc = `https://drive.google.com/uc?export=view&id=${match[0]}`;
-      }
+photos.forEach(p=>{
 
-      // Mantener <a> para Fancybox
-      item.innerHTML = `
-        <a data-fancybox="gallery-${p.ID}" href="${p.LINK}" data-caption="${p.STONE || ''}">
-          <img src="${imgSrc}" loading="lazy" alt="${p.STONE || 'Image'}">
-        </a>
-      `;
+if(category === 'all' || p.TIPO === category){
 
-      gallery.appendChild(item);
+const item = document.createElement('div');
+item.classList.add('grid-item');
 
-      // Si quieres 3D, puedes agregarlo así:
-      // item.querySelector('img').addEventListener('click', ()=> open3D(imgSrc));
-      // O comentarlo si prefieres solo Fancybox
-    }
-  });
+// extraer ID de drive
+let fileId = null;
+
+if(p.LINK.includes("drive.google.com")){
+const match = p.LINK.match(/id=([^&]+)/);
+if(match) fileId = match[1];
 }
+
+// URLs correctas para Drive
+let thumb = p.LINK;
+let full = p.LINK;
+
+if(fileId){
+thumb = `https://drive.google.com/thumbnail?id=${fileId}&sz=w1000`;
+full  = `https://drive.google.com/uc?export=download&id=${fileId}`;
+}
+
+item.innerHTML = `
+<a data-fancybox="gallery-${p.ID}" href="${full}">
+<img src="${thumb}" loading="lazy">
+</a>
+`;
+
+gallery.appendChild(item);
+
+}
+
+});
+
+}
+
+
+  
   
 function open3D(imgSrc){
   viewer3D.style.display = 'block';
