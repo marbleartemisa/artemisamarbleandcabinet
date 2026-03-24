@@ -3,13 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Galería Artemisa Marble - Fancybox</title>
+<title>Galería Artemisa Marble - Viewer Final</title>
 
 <!-- Fancybox 4 -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.css"/>
 <style>
-body { font-family: 'Inter', sans-serif; margin:0; padding:0; background:#f8f8f8; }
-header { background:#000; color:#fff; padding:12px 20px; display:flex; justify-content:space-between; align-items:center; }
+body { font-family: 'Inter', sans-serif; margin:0; padding:0; background:#f8f8f8;}
+header { background:#000; color:#fff; padding:12px 20px; display:flex; justify-content:space-between; align-items:center;}
 header nav a { color:#fff; margin:0 12px; text-decoration:none; font-weight:500; }
 header nav a:hover { text-decoration:underline; }
 
@@ -43,6 +43,10 @@ header nav a:hover { text-decoration:underline; }
 
 <div class="filters">
   <button class="filter-btn active" data-category="all">All</button>
+  <button class="filter-btn" data-category="Kitchen">Kitchen</button>
+  <button class="filter-btn" data-category="Bathroom">Bathroom</button>
+  <button class="filter-btn" data-category="Cabinets">Cabinets</button>
+  <button class="filter-btn" data-category="Closets">Closets</button>
 </div>
 
 <div class="grid" id="gallery"></div>
@@ -51,46 +55,77 @@ header nav a:hover { text-decoration:underline; }
 <script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.js"></script>
 
 <script>
-// Ejemplo de fotos públicas de Google Photos
-const photos = [
-  {
-    TIPO: "Kitchen",
-    URL: "https://lh3.googleusercontent.com/your_google_photos_link_1=w800-h600"
-  },
-  {
-    TIPO: "Bathroom",
-    URL: "https://lh3.googleusercontent.com/your_google_photos_link_2=w800-h600"
-  },
-  {
-    TIPO: "Cabinets",
-    URL: "https://lh3.googleusercontent.com/your_google_photos_link_3=w800-h600"
-  }
-];
-
+const API = "https://script.google.com/macros/s/AKfycbwGGvL1ox8ZXJ08fRxKXgyJHQxzDOfwnCfpxcabCGJht5dh6R5ViTAeiGPQfa0LAXB2/exec";
+let photos = [];
 const gallery = document.getElementById('gallery');
+const filtersContainer = document.querySelector('.filters');
+const priorityOrder = ["Kitchen","Bathroom","Laundry","Closets & Shelves","Outdoor","BBQ Area","Office","Powder Room","Fireplace","Wall TV","Front desk"];
 
-function renderGallery(){
-  gallery.innerHTML = '';
-  photos.forEach(p=>{
-    const item = document.createElement('div');
-    item.classList.add('grid-item');
-    item.innerHTML = `<a data-fancybox="gallery" href="${p.URL}">
-                        <img src="${p.URL}" loading="lazy">
-                      </a>`;
-    gallery.appendChild(item);
+async function loadPhotos(){
+  const res = await fetch(API);
+  const data = await res.json();
+  photos = data.filter(item => !item.PARENTCHILD);
+  createFilters();
+  renderGallery();
+}
+
+function createFilters(){
+  const tipos = [...new Set(photos.map(p=>p.TIPO).filter(Boolean))];
+  tipos.sort((a,b)=>{
+    const ia = priorityOrder.indexOf(a); const ib = priorityOrder.indexOf(b);
+    if(ia===-1 && ib===-1) return a.localeCompare(b);
+    if(ia===-1) return 1;
+    if(ib===-1) return -1;
+    return ia-ib;
   });
 
-  // Activar Fancybox
-  Fancybox.bind("[data-fancybox='gallery']", {
-    dragToClose: true,
-    infinite: true,
-    Toolbar: { display: ["zoom","pan","close"] },
-    Image: { zoom: true, Pan: true, wheel: "zoom" }
+  filtersContainer.innerHTML = `<button class="filter-btn active" data-category="all">All</button>`;
+  tipos.forEach(tipo=>{
+    const btn = document.createElement('button');
+    btn.className = "filter-btn";
+    btn.dataset.category = tipo;
+    btn.textContent = tipo;
+    filtersContainer.appendChild(btn);
+  });
+
+  document.querySelectorAll('.filter-btn').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      renderGallery(btn.dataset.category);
+    });
   });
 }
 
-// Render inicial
-renderGallery();
+function renderGallery(category='all'){
+  gallery.innerHTML = '';
+  photos.forEach(p=>{
+    if(category==='all' || p.TIPO===category){
+      let fileId = null;
+      if(p.LINK.includes("drive.google.com")){
+        const match = p.LINK.match(/id=([^&]+)/);
+        if(match) fileId = match[1];
+      }
+      if(!fileId) return;
+      const thumb = `https://drive.google.com/thumbnail?id=${fileId}&sz=w800`;
+      const full  = `https://drive.google.com/uc?export=view&id=${fileId}`;
+      const item = document.createElement('div');
+      item.classList.add('grid-item');
+      item.innerHTML = `<a data-fancybox="gallery" href="${full}"><img src="${thumb}" loading="lazy"></a>`;
+      gallery.appendChild(item);
+    }
+  });
+
+  // Configurar Fancybox
+  Fancybox.bind("[data-fancybox='gallery']", {
+    dragToClose: true,
+    infinite: false,
+    Toolbar: { display: ["zoom","close"] },
+    Image: { zoom: true, Pan: true, wheel: "zoom" },
+  });
+}
+
+loadPhotos();
 </script>
 </body>
 </html>
