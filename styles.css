@@ -323,6 +323,19 @@ MOBILE STYLES
   }
 }
 
+.grid-item {
+perspective:1000px;
+}
+
+.grid-item img{
+transition: transform .25s ease, box-shadow .25s ease;
+transform-style: preserve-3d;
+}
+
+.grid-item:hover img{
+box-shadow:0 25px 40px rgba(0,0,0,.35);
+}
+
 /* =========================
 VISIBILIDAD
 ========================= */
