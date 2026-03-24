@@ -4,8 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Galería Artemisa Marble - 3D Viewer</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/4.0.35/fancybox.min.css"/>
 <style>
-body { margin:0; font-family:'Inter', sans-serif; background:#f8f8f8; }
+body { font-family: 'Inter', sans-serif; margin:0; padding:0; background:#f8f8f8;}
 header { background:#000; color:#fff; padding:12px 20px; display:flex; justify-content:space-between; align-items:center;}
 header nav a { color:#fff; margin:0 12px; text-decoration:none; font-weight:500; }
 header nav a:hover { text-decoration:underline; }
@@ -16,16 +17,37 @@ header nav a:hover { text-decoration:underline; }
 
 .grid { column-count: 4; column-gap: 10px; max-width:1200px; margin:0 auto; }
 .grid-item { break-inside: avoid; margin-bottom:10px; cursor:pointer; }
-.grid-item img { width:100%; border-radius:6px; transition: transform 0.3s ease, box-shadow 0.3s ease; }
+.grid-item img { width:100%; border-radius:6px; transition:0.3s; }
+.grid-item img:hover { transform:scale(1.05); }
 
-#viewer3D {
+/* Modal 3D Viewer */
+#viewerModal {
   display:none;
-  position:fixed; top:0; left:0; width:100%; height:100%;
-  background: rgba(0,0,0,0.95); z-index:9999;
+  position:fixed;
+  top:0; left:0;
+  width:100%; height:100%;
+  background: rgba(0,0,0,0.95);
+  z-index:9999;
+  cursor: grab;
+  overflow:hidden;
 }
-#close3D {
-  position:absolute; top:20px; right:20px; font-size:30px; color:white; cursor:pointer; z-index:1000;
+#viewerModal img {
+  position:absolute;
+  top:50%; left:50%;
+  transform: translate(-50%,-50%) scale(1);
+  max-width:90%;
+  max-height:90%;
+  transition: transform 0.1s ease-out;
+  will-change: transform;
+  border-radius:6px;
 }
+#viewerModal #closeModal {
+  position:absolute; top:20px; right:20px;
+  font-size:40px; color:white; cursor:pointer;
+  z-index:10000;
+}
+@media(max-width:900px){ .grid { column-count: 2; } }
+@media(max-width:600px){ .grid { column-count: 1; } }
 </style>
 </head>
 <body>
@@ -33,12 +55,12 @@ header nav a:hover { text-decoration:underline; }
 <header>
   <div class="logo"><img src="/artemisamarbleandcabinet/logo.png" height="100"></div>
   <nav>
-    <a href="/">Home</a>
-    <a href="/kitchen/">Kitchen</a>
-    <a href="/bathroom/">Bathroom</a>
-    <a href="/cabinets/">Cabinets</a>
-    <a href="/closets">Closets</a>
-    <a href="/contacts">Contact</a>
+    <a href="/artemisamarbleandcabinet/">Home</a>
+    <a href="/artemisamarbleandcabinet/kitchen/">Kitchen</a>
+    <a href="/artemisamarbleandcabinet/bathroom/">Bathroom</a>
+    <a href="/artemisamarbleandcabinet/cabinets/">Cabinets</a>
+    <a href="/artemisamarbleandcabinet/closets">Closets</a>
+    <a href="/artemisamarbleandcabinet/contacts">Contact</a>
     <a class="portal-btn" href="https://marbleartemisa.github.io/sop-site/">Portal-SOP</a>
   </nav>
 </header>
@@ -53,95 +75,120 @@ header nav a:hover { text-decoration:underline; }
 
 <div class="grid" id="gallery"></div>
 
-<!-- 3D Viewer -->
-<div id="viewer3D">
-  <div id="close3D">&times;</div>
+<!-- Modal Viewer -->
+<div id="viewerModal">
+  <div id="closeModal">&times;</div>
+  <img src="" id="modalImg">
 </div>
-
-<script src="https://cdn.jsdelivr.net/npm/three@0.161.0/build/three.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.161.0/examples/js/controls/OrbitControls.js"></script>
 
 <script>
 const API = "https://script.google.com/macros/s/AKfycbwGGvL1ox8ZXJ08fRxKXgyJHQxzDOfwnCfpxcabCGJht5dh6R5ViTAeiGPQfa0LAXB2/exec";
-let allData = [], photos = [];
-const gallery = document.getElementById('gallery');
-const viewer3D = document.getElementById('viewer3D');
-const close3D = document.getElementById('close3D');
-const filtersContainer = document.querySelector('.filters');
+let photos = [];
 
-async function loadPhotos() {
+const gallery = document.getElementById('gallery');
+const filtersContainer = document.querySelector('.filters');
+const viewerModal = document.getElementById('viewerModal');
+const modalImg = document.getElementById('modalImg');
+const closeModal = document.getElementById('closeModal');
+
+async function loadPhotos(){
   const res = await fetch(API);
   const data = await res.json();
-  allData = data;
   photos = data.filter(item => !item.PARENTCHILD);
+  createFilters();
   renderGallery();
 }
 
-function renderGallery() {
-  gallery.innerHTML = '';
-  photos.forEach(p => {
-    let fileId = null;
-    if(p.LINK.includes("drive.google.com")){
-      const match = p.LINK.match(/id=([^&]+)/);
-      if(match) fileId = match[1];
-    }
-    let full = p.LINK;
-    if(fileId) full = `https://drive.google.com/uc?export=view&id=${fileId}`;
-    
-    const item = document.createElement('div');
-    item.classList.add('grid-item');
-    item.innerHTML = `<img src="${full}" alt="Foto" loading="lazy">`;
-    gallery.appendChild(item);
-
-    item.querySelector('img').addEventListener('click', ()=>{
-      open3D(full);
+function createFilters(){
+  const categories = [...new Set(photos.map(p=>p.TIPO).filter(Boolean))];
+  filtersContainer.innerHTML = `<button class="filter-btn active" data-category="all">All</button>`;
+  categories.forEach(c=>{
+    const btn = document.createElement('button');
+    btn.className = "filter-btn"; btn.dataset.category = c; btn.textContent = c;
+    filtersContainer.appendChild(btn);
+  });
+  document.querySelectorAll('.filter-btn').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      renderGallery(btn.dataset.category);
     });
   });
 }
 
-function open3D(imgUrl) {
-  viewer3D.style.display = 'block';
-  viewer3D.innerHTML = '<div id="close3D">&times;</div>';
+function renderGallery(category='all'){
+  gallery.innerHTML='';
+  photos.forEach(p=>{
+    if(category==='all' || p.TIPO===category){
+      const item = document.createElement('div');
+      item.className = "grid-item";
+      let fileId = null;
+      if(p.LINK.includes("drive.google.com")){
+        const match = p.LINK.match(/id=([^&]+)/);
+        if(match) fileId = match[1];
+      }
+      const thumb = fileId ? `https://drive.google.com/thumbnail?id=${fileId}&sz=w800` : p.LINK;
+      const full = fileId ? `https://drive.google.com/uc?export=view&id=${fileId}` : p.LINK;
+      item.innerHTML = `<img src="${thumb}" data-full="${full}" loading="lazy">`;
+      gallery.appendChild(item);
 
-  const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(70, window.innerWidth/window.innerHeight, 0.1, 1000);
-  camera.position.z = 3;
-
-  const renderer = new THREE.WebGLRenderer({antialias:true, alpha:true});
-  renderer.setSize(window.innerWidth, window.innerHeight);
-  viewer3D.appendChild(renderer.domElement);
-
-  const controls = new THREE.OrbitControls(camera, renderer.domElement);
-  controls.enableZoom = true;
-  controls.enablePan = true;
-  controls.enableDamping = true;
-  controls.dampingFactor = 0.1;
-  controls.rotateSpeed = 0.5;
-
-  const light = new THREE.AmbientLight(0xffffff, 1);
-  scene.add(light);
-
-  const loader = new THREE.TextureLoader();
-  loader.crossOrigin = "anonymous";
-  loader.load(imgUrl, function(texture){
-    const ratio = texture.image.height / texture.image.width;
-    const geometry = new THREE.PlaneGeometry(2, 2 * ratio);
-    const material = new THREE.MeshBasicMaterial({ map: texture, side: THREE.DoubleSide });
-    const plane = new THREE.Mesh(geometry, material);
-    scene.add(plane);
-
-    function animate() {
-      requestAnimationFrame(animate);
-      controls.update();
-      renderer.render(scene, camera);
+      // click → abrir modal
+      item.querySelector('img').addEventListener('click', e=>{
+        openModal(e.target.dataset.full);
+      });
     }
-    animate();
   });
+}
 
-  viewer3D.querySelector('#close3D').onclick = () => {
-    viewer3D.style.display = 'none';
-    viewer3D.innerHTML = '';
-  };
+// --- Modal logic ---
+let scale = 1, posX=0, posY=0, isDragging=false, startX=0, startY=0;
+
+function openModal(src){
+  modalImg.src = src;
+  viewerModal.style.display = 'block';
+  scale = 1; posX=0; posY=0;
+  modalImg.style.transform = 'translate(-50%,-50%) scale(1)';
+}
+
+closeModal.onclick = ()=> viewerModal.style.display='none';
+
+// Dragging
+viewerModal.onmousedown = e=>{
+  isDragging=true;
+  startX=e.clientX-posX;
+  startY=e.clientY-posY;
+  viewerModal.style.cursor='grabbing';
+}
+viewerModal.onmouseup = e=>{
+  isDragging=false;
+  viewerModal.style.cursor='grab';
+}
+viewerModal.onmousemove = e=>{
+  if(isDragging){
+    posX = e.clientX - startX;
+    posY = e.clientY - startY;
+    modalImg.style.transform = `translate(calc(-50% + ${posX}px), calc(-50% + ${posY}px)) scale(${scale})`;
+  }
+}
+
+// Zoom
+viewerModal.onwheel = e=>{
+  e.preventDefault();
+  const delta = e.deltaY<0?0.1:-0.1;
+  scale += delta;
+  if(scale<0.5) scale=0.5;
+  if(scale>5) scale=5;
+  modalImg.style.transform = `translate(calc(-50% + ${posX}px), calc(-50% + ${posY}px)) scale(${scale})`;
+}
+
+// Slight rotation effect (3D feel)
+viewerModal.onmousemove = e=>{
+  const rect = modalImg.getBoundingClientRect();
+  const centerX = rect.left + rect.width/2;
+  const centerY = rect.top + rect.height/2;
+  const rotY = (e.clientX-centerX)/30;
+  const rotX = -(e.clientY-centerY)/30;
+  modalImg.style.transform = `translate(calc(-50% + ${posX}px), calc(-50% + ${posY}px)) scale(${scale}) rotateX(${rotX}deg) rotateY(${rotY}deg)`;
 }
 
 loadPhotos();
