@@ -138,8 +138,10 @@ let full = p.LINK;
 
 if(fileId){
 thumb = `https://drive.google.com/thumbnail?id=${fileId}&sz=w1000`;
-full  = `https://drive.google.com/uc?export=download&id=${fileId}`;
+  full  = `https://drive.google.com/uc?export=view&id=${fileId}`;
 }
+
+
 
 item.innerHTML = `
 <a data-fancybox="gallery-${p.ID}" href="${full}">
@@ -198,6 +200,37 @@ function open3D(imgSrc){
 }
 
 loadPhotos();
+document.addEventListener("mousemove", e=>{
+
+document.querySelectorAll(".grid-item img").forEach(img=>{
+
+const rect = img.getBoundingClientRect();
+
+const x = e.clientX - rect.left;
+const y = e.clientY - rect.top;
+
+const centerX = rect.width / 2;
+const centerY = rect.height / 2;
+
+const rotateX = (y - centerY) / 20;
+const rotateY = (centerX - x) / 20;
+
+if(
+e.clientX > rect.left &&
+e.clientX < rect.right &&
+e.clientY > rect.top &&
+e.clientY < rect.bottom
+){
+img.style.transform =
+`rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.05)`;
+}else{
+img.style.transform = "rotateX(0) rotateY(0) scale(1)";
+}
+
+});
+
+});
+  
 </script>
 </body>
 </html>
