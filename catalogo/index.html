@@ -149,7 +149,7 @@ gallery.appendChild(item);
 
 // CLICK → abrir 3D
 item.querySelector("img").addEventListener("click", (e)=>{
-open3D(e.target.dataset.full);
+open3D(e.target.src);
 });
 
 }
@@ -158,6 +158,8 @@ open3D(e.target.dataset.full);
 
 }
 
+
+  
 function open3D(imgSrc){
 
 viewer3D.style.display = 'block';
