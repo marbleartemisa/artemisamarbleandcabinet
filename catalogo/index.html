@@ -5,7 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Galería Artemisa Marble - Viewer Mejorado</title>
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/4.0.35/fancybox.min.css"/>
+<!-- Fancybox 4 -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.css"/>
 <style>
 body { font-family: 'Inter', sans-serif; margin:0; padding:0; background:#f8f8f8;}
 header { background:#000; color:#fff; padding:12px 20px; display:flex; justify-content:space-between; align-items:center;}
@@ -18,13 +19,8 @@ header nav a:hover { text-decoration:underline; }
 
 .grid { column-count: 4; column-gap: 10px; max-width:1200px; margin:0 auto; }
 .grid-item { break-inside: avoid; margin-bottom:10px; cursor:pointer; }
-.grid-item img { width:100%; border-radius:6px; transition:0.3s; }
-.grid-item img:hover { transform:scale(1.05); }
-
-/* Fancybox centrado */
-.fancybox__container { display:flex; justify-content:center; align-items:center; }
-.fancybox__content { max-width:90%; max-height:90%; }
-.fancybox__image { cursor: grab; transition: transform 0.2s ease; }
+.grid-item img { width:100%; border-radius:6px; transition: transform 0.3s ease; }
+.grid-item img:hover { transform: scale(1.05); }
 </style>
 </head>
 <body>
@@ -52,8 +48,9 @@ header nav a:hover { text-decoration:underline; }
 
 <div class="grid" id="gallery"></div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/4.0.35/fancybox.umd.js"></script>
+<!-- Fancybox -->
 <script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.js"></script>
+
 <script>
 const API = "https://script.google.com/macros/s/AKfycbwGGvL1ox8ZXJ08fRxKXgyJHQxzDOfwnCfpxcabCGJht5dh6R5ViTAeiGPQfa0LAXB2/exec";
 let photos = [];
@@ -112,22 +109,28 @@ function renderGallery(category='all'){
       const full  = `https://drive.google.com/uc?export=view&id=${fileId}`;
       const item = document.createElement('div');
       item.classList.add('grid-item');
-      item.innerHTML = `<a data-fancybox="gallery" data-type="image" href="${full}"><img src="${thumb}" loading="lazy"></a>`;
+      item.innerHTML = `<a data-fancybox="gallery" href="${full}"><img src="${thumb}" loading="lazy"></a>`;
       gallery.appendChild(item);
     }
   });
 
+  // Activar Fancybox
   Fancybox.bind("[data-fancybox='gallery']", {
+    dragToClose: true,
+    infinite: false,
+    Toolbar: {
+      display: ["zoom","close"]
+    },
     Image: {
       zoom: true,
       Pan: true,
-      wheel: "zoom",
+      wheel: "zoom"
     },
     on: {
       reveal: (fancybox, slide) => {
         const img = slide.$el.querySelector("img");
         if(!img) return;
-        img.addEventListener("mousemove", e => {
+        img.addEventListener("mousemove", e=>{
           const rect = img.getBoundingClientRect();
           const x = e.clientX - rect.left;
           const y = e.clientY - rect.top;
