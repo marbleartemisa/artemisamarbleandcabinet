@@ -3,11 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Galería Artemisa Marble - Viewer Mejorado</title>
-
-<!-- Fancybox 4 -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.css"/>
-
+<title>Galería Artemisa Marble - Viewer</title>
 <style>
 body { font-family: 'Inter', sans-serif; margin:0; padding:0; background:#f8f8f8;}
 header { background:#000; color:#fff; padding:12px 20px; display:flex; justify-content:space-between; align-items:center;}
@@ -42,29 +38,21 @@ header nav a:hover { text-decoration:underline; }
     <a href="/cabinets/">Cabinets</a>
     <a href="/closets">Closets</a>
     <a href="/contacts">Contact</a>
-    <a class="portal-btn" href="https://marbleartemisa.github.io/sop-site/">Portal-SOP</a>
+    <a href="https://marbleartemisa.github.io/sop-site/">Portal-SOP</a>
   </nav>
 </header>
 
 <div class="filters">
   <button class="filter-btn active" data-category="all">All</button>
-  <button class="filter-btn" data-category="Kitchen">Kitchen</button>
-  <button class="filter-btn" data-category="Bathroom">Bathroom</button>
-  <button class="filter-btn" data-category="Cabinets">Cabinets</button>
-  <button class="filter-btn" data-category="Closets">Closets</button>
 </div>
 
 <div class="grid" id="gallery"></div>
 
-<!-- Viewer principal -->
 <div id="viewerStage">
   <img id="mainPhoto" src="" alt="">
   <div id="viewerEmpty">Cargando...</div>
   <div class="thumb-strip" id="thumbStrip"></div>
 </div>
-
-<!-- Fancybox -->
-<script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.js"></script>
 
 <script>
 const API = "https://script.google.com/macros/s/AKfycbwGGvL1ox8ZXJ08fRxKXgyJHQxzDOfwnCfpxcabCGJht5dh6R5ViTAeiGPQfa0LAXB2/exec";
@@ -81,177 +69,108 @@ const mainPhoto = document.getElementById('mainPhoto');
 const viewerEmpty = document.getElementById('viewerEmpty');
 const thumbStrip = document.getElementById('thumbStrip');
 
-const priorityOrder = [
-  "Kitchen","Bathroom","Laundry","Closets & Shelves",
-  "Outdoor","BBQ Area","Office","Powder Room",
-  "Fireplace","Wall TV","Front desk","Cabinets","Closets"
-];
+function extractDriveId(url) {
+  if(!url) return null;
+  const m1 = url.match(/\/d\/([A-Za-z0-9_-]{20,})/);
+  if(m1) return m1[1];
+  const m2 = url.match(/[?&]id=([A-Za-z0-9_-]{20,})/);
+  if(m2) return m2[1];
+  return null;
+}
 
-// --- Cargar fotos desde Google Sheets ---
+function getImageSrc(photo) {
+  const id = extractDriveId(photo.LINK);
+  if(!id) return null;
+  return `https://drive.google.com/uc?export=view&id=${id}`;
+}
+
 async function loadPhotos() {
   try {
     const res = await fetch(API);
     const data = await res.json();
-
     allPhotos = data || [];
-    parentPhotos = allPhotos.filter(item => !item.PARENTCHILD);
-
-    createFilters();
+    parentPhotos = allPhotos.filter(p => !p.PARENTCHILD);
     renderGallery();
   } catch(e) {
-    viewerEmpty.style.display = "block";
-    viewerEmpty.textContent = "Error cargando fotos";
+    viewerEmpty.style.display="block";
+    viewerEmpty.textContent="Error cargando fotos";
     console.error(e);
   }
 }
 
-// --- Extraer ID de Drive ---
-function extractDriveId(url = "") {
-  if (!url) return null;
-  const fromQuery = url.match(/[?&]id=([A-Za-z0-9_-]{20,})/);
-  if (fromQuery) return fromQuery[1];
-  const fromPath = url.match(/\/d\/([A-Za-z0-9_-]{20,})/);
-  if (fromPath) return fromPath[1];
-  return null;
+function renderGallery(category='all') {
+  gallery.innerHTML='';
+  const filtered = parentPhotos.filter(p=>category==='all'||p.TIPO===category);
+  if(!filtered.length){
+    viewerEmpty.style.display='block';
+    viewerEmpty.textContent='No hay fotos disponibles';
+    return;
+  }
+  filtered.forEach(photo=>{
+    const src = getImageSrc(photo);
+    if(!src) return;
+    const item = document.createElement('div');
+    item.className='grid-item';
+    item.innerHTML=`<img src="${src}" alt="${photo.TIPO||'Foto'}" loading="lazy">`;
+    item.addEventListener('click', ()=> openViewer(photo));
+    gallery.appendChild(item);
+  });
+  openViewer(filtered[0]);
 }
 
-// --- Obtener URL completa de imagen ---
-function getImageSrc(photo) {
-  const fileId = extractDriveId(photo.LINK);
-  if (fileId) return `https://drive.google.com/uc?export=view&id=${fileId}`;
-  return null;
-}
-
-// --- Obtener álbum ---
 function getAlbum(parent) {
-  const children = allPhotos.filter(item => item.PARENTCHILD === parent.ID);
+  const children = allPhotos.filter(item=>item.PARENTCHILD===parent.ID);
   return [parent, ...children];
 }
 
-// --- Crear filtros ---
-function createFilters() {
-  const tipos = [...new Set(parentPhotos.map(p => p.TIPO).filter(Boolean))];
-  tipos.sort((a,b)=>{
-    const ia = priorityOrder.indexOf(a); const ib = priorityOrder.indexOf(b);
-    if(ia===-1 && ib===-1) return a.localeCompare(b);
-    if(ia===-1) return 1;
-    if(ib===-1) return -1;
-    return ia-ib;
-  });
-
-  filtersContainer.innerHTML = `<button class="filter-btn active" data-category="all">All</button>`;
-  tipos.forEach(tipo=>{
-    const btn = document.createElement('button');
-    btn.className = "filter-btn";
-    btn.dataset.category = tipo;
-    btn.textContent = tipo;
-    filtersContainer.appendChild(btn);
-  });
-
-  document.querySelectorAll('.filter-btn').forEach(btn=>{
-    btn.addEventListener('click', ()=>{
-      document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
-      btn.classList.add('active');
-      renderGallery(btn.dataset.category);
-    });
-  });
-}
-
-// --- Renderizar galería ---
-function renderGallery(category='all') {
-  gallery.innerHTML = '';
-  const filtered = parentPhotos.filter(p => category==='all' || p.TIPO===category);
-  let firstValid = null;
-
-  filtered.forEach(photo => {
-    const src = getImageSrc(photo);
-    if (!src) return;
-
-    if (!firstValid) firstValid = photo;
-
-    const item = document.createElement('div');
-    item.className = 'grid-item';
-    item.innerHTML = `<img src="${src}" alt="${photo.TIPO || 'Foto'}" loading="lazy">`;
-
-    item.addEventListener('click', ()=>{ openViewer(photo); });
-
-    gallery.appendChild(item);
-  });
-
-  if (firstValid) openViewer(firstValid);
-  else {
-    mainPhoto.style.display='none';
-    viewerEmpty.style.display='block';
-    viewerEmpty.textContent='No hay fotos disponibles';
-    thumbStrip.innerHTML='';
-  }
-}
-
-// --- Abrir visor principal ---
 function openViewer(parent) {
-  currentAlbum = getAlbum(parent)
-    .map(p=>({...p, src:getImageSrc(p)}))
-    .filter(p=>p.src);
-
+  currentAlbum = getAlbum(parent).map(p=>({...p, src:getImageSrc(p)})).filter(p=>p.src);
   renderThumbStrip();
   setMainPhoto(0);
 }
 
-// --- Miniaturas ---
 function renderThumbStrip() {
-  thumbStrip.innerHTML = '';
-  currentAlbum.forEach((photo, index)=>{
+  thumbStrip.innerHTML='';
+  currentAlbum.forEach((photo,i)=>{
     const img = document.createElement('img');
     img.src = photo.src;
-    img.alt = photo.SUBTIPO || photo.TIPO || `Foto ${index+1}`;
-    if(index===currentIndex) img.classList.add('active');
-
-    img.addEventListener('click', ()=> setMainPhoto(index));
+    img.alt = photo.SUBTIPO||photo.TIPO||`Foto ${i+1}`;
+    if(i===currentIndex) img.classList.add('active');
+    img.addEventListener('click', ()=>setMainPhoto(i));
     thumbStrip.appendChild(img);
   });
 }
 
-// --- Foto principal ---
 function setMainPhoto(index) {
   if(!currentAlbum[index]) return;
-  currentIndex = index;
+  currentIndex=index;
   const photo = currentAlbum[index];
-
   viewerEmpty.style.display='none';
   mainPhoto.style.display='block';
-  mainPhoto.src = photo.src;
-  mainPhoto.alt = photo.SUBTIPO || photo.TIPO || 'Foto seleccionada';
-
-  document.querySelectorAll('.thumb-strip img').forEach((img,i)=>{
-    img.classList.toggle('active', i===index);
-  });
+  mainPhoto.src=photo.src;
+  mainPhoto.alt=photo.SUBTIPO||photo.TIPO||'Foto seleccionada';
+  document.querySelectorAll('.thumb-strip img').forEach((img,i)=>img.classList.toggle('active',i===index));
 }
 
-// --- Manejo de error ---
 mainPhoto.addEventListener('error', ()=>{
   mainPhoto.style.display='none';
   viewerEmpty.style.display='block';
   viewerEmpty.textContent='Foto no encontrada';
 });
 
-// --- Efecto 3D simple ---
 viewerStage.addEventListener('mousemove', e=>{
-  if(!mainPhoto.src || mainPhoto.style.display==='none') return;
-  const rect = viewerStage.getBoundingClientRect();
-  const x = (e.clientX - rect.left)/rect.width;
-  const y = (e.clientY - rect.top)/rect.height;
-  const rotateY = (x-0.5)*18;
-  const rotateX = (0.5-y)*18;
-  mainPhoto.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.03)`;
+  if(!mainPhoto.src||mainPhoto.style.display==='none') return;
+  const rect=viewerStage.getBoundingClientRect();
+  const x=(e.clientX-rect.left)/rect.width;
+  const y=(e.clientY-rect.top)/rect.height;
+  const rotateY=(x-0.5)*18;
+  const rotateX=(0.5-y)*18;
+  mainPhoto.style.transform=`rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.03)`;
 });
 
-viewerStage.addEventListener('mouseleave', ()=>{
-  mainPhoto.style.transform = 'rotateX(0deg) rotateY(0deg) scale(1)';
-});
+viewerStage.addEventListener('mouseleave', ()=>{ mainPhoto.style.transform='rotateX(0deg) rotateY(0deg) scale(1)'; });
 
-// --- Cargar fotos al inicio ---
 loadPhotos();
 </script>
-
 </body>
 </html>
