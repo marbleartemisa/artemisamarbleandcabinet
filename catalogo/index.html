@@ -7,6 +7,7 @@
 
 <!-- Fancybox 4 -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.css"/>
+
 <style>
 body { font-family: 'Inter', sans-serif; margin:0; padding:0; background:#f8f8f8;}
 header { background:#000; color:#fff; padding:12px 20px; display:flex; justify-content:space-between; align-items:center;}
@@ -21,8 +22,20 @@ header nav a:hover { text-decoration:underline; }
 .grid-item { break-inside: avoid; margin-bottom:10px; cursor:pointer; }
 .grid-item img { width:100%; border-radius:6px; transition: transform 0.3s ease; }
 .grid-item img:hover { transform: scale(1.05); }
+
+/* 🔥 EFECTO 3D */
+.fancybox__content {
+  perspective: 1000px;
+}
+
+.fancybox__content img {
+  transition: transform 0.1s ease;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
 </style>
 </head>
+
 <body>
 
 <header>
@@ -38,14 +51,7 @@ header nav a:hover { text-decoration:underline; }
   </nav>
 </header>
 
-<div class="filters">
-  <button class="filter-btn active" data-category="all">All</button>
-  <button class="filter-btn" data-category="Kitchen">Kitchen</button>
-  <button class="filter-btn" data-category="Bathroom">Bathroom</button>
-  <button class="filter-btn" data-category="Cabinets">Cabinets</button>
-  <button class="filter-btn" data-category="Closets">Closets</button>
-</div>
-
+<div class="filters"></div>
 <div class="grid" id="gallery"></div>
 
 <!-- Fancybox -->
@@ -69,15 +75,9 @@ async function loadPhotos(){
 
 function createFilters(){
   const tipos = [...new Set(photos.map(p=>p.TIPO).filter(Boolean))];
-  tipos.sort((a,b)=>{
-    const ia = priorityOrder.indexOf(a); const ib = priorityOrder.indexOf(b);
-    if(ia===-1 && ib===-1) return a.localeCompare(b);
-    if(ia===-1) return 1;
-    if(ib===-1) return -1;
-    return ia-ib;
-  });
 
   filtersContainer.innerHTML = `<button class="filter-btn active" data-category="all">All</button>`;
+
   tipos.forEach(tipo=>{
     const btn = document.createElement('button');
     btn.className = "filter-btn";
@@ -97,29 +97,38 @@ function createFilters(){
 
 function renderGallery(category='all'){
   gallery.innerHTML = '';
+
   photos.forEach(p=>{
     if(category==='all' || p.TIPO===category){
+
       let fileId = null;
+
       if(p.LINK.includes("drive.google.com")){
         const match = p.LINK.match(/id=([^&]+)/);
         if(match) fileId = match[1];
       }
+
       if(!fileId) return;
-     const thumb = `https://drive.google.com/thumbnail?id=${fileId}&sz=w800`;
-      const full  = `https://lh3.googleusercontent.com/d/${fileId}=w2000`;// ✅ enlace directo
+
+      const thumb = `https://drive.google.com/thumbnail?id=${fileId}&sz=w800`;
+      const full  = `https://lh3.googleusercontent.com/d/${fileId}=w2000`;
+
       const item = document.createElement('div');
       item.classList.add('grid-item');
-      item.innerHTML = `<a data-fancybox="gallery" href="${full}"><img src="${thumb}" loading="lazy"></a>`;
+
+      item.innerHTML = `
+        <a data-fancybox="gallery" href="${full}">
+          <img src="${thumb}" loading="lazy">
+        </a>
+      `;
+
       gallery.appendChild(item);
     }
   });
 
-
-  
-  // Activar Fancybox
   Fancybox.bind("[data-fancybox='gallery']", {
-    dragToClose: true,
-    infinite: false,
+    dragToClose: false,
+    infinite: true,
     Toolbar: {
       display: ["zoom","close"]
     },
@@ -132,6 +141,32 @@ function renderGallery(category='all'){
 }
 
 loadPhotos();
+
+
+// 🔥 EFECTO 3D (AQUÍ VA EXACTAMENTE)
+document.addEventListener("mousemove", (e) => {
+  const img = document.querySelector(".fancybox__content img");
+  if (!img) return;
+
+  const rect = img.getBoundingClientRect();
+  const x = e.clientX - rect.left;
+  const y = e.clientY - rect.top;
+
+  const centerX = rect.width / 2;
+  const centerY = rect.height / 2;
+
+  const rotateX = ((y - centerY) / centerY) * 8;
+  const rotateY = ((x - centerX) / centerX) * -8;
+
+  img.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.05)`;
+});
+
+document.addEventListener("mouseleave", () => {
+  const img = document.querySelector(".fancybox__content img");
+  if (img) img.style.transform = "rotateX(0) rotateY(0) scale(1)";
+});
+
 </script>
+
 </body>
 </html>
