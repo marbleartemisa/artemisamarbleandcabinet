@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Galería Artemisa Marble - 3D Viewer</title>
+<title>Galería Artemisa Marble - Viewer Mejorado</title>
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/4.0.35/fancybox.min.css"/>
 <style>
@@ -21,14 +21,10 @@ header nav a:hover { text-decoration:underline; }
 .grid-item img { width:100%; border-radius:6px; transition:0.3s; }
 .grid-item img:hover { transform:scale(1.05); }
 
-/* Fancybox overrides */
-.fancybox__container { z-index:9999; display:flex; justify-content:center; align-items:center; }
-.fancybox__content { max-width:90%; max-height:90%; display:flex; justify-content:center; align-items:center; }
+/* Fancybox centrado */
+.fancybox__container { display:flex; justify-content:center; align-items:center; }
+.fancybox__content { max-width:90%; max-height:90%; }
 .fancybox__image { cursor: grab; transition: transform 0.2s ease; }
-
-/* Responsive */
-@media(max-width:900px){ .grid { column-count: 2; } }
-@media(max-width:600px){ .grid { column-count: 1; } }
 </style>
 </head>
 <body>
@@ -57,12 +53,13 @@ header nav a:hover { text-decoration:underline; }
 <div class="grid" id="gallery"></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/4.0.35/fancybox.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.js"></script>
 <script>
 const API = "https://script.google.com/macros/s/AKfycbwGGvL1ox8ZXJ08fRxKXgyJHQxzDOfwnCfpxcabCGJht5dh6R5ViTAeiGPQfa0LAXB2/exec";
-
 let photos = [];
 const gallery = document.getElementById('gallery');
 const filtersContainer = document.querySelector('.filters');
+
 const priorityOrder = ["Kitchen","Bathroom","Laundry","Closets & Shelves","Outdoor","BBQ Area","Office","Powder Room","Fireplace","Wall TV","Front desk"];
 
 async function loadPhotos(){
@@ -111,19 +108,21 @@ function renderGallery(category='all'){
         if(match) fileId = match[1];
       }
       if(!fileId) return;
-
       const thumb = `https://drive.google.com/thumbnail?id=${fileId}&sz=w800`;
       const full  = `https://drive.google.com/uc?export=view&id=${fileId}`;
-
       const item = document.createElement('div');
       item.classList.add('grid-item');
-      item.innerHTML = `<a data-fancybox="gallery" href="${full}"><img src="${thumb}" loading="lazy"></a>`;
+      item.innerHTML = `<a data-fancybox="gallery" data-type="image" href="${full}"><img src="${thumb}" loading="lazy"></a>`;
       gallery.appendChild(item);
     }
   });
 
-  // Habilitar efecto 3D simulado al mover el mouse sobre la imagen en Fancybox
   Fancybox.bind("[data-fancybox='gallery']", {
+    Image: {
+      zoom: true,
+      Pan: true,
+      wheel: "zoom",
+    },
     on: {
       reveal: (fancybox, slide) => {
         const img = slide.$el.querySelector("img");
