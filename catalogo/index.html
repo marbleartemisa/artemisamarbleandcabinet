@@ -105,8 +105,8 @@ function renderGallery(category='all'){
         if(match) fileId = match[1];
       }
       if(!fileId) return;
-      const thumb = `https://drive.google.com/thumbnail?id=${fileId}&sz=w800`;
-      const full  = `https://drive.google.com/uc?export=view&id=${fileId}`; // ✅ enlace directo
+     const thumb = `https://drive.google.com/thumbnail?id=${fileId}&sz=w800`;
+      const full  = `https://lh3.googleusercontent.com/d/${fileId}=w2000`;// ✅ enlace directo
       const item = document.createElement('div');
       item.classList.add('grid-item');
       item.innerHTML = `<a data-fancybox="gallery" href="${full}"><img src="${thumb}" loading="lazy"></a>`;
@@ -114,6 +114,8 @@ function renderGallery(category='all'){
     }
   });
 
+
+  
   // Activar Fancybox
   Fancybox.bind("[data-fancybox='gallery']", {
     dragToClose: true,
