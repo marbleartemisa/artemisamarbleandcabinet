@@ -158,9 +158,18 @@ if(category === 'all' || p.TIPO === category){
 const item = document.createElement('div');
 item.classList.add('grid-item');
 
+// Si tu LINK es Google Drive, conviértelo a miniatura directa
+let imgSrc = p.LINK;
+
+// ejemplo para Google Drive
+if(p.LINK.includes("drive.google.com")) {
+  const fileIdMatch = p.LINK.match(/[-\w]{25,}/);
+  if(fileIdMatch) imgSrc = `https://drive.google.com/uc?export=view&id=${fileIdMatch[0]}`;
+}
+
 item.innerHTML = `
 <a data-fancybox="gallery-${p.ID}" href="${p.LINK}" data-caption="${p.STONE || ''}">
-<img src="${p.LINK}" loading="lazy">
+  <img src="${imgSrc}" loading="lazy" alt="${p.STONE || 'Image'}">
 </a>
 `;
 
