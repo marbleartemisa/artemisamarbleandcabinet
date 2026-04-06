@@ -20,20 +20,28 @@ header nav a:hover { text-decoration:underline; }
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 10px;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 12px;
   max-width:1200px;
   margin:0 auto;
+  padding:10px;
 }
 
 .grid-item {
   cursor:pointer;
 }
 
-  
-.grid-item { break-inside: avoid; margin-bottom:10px; cursor:pointer; }
-.grid-item img { width:100%; border-radius:6px; transition: transform 0.3s ease; }
-.grid-item img:hover { transform: scale(1.05); }
+.grid-item img {
+  width:100%;
+  border-radius:10px;
+  transition: transform 0.2s ease;
+}
+
+.grid-item img:hover {
+  transform: scale(1.03);
+}
+
+
 
 /* 🔥 EFECTO 3D */
 .fancybox__content {
@@ -64,6 +72,13 @@ header nav a:hover { text-decoration:underline; }
 </header>
 
 <div class="filters"></div>
+
+<!-- 🔎 SEARCH BAR (AQUÍ) -->
+<div style="text-align:center;margin:10px;">
+  <input id="searchBox" placeholder="Search images..." 
+  style="padding:10px;width:250px;border-radius:6px;border:1px solid #ccc;">
+</div>
+
 <div class="grid" id="gallery"></div>
 
 <!-- Fancybox -->
@@ -78,7 +93,13 @@ let currentCategory = 'all';
 
 const gallery = document.getElementById('gallery');
 const filtersContainer = document.querySelector('.filters');
+const searchBox = document.getElementById("searchBox");
 
+searchBox.addEventListener("input", (e) => {
+  const value = e.target.value.toLowerCase();
+  renderSearch(value);
+});
+  
 const priorityOrder = ["Kitchen","Bathroom","Laundry","Closets & Shelves","Outdoor","BBQ Area","Office","Powder Room","Fireplace","Wall TV","Front desk"];
 
 
@@ -145,9 +166,16 @@ function renderGallery(category='all', reset=true){
       if(match) fileId = match[1];
     }
 
-    if(!fileId) return;
+    if(!fileId || !p.LINK) return;
 
-    const thumb = `https://drive.google.com/thumbnail?id=${fileId}&sz=w400`;
+      // filtro básico de links inválidos
+      if(
+        p.LINK.includes("undefined") ||
+        p.LINK.includes("null") ||
+        p.LINK.length < 10
+      ) return;
+
+    const thumb = `https://lh3.googleusercontent.com/d/${fileId}=w600`;
     const full  = `https://lh3.googleusercontent.com/d/${fileId}=w2000`;
 
     const item = document.createElement('div');
@@ -155,7 +183,7 @@ function renderGallery(category='all', reset=true){
 
     item.innerHTML = `
       <a data-fancybox="gallery" href="${full}">
-        <img src="${thumb}" loading="lazy">
+       <img src="${thumb}" loading="lazy" onerror="this.parentElement.parentElement.remove()">
       </a>
     `;
 
@@ -174,7 +202,41 @@ function renderGallery(category='all', reset=true){
 
 loadPhotos();
 
+function renderSearch(query){
 
+  gallery.innerHTML = '';
+  currentIndex = 0;
+
+  const filtered = photos.filter(p => {
+    return (
+      (p.TIPO && p.TIPO.toLowerCase().includes(query)) ||
+      (p.LINK && p.LINK.toLowerCase().includes(query))
+    );
+  });
+
+  filtered.slice(0, 120).forEach(p => {
+
+    let fileId = p.LINK.match(/id=([^&]+)/)?.[1];
+    if(!fileId) return;
+
+    const thumb = `https://lh3.googleusercontent.com/d/${fileId}=w400`;
+    const full  = `https://lh3.googleusercontent.com/d/${fileId}=w2000`;
+
+    const item = document.createElement('div');
+    item.className = 'grid-item';
+
+    item.innerHTML = `
+      <a data-fancybox="gallery" href="${full}">
+        <img src="${thumb}" loading="lazy"
+        onerror="this.parentElement.parentElement.remove()">
+      </a>
+    `;
+
+    gallery.appendChild(item);
+  });
+
+  Fancybox.bind("[data-fancybox='gallery']", {});
+}
   
 
 
