@@ -3,178 +3,206 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>About Us - Artemisa Story</title>
+<title>About Us - Artemisa Marble</title>
 
 <style>
-body { font-family: 'Inter', sans-serif; margin:0; background:#f8f8f8; }
 
-/* ===== HEADER (MISMO QUE TU GALERÍA) ===== */
-header { background:#000; color:#fff; padding:12px 20px; display:flex; justify-content:space-between; align-items:center;}
-header nav a { color:#fff; margin:0 12px; text-decoration:none; font-weight:500; }
-header nav a:hover { text-decoration:underline; }
-
-/* ===== BOOK ===== */
-.book {
-  max-width: 900px;
-  margin: 40px auto;
-  position: relative;
+/* ================= HEADER ================= */
+header {
+  background:#000;
+  color:#fff;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:12px 20px;
 }
 
-.page {
-  display: none;
-  background: white;
-  padding: 30px;
-  border-radius: 12px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-  animation: fade 0.5s ease;
+header nav a {
+  color:#fff;
+  margin:0 10px;
+  text-decoration:none;
 }
 
-.page.active {
-  display: block;
+/* ================= HERO (HOY) ================= */
+.hero {
+  height:80vh;
+  background-size:cover;
+  background-position:center;
+  position:relative;
+  transition: background-image 1s ease;
 }
 
-.page img {
-  width: 100%;
-  border-radius: 10px;
-  margin-bottom: 15px;
-}
-
-.page h2 {
-  margin-bottom: 10px;
-}
-
-/* animación */
-@keyframes fade {
-  from { opacity: 0; transform: translateX(40px); }
-  to { opacity: 1; transform: translateX(0); }
-}
-
-/* controles */
-.controls {
-  text-align: center;
-  margin: 20px;
-}
-
-.controls button {
-  padding: 12px 25px;
-  margin: 5px;
-  background: black;
-  color: white;
-  border: none;
-  cursor: pointer;
-  border-radius: 6px;
-}
-
-.controls button:hover {
-  background:#f15a24;
-}
-
-/* indicador */
-.counter {
+.hero-overlay {
+  position:absolute;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  color:white;
   text-align:center;
-  margin-top:10px;
-  color:#555;
+  width:80%;
 }
+
+.hero-overlay h1 {
+  font-size:48px;
+}
+
+.hero-overlay p {
+  font-size:18px;
+  margin-top:10px;
+}
+
+/* ================= TRANSITION ================= */
+.transition {
+  text-align:center;
+  padding:80px 20px;
+  background:#fff;
+}
+
+.transition h2 {
+  font-size:36px;
+}
+
+/* ================= STORY ================= */
+.story-section {
+  display:flex;
+  height:100vh;
+  align-items:center;
+  justify-content:center;
+  gap:40px;
+  padding:40px;
+  background:#f8f8f8;
+}
+
+.story-section img {
+  width:50%;
+  border-radius:12px;
+}
+
+.story-text {
+  width:40%;
+}
+
+.story-text h2 {
+  margin-bottom:10px;
+}
+
+.story-section:nth-child(even) {
+  flex-direction: row-reverse;
+}
+
+/* ================= END ================= */
+.story-end {
+  text-align:center;
+  padding:100px 20px;
+  background:#000;
+  color:#fff;
+}
+
+.story-end h2 {
+  font-size:32px;
+}
+
 </style>
 </head>
 
 <body>
 
+<!-- ================= HEADER ================= -->
 <header>
-  <div class="logo"><img src="/artemisamarbleandcabinet/logo.png" height="80"></div>
+  <div class="logo">ARTEMISA</div>
   <nav>
-    <a href="/artemisamarbleandcabinet/">Home</a>
-    <a href="/artemisamarbleandcabinet/kitchen/">Kitchen</a>
-    <a href="/artemisamarbleandcabinet/bathroom/">Bathroom</a>
-    <a href="/artemisamarbleandcabinet/cabinets/">Cabinets</a>
-    <a href="/artemisamarbleandcabinet/closets">Closets</a>
-    <a href="/artemisamarbleandcabinet/contacts">Contact</a>
-    <a class="portal-btn" href="https://marbleartemisa.github.io/sop-site/">Portal-SOP</a>
+    <a href="#">Home</a>
+    <a href="#">Kitchen</a>
+    <a href="#">Bathroom</a>
+    <a href="#">Cabinets</a>
+    <a href="#">Contact</a>
   </nav>
 </header>
 
-<!-- ===== BOOK ===== -->
-<div class="book">
-
-  <div class="page active">
-    <h2>Our Beginning</h2>
-    <img src="https://via.placeholder.com/900x500">
-    <p>Artemisa Marble started with a vision of quality craftsmanship and attention to detail...</p>
+<!-- ================= HERO ================= -->
+<div class="hero" id="hero">
+  <div class="hero-overlay">
+    <h1>ABOUT US</h1>
+    <p>
+      We deliver top-tier craftsmanship in every project.<br>
+      Residential & Commercial Solutions.
+    </p>
   </div>
+</div>
 
-  <div class="page">
-    <h2>First Projects</h2>
-    <img src="https://via.placeholder.com/900x500">
-    <p>Our first kitchens and countertops quickly built a reputation for excellence...</p>
+<!-- ================= TRANSITION ================= -->
+<div class="transition">
+  <h2>Over 50 Years of Craftsmanship</h2>
+  <p>Every great company has a beginning...</p>
+</div>
+
+<!-- ================= STORY ================= -->
+
+<div class="story-section">
+  <div class="story-text">
+    <h2>1970s – The Beginning</h2>
+    <p>From a small workshop, we started building our legacy...</p>
   </div>
+  <img src="https://via.placeholder.com/800x600">
+</div>
 
-  <div class="page">
-    <h2>Growth & Expansion</h2>
-    <img src="https://via.placeholder.com/900x500">
-    <p>We expanded our services and team, taking on larger and more complex projects...</p>
+<div class="story-section">
+  <div class="story-text">
+    <h2>1980s – Growth</h2>
+    <p>We expanded our operations and improved our processes...</p>
   </div>
+  <img src="https://via.placeholder.com/800x600">
+</div>
 
-  <div class="page">
+<div class="story-section">
+  <div class="story-text">
+    <h2>1990s – Expansion</h2>
+    <p>New machinery and bigger projects defined this era...</p>
+  </div>
+  <img src="https://via.placeholder.com/800x600">
+</div>
+
+<div class="story-section">
+  <div class="story-text">
+    <h2>2000s – Modernization</h2>
+    <p>We adopted modern technology and CNC systems...</p>
+  </div>
+  <img src="https://via.placeholder.com/800x600">
+</div>
+
+<div class="story-section">
+  <div class="story-text">
     <h2>Today</h2>
-    <img src="https://via.placeholder.com/900x500">
-    <p>Today, Artemisa Marble is a trusted name in custom cabinetry and stone surfaces...</p>
+    <p>We are a trusted leader in marble, cabinetry and design...</p>
   </div>
-
-  <div class="page">
-    <h2>Your Project Starts Here</h2>
-    <img src="https://via.placeholder.com/900x500">
-    <p>Let us help you create a space that reflects your lifestyle and vision.</p>
-  </div>
-
+  <img src="https://via.placeholder.com/800x600">
 </div>
 
-<div class="controls">
-  <button onclick="prevPage()">⬅ Previous</button>
-  <button onclick="nextPage()">Next ➡</button>
+<!-- ================= END ================= -->
+<div class="story-end">
+  <h2>From Humble Beginnings to Industry Leaders</h2>
 </div>
-
-<div class="counter" id="counter"></div>
 
 <script>
-let currentPage = 0;
-const pages = document.querySelectorAll(".page");
-const counter = document.getElementById("counter");
 
-function showPage(index){
-  pages.forEach(p => p.classList.remove("active"));
-  pages[index].classList.add("active");
-  counter.innerText = `Page ${index+1} of ${pages.length}`;
+/* ================= HERO SLIDESHOW ================= */
+const images = [
+  "https://via.placeholder.com/1600x900",
+  "https://via.placeholder.com/1600x900/333",
+  "https://via.placeholder.com/1600x900/666"
+];
+
+let index = 0;
+const hero = document.getElementById("hero");
+
+function changeHero(){
+  hero.style.backgroundImage = `url(${images[index]})`;
+  index = (index + 1) % images.length;
 }
 
-function nextPage(){
-  if(currentPage < pages.length - 1){
-    currentPage++;
-    showPage(currentPage);
-  }
-}
+changeHero();
+setInterval(changeHero, 4000);
 
-function prevPage(){
-  if(currentPage > 0){
-    currentPage--;
-    showPage(currentPage);
-  }
-}
-
-// inicializar
-showPage(currentPage);
-
-/* swipe mobile */
-let startX = 0;
-
-document.addEventListener("touchstart", e=>{
-  startX = e.touches[0].clientX;
-});
-
-document.addEventListener("touchend", e=>{
-  let endX = e.changedTouches[0].clientX;
-  if(startX - endX > 50) nextPage();
-  if(endX - startX > 50) prevPage();
-});
 </script>
 
 </body>
