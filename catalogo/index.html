@@ -454,8 +454,8 @@ function renderSearch(query){
 }
 
 async function savePhoto(photoID){
-  const btn = document.getElementById('saveBtn');
-  const spinner = btn.querySelector('#spinner');
+const btn = document.getElementById(`saveBtn_${photoID}`);
+const spinner = document.getElementById(`spinner_${photoID}`);
 
   // Mostrar spinner y deshabilitar botón
   btn.disabled = true;
