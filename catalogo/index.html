@@ -386,30 +386,31 @@ function renderSearch(query){
         </div>
 
         <div style="display:flex;gap:10px;margin-top:20px;">
-          <button onclick="savePhoto('${photoID}')" style="
-            flex:1;
-            background:#f15a24;
-            color:white;
-            border:none;
-            padding:10px;
-            border-radius:8px;
-            cursor:pointer;
-            font-weight:600;
-          ">
-            💾 Guardar
-          </button>
-
-          <button onclick="deletePhoto('${photoID}')" style="
-            flex:1;
-            background:#eee;
-            border:none;
-            padding:10px;
-            border-radius:8px;
-            cursor:pointer;
-          ">
-            🗑️ Borrar
-          </button>
+              <button id="saveBtn" style="
+                  flex:1;
+                  background:#f15a24;
+                  color:white;
+                  border:none;
+                  padding:10px;
+                  border-radius:8px;
+                  cursor:pointer;
+                  font-weight:600;
+                  position:relative;
+              ">
+                💾 Guardar
+                <span id="spinner" style="
+                    display:none;
+                    position:absolute;
+                    right:10px;
+                    top:50%;
+                    transform:translateY(-50%);
+                ">⏳</span>
+              </button>
         </div>
+
+
+
+
 
         <button onclick="document.getElementById('editModal').remove()" style="
           position:absolute;
@@ -428,8 +429,38 @@ function renderSearch(query){
   document.body.insertAdjacentHTML('beforeend', formHtml);
 }
 
+  function showToast(msg){
+  const toast = document.createElement('div');
+  toast.textContent = msg;
+  toast.style.position = 'fixed';
+  toast.style.bottom = '20px';
+  toast.style.left = '50%';
+  toast.style.transform = 'translateX(-50%)';
+  toast.style.background = '#333';
+  toast.style.color = '#fff';
+  toast.style.padding = '12px 20px';
+  toast.style.borderRadius = '8px';
+  toast.style.boxShadow = '0 4px 12px rgba(0,0,0,0.3)';
+  toast.style.opacity = '0';
+  toast.style.transition = 'opacity 0.3s';
+  document.body.appendChild(toast);
 
-  function savePhoto(photoID){
+  requestAnimationFrame(()=>toast.style.opacity = '1');
+
+  setTimeout(()=>{
+    toast.style.opacity = '0';
+    setTimeout(()=>toast.remove(), 300);
+  }, 2000);
+}
+
+async function savePhoto(photoID){
+  const btn = document.getElementById('saveBtn');
+  const spinner = btn.querySelector('#spinner');
+
+  // Mostrar spinner y deshabilitar botón
+  btn.disabled = true;
+  spinner.style.display = 'inline';
+
   const params = new URLSearchParams({
     action: 'update',
     ID: photoID,
@@ -442,13 +473,29 @@ function renderSearch(query){
     SUBTIPO: document.getElementById('SUBTIPO').value
   });
 
-  fetch(`${API}?${params.toString()}`)
-    .then(res => res.json())
-    .then(resp => {
-      if(resp.success) alert("Datos guardados!");
-      else             alert("Error guardando");
-    })
-    .catch(err => alert("Error conexión"));
+  try {
+    const res = await fetch(`${API}?${params.toString()}`);
+    const data = await res.json();
+
+    if(data.success){
+      // Cerrar modal
+      document.getElementById('editModal').remove();
+
+      // Opcional: mostrar toast
+      showToast("✅ Registro guardado");
+
+      // Refrescar tabla
+      loadPhotos();
+    } else {
+      throw new Error("Error guardando");
+    }
+  } catch(err){
+    alert("Error: " + err.message);
+  } finally {
+    // Reset botón y spinner
+    btn.disabled = false;
+    spinner.style.display = 'none';
+  }
 }
 
 
