@@ -310,13 +310,13 @@ function renderSearch(query){
 
 
 
-function editPhoto(photoID){
-  const photo = photos.find(p=>p.ID===photoID);
-  if(!photo) return;
+function editPhoto(photoID) {
+  const photo = photos.find(p => p.ID === photoID);
+  if (!photo) return;
 
   // Cerrar modal anterior si existe
   const existing = document.getElementById('editModal');
-  if(existing) existing.remove();
+  if (existing) existing.remove();
 
   const formHtml = `
     <div id="editModal" style="
@@ -338,54 +338,54 @@ function editPhoto(photoID){
 
         <div class="form-group">
           <label>Stone</label>
-          <input id="STONE_${photoID}" value="${photo.STONE||''}">
+          <input id="STONE" value="${photo.STONE || ''}">
         </div>
 
         <div class="form-group">
           <label>Proyecto</label>
-          <input id="PROYECTO_${photoID}" value="${photo.PROYECTO||''}">
+          <input id="PROYECTO" value="${photo.PROYECTO || ''}">
         </div>
 
         <div class="form-group">
           <label>Memo</label>
-          <textarea id="MEMO_${photoID}">${photo.MEMO||''}</textarea>
+          <textarea id="MEMO">${photo.MEMO || ''}</textarea>
         </div>
 
         <div class="grid-2">
           <div class="form-group">
             <label>Tipo</label>
-            <input id="TIPO_${photoID}" value="${photo.TIPO||''}">
+            <input id="TIPO" value="${photo.TIPO || ''}">
           </div>
           <div class="form-group">
             <label>Subtipo</label>
-            <input id="SUBTIPO_${photoID}" value="${photo.SUBTIPO||''}">
+            <input id="SUBTIPO" value="${photo.SUBTIPO || ''}">
           </div>
         </div>
 
         <div class="grid-2">
           <div class="form-group">
             <label>Colores</label>
-            <input id="COLOURS_${photoID}" value="${photo.COLOURS||''}">
+            <input id="COLOURS" value="${photo.COLOURS || ''}">
           </div>
           <div class="form-group">
             <label>Materiales</label>
-            <input id="MATERIALES_${photoID}" value="${photo.MATERIALES||''}">
+            <input id="MATERIALES" value="${photo.MATERIALES || ''}">
           </div>
         </div>
 
         <div class="form-group">
           <label>Looking For (keywords)</label>
-          <input id="LOOKINGFOR_${photoID}" value="${photo.LOOKINGFOR||''}">
+          <input id="LOOKINGFOR" value="${photo.LOOKINGFOR || ''}">
         </div>
 
-        <div style="display:flex;gap:10px;margin-top:20px;">
-          <button id="saveBtn_${photoID}" style="
+        <div style="display:flex; gap:10px; margin-top:20px;">
+          <button onclick="savePhoto('${photoID}')" style="
             flex:1; background:#f15a24; color:white;
             border:none; padding:10px; border-radius:8px;
             cursor:pointer; font-weight:600; position:relative;
           ">
             💾 Guardar
-            <span id="spinner_${photoID}" style="
+            <span id="spinner" style="
               display:none; position:absolute; right:10px; top:50%;
               transform:translateY(-50%);
             ">⏳</span>
@@ -396,17 +396,12 @@ function editPhoto(photoID){
           position:absolute; top:10px; right:10px;
           background:none; border:none; font-size:18px; cursor:pointer;
         ">✖</button>
-
       </div>
     </div>
   `;
 
   document.body.insertAdjacentHTML('beforeend', formHtml);
-
-  // Conectar botón al evento savePhoto
-  document.getElementById(`saveBtn_${photoID}`).addEventListener('click', () => savePhoto(photoID));
 }
-
 
   
   function showToast(msg){
@@ -433,43 +428,46 @@ function editPhoto(photoID){
   }, 2000);
 }
 
-  async function savePhoto(photoID){
-  const btn = document.getElementById(`saveBtn_${photoID}`);
-  const spinner = document.getElementById(`spinner_${photoID}`);
+function savePhoto(photoID) {
+  // Mostrar spinner
+  const spinner = document.getElementById('spinner');
+  if (spinner) spinner.style.display = 'inline';
 
-  btn.disabled = true;
-  spinner.style.display = 'inline';
-
+  // Preparar datos desde los inputs del modal
   const params = new URLSearchParams({
     action: 'update',
     ID: photoID,
-    STONE: document.getElementById(`STONE_${photoID}`).value,
-    PROYECTO: document.getElementById(`PROYECTO_${photoID}`).value,
-    MEMO: document.getElementById(`MEMO_${photoID}`).value,
-    COLOURS: document.getElementById(`COLOURS_${photoID}`).value,
-    MATERIALES: document.getElementById(`MATERIALES_${photoID}`).value,
-    LOOKINGFOR: document.getElementById(`LOOKINGFOR_${photoID}`).value,
-    TIPO: document.getElementById(`TIPO_${photoID}`).value,
-    SUBTIPO: document.getElementById(`SUBTIPO_${photoID}`).value
+    STONE: document.getElementById('STONE').value,
+    PROYECTO: document.getElementById('PROYECTO').value,
+    MEMO: document.getElementById('MEMO').value,
+    COLOURS: document.getElementById('COLOURS').value,
+    MATERIALES: document.getElementById('MATERIALES').value,
+    LOOKINGFOR: document.getElementById('LOOKINGFOR').value,
+    TIPO: document.getElementById('TIPO').value,
+    SUBTIPO: document.getElementById('SUBTIPO').value
   });
 
-  try {
-    const res = await fetch(`${API}?${params.toString()}`);
-    const data = await res.json();
+  fetch(`${API}?${params.toString()}`)
+    .then(res => res.json())
+    .then(resp => {
+      if (spinner) spinner.style.display = 'none';
 
-    if(data.success){
-      document.getElementById('editModal').remove();
-      showToast("✅ Registro guardado");
-      loadPhotos();
-    } else {
-      alert("Error guardando");
-    }
-  } catch(err){
-    alert("Error de conexión: " + err.message);
-  } finally {
-    btn.disabled = false;
-    spinner.style.display = 'none';
-  }
+      if (resp.success) {
+        alert("Datos guardados correctamente!");
+        // Cerrar modal
+        const modal = document.getElementById('editModal');
+        if (modal) modal.remove();
+        // Opcional: refrescar la galería
+        loadPhotos();
+      } else {
+        alert("Error guardando los datos.");
+      }
+    })
+    .catch(err => {
+      if (spinner) spinner.style.display = 'none';
+      alert("Error de conexión. Intenta nuevamente.");
+      console.error(err);
+    });
 }
 
 
