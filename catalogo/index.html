@@ -199,23 +199,25 @@ function renderGallery(category='all', reset=true){
 
     const item = document.createElement('div');
     item.classList.add('grid-item');
-    let editButton = '';
-        if(isAdmin){
-                editButton = `<button style="
-                position:absolute;
-                top:8px;
-                right:8px;
-                padding:6px 8px;
-                background:#f15a24;
-                color:white;
-                border:none;
-                border-radius:6px;
-                cursor:pointer;
-                z-index:999; /* 👈 MÁS ALTO */
-                box-shadow:0 2px 6px rgba(0,0,0,0.3);
-            "
-            onclick="event.stopPropagation(); editPhoto('${p.ID}')"
-            >✏️</button>`;
+   let editButton = '';
+
+if(isAdmin){
+    editButton = `<button style="
+        position:absolute;
+        top:8px;
+        right:8px;
+        padding:6px 8px;
+        background:#f15a24;
+        color:white;
+        border:none;
+        border-radius:6px;
+        cursor:pointer;
+        z-index:999;
+        box-shadow:0 2px 6px rgba(0,0,0,0.3);
+    "
+    onclick="event.stopPropagation(); editPhoto('${p.ID}')"
+    >✏️</button>`;
+} // 👈 ESTA LLAVE FALTABA
 
 
     
