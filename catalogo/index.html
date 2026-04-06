@@ -71,7 +71,11 @@ header nav a:hover { text-decoration:underline; }
     <a class="portal-btn" href="https://marbleartemisa.github.io/sop-site/">Portal-SOP</a>
   </nav>
 </header>
-
+<div style="text-align:center;margin:10px;">
+  <button id="adminLoginBtn" style="padding:8px 16px;background:#f15a24;color:white;border:none;border-radius:5px;cursor:pointer;">
+    Ingresar clave Admin
+  </button>
+</div>
 <div class="filters"></div>
 
 <!-- 🔎 SEARCH BAR (AQUÍ) -->
@@ -95,6 +99,19 @@ let currentCategory = 'all';
 const gallery = document.getElementById('gallery');
 const filtersContainer = document.querySelector('.filters');
 const searchBox = document.getElementById("searchBox");
+
+let isAdmin = false;
+
+document.getElementById('adminLoginBtn').addEventListener('click', () => {
+  const clave = prompt("Ingrese la clave de administrador:");
+  if(clave === "TU_CLAVE_SECRETA"){ // cambiar por tu clave real
+    isAdmin = true;
+    alert("Modo administrador activado");
+    renderGallery(currentCategory, true); // refresca la galería para mostrar lápices
+  } else {
+    alert("Clave incorrecta");
+  }
+});
 
 searchBox.addEventListener("input", (e) => {
   const value = e.target.value.toLowerCase();
@@ -181,12 +198,28 @@ function renderGallery(category='all', reset=true){
 
     const item = document.createElement('div');
     item.classList.add('grid-item');
-
-    item.innerHTML = `
-      <a data-fancybox="gallery" href="${full}">
-       <img src="${thumb}" loading="lazy" onerror="this.parentElement.parentElement.remove()">
-      </a>
-    `;
+    let editButton = '';
+        if(isAdmin){
+          editButton = `<button style="
+              position:absolute;
+              top:8px;
+              right:8px;
+              padding:4px 6px;
+              background:#f15a24;
+              color:white;
+              border:none;
+              border-radius:4px;
+              cursor:pointer;
+              z-index:10;"
+              onclick="editPhoto('${p.ID}')"
+          >✏️</button>`;
+        }
+        item.innerHTML = `
+          <a data-fancybox="gallery" href="${full}">
+            <img src="${thumb}" loading="lazy" onerror="this.parentElement.parentElement.remove()">
+          </a>
+          ${editButton}
+        `;
 
     gallery.appendChild(item);
   });
@@ -237,6 +270,59 @@ function renderSearch(query){
   });
 
   Fancybox.bind("[data-fancybox='gallery']", {});
+}
+
+  function editPhoto(photoID){
+  const photo = photos.find(p=>p.ID===photoID);
+  if(!photo) return;
+
+  const formHtml = `
+    <div id="editModal" style="
+      position:fixed;top:0;left:0;width:100%;height:100%;
+      background:rgba(0,0,0,0.6);display:flex;justify-content:center;align-items:center;z-index:9999;">
+      <div style="background:white;padding:20px;border-radius:10px;width:400px;position:relative;">
+        <h3>Editar Foto</h3>
+        <label>STONE</label><input id="STONE" value="${photo.STONE||''}" style="width:100%;margin-bottom:8px;">
+        <label>MEMO</label><input id="MEMO" value="${photo.MEMO||''}" style="width:100%;margin-bottom:8px;">
+        <label>COLOURS</label><input id="COLOURS" value="${photo.COLOURS||''}" style="width:100%;margin-bottom:8px;">
+        <label>MATERIALES</label><input id="MATERIALES" value="${photo.MATERIALES||''}" style="width:100%;margin-bottom:8px;">
+        <label>LOOKINGFOR</label><input id="LOOKINGFOR" value="${photo.LOOKINGFOR||''}" style="width:100%;margin-bottom:8px;">
+        <label>TIPO</label><input id="TIPO" value="${photo.TIPO||''}" style="width:100%;margin-bottom:8px;">
+        <label>SUBTIPO</label><input id="SUBTIPO" value="${photo.SUBTIPO||''}" style="width:100%;margin-bottom:8px;">
+        <button onclick="savePhoto('${photoID}')" style="background:#f15a24;color:white;padding:6px 12px;border:none;border-radius:4px;margin-top:10px;">Guardar</button>
+        <button onclick="document.getElementById('editModal').remove()" style="position:absolute;top:8px;right:8px;">X</button>
+      </div>
+    </div>
+  `;
+  document.body.insertAdjacentHTML('beforeend', formHtml);
+}
+
+function savePhoto(photoID){
+  const updated = {
+    ID: photoID,
+    STONE: document.getElementById('STONE').value,
+    MEMO: document.getElementById('MEMO').value,
+    COLOURS: document.getElementById('COLOURS').value,
+    MATERIALES: document.getElementById('MATERIALES').value,
+    LOOKINGFOR: document.getElementById('LOOKINGFOR').value,
+    TIPO: document.getElementById('TIPO').value,
+    SUBTIPO: document.getElementById('SUBTIPO').value
+  };
+
+  fetch(API, {
+    method: 'POST',
+    body: JSON.stringify({action:'update', data: updated}),
+    headers: {'Content-Type':'application/json'}
+  }).then(res=>res.json())
+    .then(resp=>{
+      alert('Datos guardados');
+      document.getElementById('editModal').remove();
+      // Actualizar localStorage y refrescar galería
+      const index = photos.findIndex(p=>p.ID===photoID);
+      photos[index] = {...photos[index], ...updated};
+      localStorage.setItem('photos', JSON.stringify(photos));
+      renderGallery(currentCategory, true);
+    });
 }
   
 
