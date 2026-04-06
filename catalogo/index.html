@@ -42,7 +42,36 @@ header nav a:hover { text-decoration:underline; }
   transform: scale(1.03);
 }
 
+.form-group {
+  display:flex;
+  flex-direction:column;
+  margin-bottom:12px;
+}
 
+.form-group label {
+  font-size:12px;
+  color:#555;
+  margin-bottom:4px;
+}
+
+.form-group input,
+.form-group textarea {
+  padding:8px;
+  border-radius:6px;
+  border:1px solid #ddd;
+  font-size:14px;
+}
+
+.form-group textarea {
+  resize:vertical;
+  min-height:60px;
+}
+
+.grid-2 {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+}
 
 /* 🔥 EFECTO 3D */
 .fancybox__content {
@@ -279,28 +308,123 @@ function renderSearch(query){
   Fancybox.bind("[data-fancybox='gallery']", {});
 }
 
+
   function editPhoto(photoID){
   const photo = photos.find(p=>p.ID===photoID);
   if(!photo) return;
 
   const formHtml = `
     <div id="editModal" style="
-      position:fixed;top:0;left:0;width:100%;height:100%;
-      background:rgba(0,0,0,0.6);display:flex;justify-content:center;align-items:center;z-index:9999;">
-      <div style="background:white;padding:20px;border-radius:10px;width:400px;position:relative;">
-        <h3>Editar Foto</h3>
-        <label>STONE</label><input id="STONE" value="${photo.STONE||''}" style="width:100%;margin-bottom:8px;">
-        <label>MEMO</label><input id="MEMO" value="${photo.MEMO||''}" style="width:100%;margin-bottom:8px;">
-        <label>COLOURS</label><input id="COLOURS" value="${photo.COLOURS||''}" style="width:100%;margin-bottom:8px;">
-        <label>MATERIALES</label><input id="MATERIALES" value="${photo.MATERIALES||''}" style="width:100%;margin-bottom:8px;">
-        <label>LOOKINGFOR</label><input id="LOOKINGFOR" value="${photo.LOOKINGFOR||''}" style="width:100%;margin-bottom:8px;">
-        <label>TIPO</label><input id="TIPO" value="${photo.TIPO||''}" style="width:100%;margin-bottom:8px;">
-        <label>SUBTIPO</label><input id="SUBTIPO" value="${photo.SUBTIPO||''}" style="width:100%;margin-bottom:8px;">
-        <button onclick="savePhoto('${photoID}')" style="background:#f15a24;color:white;padding:6px 12px;border:none;border-radius:4px;margin-top:10px;">Guardar</button>
-        <button onclick="document.getElementById('editModal').remove()" style="position:absolute;top:8px;right:8px;">X</button>
+      position:fixed;
+      top:0;left:0;
+      width:100%;height:100%;
+      background:rgba(0,0,0,0.6);
+      backdrop-filter: blur(6px);
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      z-index:9999;
+    ">
+
+      <div style="
+        background:#ffffff;
+        border-radius:16px;
+        width:420px;
+        max-height:90vh;
+        overflow-y:auto;
+        padding:20px;
+        box-shadow:0 10px 40px rgba(0,0,0,0.25);
+        font-family:Inter, sans-serif;
+        position:relative;
+      ">
+
+        <h2 style="margin-top:0;font-size:20px;">Editar Imagen</h2>
+        <p style="font-size:12px;color:#777;margin-bottom:15px;">
+          ID: ${photo.ID}
+        </p>
+
+        <div class="form-group">
+          <label>Stone</label>
+          <input id="STONE" value="${photo.STONE||''}">
+        </div>
+
+        <div class="form-group">
+          <label>Proyecto</label>
+          <input id="PROYECTO" value="${photo.PROYECTO||''}">
+        </div>
+
+        <div class="form-group">
+          <label>Memo</label>
+          <textarea id="MEMO">${photo.MEMO||''}</textarea>
+        </div>
+
+        <div class="grid-2">
+          <div class="form-group">
+            <label>Tipo</label>
+            <input id="TIPO" value="${photo.TIPO||''}">
+          </div>
+          <div class="form-group">
+            <label>Subtipo</label>
+            <input id="SUBTIPO" value="${photo.SUBTIPO||''}">
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="form-group">
+            <label>Colores</label>
+            <input id="COLOURS" value="${photo.COLOURS||''}">
+          </div>
+          <div class="form-group">
+            <label>Materiales</label>
+            <input id="MATERIALES" value="${photo.MATERIALES||''}">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Looking For (keywords)</label>
+          <input id="LOOKINGFOR" value="${photo.LOOKINGFOR||''}">
+        </div>
+
+        <div style="display:flex;gap:10px;margin-top:20px;">
+          <button onclick="savePhoto('${photoID}')" style="
+            flex:1;
+            background:#f15a24;
+            color:white;
+            border:none;
+            padding:10px;
+            border-radius:8px;
+            cursor:pointer;
+            font-weight:600;
+          ">
+            💾 Guardar
+          </button>
+
+          <button onclick="deletePhoto('${photoID}')" style="
+            flex:1;
+            background:#eee;
+            border:none;
+            padding:10px;
+            border-radius:8px;
+            cursor:pointer;
+          ">
+            🗑️ Borrar
+          </button>
+        </div>
+
+        <button onclick="document.getElementById('editModal').remove()" style="
+          position:absolute;
+          top:10px;
+          right:10px;
+          background:none;
+          border:none;
+          font-size:18px;
+          cursor:pointer;
+        ">✖</button>
+
       </div>
     </div>
   `;
+
   document.body.insertAdjacentHTML('beforeend', formHtml);
 }
 
