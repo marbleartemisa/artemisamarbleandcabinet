@@ -1,1 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>About Us - Artemisa Story</title>
 
+<style>
+body { font-family: 'Inter', sans-serif; margin:0; background:#f8f8f8; }
+
+/* ===== HEADER (MISMO QUE TU GALERÍA) ===== */
+header { background:#000; color:#fff; padding:12px 20px; display:flex; justify-content:space-between; align-items:center;}
+header nav a { color:#fff; margin:0 12px; text-decoration:none; font-weight:500; }
+header nav a:hover { text-decoration:underline; }
+
+/* ===== BOOK ===== */
+.book {
+  max-width: 900px;
+  margin: 40px auto;
+  position: relative;
+}
+
+.page {
+  display: none;
+  background: white;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+  animation: fade 0.5s ease;
+}
+
+.page.active {
+  display: block;
+}
+
+.page img {
+  width: 100%;
+  border-radius: 10px;
+  margin-bottom: 15px;
+}
+
+.page h2 {
+  margin-bottom: 10px;
+}
+
+/* animación */
+@keyframes fade {
+  from { opacity: 0; transform: translateX(40px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+/* controles */
+.controls {
+  text-align: center;
+  margin: 20px;
+}
+
+.controls button {
+  padding: 12px 25px;
+  margin: 5px;
+  background: black;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 6px;
+}
+
+.controls button:hover {
+  background:#f15a24;
+}
+
+/* indicador */
+.counter {
+  text-align:center;
+  margin-top:10px;
+  color:#555;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="logo"><img src="/artemisamarbleandcabinet/logo.png" height="80"></div>
+  <nav>
+    <a href="/artemisamarbleandcabinet/">Home</a>
+    <a href="/artemisamarbleandcabinet/kitchen/">Kitchen</a>
+    <a href="/artemisamarbleandcabinet/bathroom/">Bathroom</a>
+    <a href="/artemisamarbleandcabinet/cabinets/">Cabinets</a>
+    <a href="/artemisamarbleandcabinet/closets">Closets</a>
+    <a href="/artemisamarbleandcabinet/contacts">Contact</a>
+    <a class="portal-btn" href="https://marbleartemisa.github.io/sop-site/">Portal-SOP</a>
+  </nav>
+</header>
+
+<!-- ===== BOOK ===== -->
+<div class="book">
+
+  <div class="page active">
+    <h2>Our Beginning</h2>
+    <img src="https://via.placeholder.com/900x500">
+    <p>Artemisa Marble started with a vision of quality craftsmanship and attention to detail...</p>
+  </div>
+
+  <div class="page">
+    <h2>First Projects</h2>
+    <img src="https://via.placeholder.com/900x500">
+    <p>Our first kitchens and countertops quickly built a reputation for excellence...</p>
+  </div>
+
+  <div class="page">
+    <h2>Growth & Expansion</h2>
+    <img src="https://via.placeholder.com/900x500">
+    <p>We expanded our services and team, taking on larger and more complex projects...</p>
+  </div>
+
+  <div class="page">
+    <h2>Today</h2>
+    <img src="https://via.placeholder.com/900x500">
+    <p>Today, Artemisa Marble is a trusted name in custom cabinetry and stone surfaces...</p>
+  </div>
+
+  <div class="page">
+    <h2>Your Project Starts Here</h2>
+    <img src="https://via.placeholder.com/900x500">
+    <p>Let us help you create a space that reflects your lifestyle and vision.</p>
+  </div>
+
+</div>
+
+<div class="controls">
+  <button onclick="prevPage()">⬅ Previous</button>
+  <button onclick="nextPage()">Next ➡</button>
+</div>
+
+<div class="counter" id="counter"></div>
+
+<script>
+let currentPage = 0;
+const pages = document.querySelectorAll(".page");
+const counter = document.getElementById("counter");
+
+function showPage(index){
+  pages.forEach(p => p.classList.remove("active"));
+  pages[index].classList.add("active");
+  counter.innerText = `Page ${index+1} of ${pages.length}`;
+}
+
+function nextPage(){
+  if(currentPage < pages.length - 1){
+    currentPage++;
+    showPage(currentPage);
+  }
+}
+
+function prevPage(){
+  if(currentPage > 0){
+    currentPage--;
+    showPage(currentPage);
+  }
+}
+
+// inicializar
+showPage(currentPage);
+
+/* swipe mobile */
+let startX = 0;
+
+document.addEventListener("touchstart", e=>{
+  startX = e.touches[0].clientX;
+});
+
+document.addEventListener("touchend", e=>{
+  let endX = e.changedTouches[0].clientX;
+  if(startX - endX > 50) nextPage();
+  if(endX - startX > 50) prevPage();
+});
+</script>
+
+</body>
+</html>
