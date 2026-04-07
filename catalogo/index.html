@@ -210,68 +210,48 @@ function createFilters(){
 }
 
 function renderGallery(category='all', reset=true){
-
   if(reset){
     gallery.innerHTML = '';
     currentIndex = 0;
     currentCategory = category;
   }
 
+  // ✅ Filtrar desde memoria inmediatamente
   const filtered = photos.filter(p => category==='all' || p.TIPO===category);
 
+  // ✅ Mostrar solo el slice actual para paginación
   const slice = filtered.slice(currentIndex, currentIndex + PAGE_SIZE);
 
   slice.forEach(p=>{
-
     let fileId = null;
-
     if(p.LINK.includes("drive.google.com")){
       const match = p.LINK.match(/id=([^&]+)/);
       if(match) fileId = match[1];
     }
-
     if(!fileId || !p.LINK) return;
-
-      // filtro básico de links inválidos
-      if(
-        p.LINK.includes("undefined") ||
-        p.LINK.includes("null") ||
-        p.LINK.length < 10
-      ) return;
+    if(p.LINK.includes("undefined") || p.LINK.includes("null") || p.LINK.length < 10) return;
 
     const thumb = `https://lh3.googleusercontent.com/d/${fileId}=w600`;
     const full  = `https://lh3.googleusercontent.com/d/${fileId}=w2000`;
 
     const item = document.createElement('div');
     item.classList.add('grid-item');
-   let editButton = '';
-          
-          if(isAdmin){
-              editButton = `<button style="
-                  position:absolute;
-                  top:8px;
-                  right:8px;
-                  padding:6px 8px;
-                  background:#f15a24;
-                  color:white;
-                  border:none;
-                  border-radius:6px;
-                  cursor:pointer;
-                  z-index:999;
-                  box-shadow:0 2px 6px rgba(0,0,0,0.3);
-              "
-              onclick="event.stopPropagation(); editPhoto('${p.ID}')"
-              >✏️</button>`;
-          } // 👈 ESTA LLAVE FALTABA
 
+    let editButton = '';
+    if(isAdmin){
+      editButton = `<button style="
+          position:absolute; top:8px; right:8px; padding:6px 8px;
+          background:#f15a24; color:white; border:none; border-radius:6px;
+          cursor:pointer; z-index:999; box-shadow:0 2px 6px rgba(0,0,0,0.3);
+        " onclick="event.stopPropagation(); editPhoto('${p.ID}')">✏️</button>`;
+    }
 
-    
-        item.innerHTML = `
-          <a data-fancybox="gallery" href="${full}" style="display:block;">
-            <img src="${thumb}" loading="lazy" onerror="this.parentElement.parentElement.remove()">
-          </a>
-          ${editButton}
-        `;
+    item.innerHTML = `
+      <a data-fancybox="gallery" href="${full}" style="display:block;">
+        <img src="${thumb}" loading="lazy" onerror="this.parentElement.parentElement.remove()">
+      </a>
+      ${editButton}
+    `;
 
     gallery.appendChild(item);
   });
@@ -288,20 +268,20 @@ function renderGallery(category='all', reset=true){
 
 loadPhotos();
 
-function renderSearch(query){
 
+  function renderSearch(query){
   gallery.innerHTML = '';
   currentIndex = 0;
 
-  const filtered = photos.filter(p => {
-    return (
-      (p.TIPO && p.TIPO.toLowerCase().includes(query)) ||
-      (p.LINK && p.LINK.toLowerCase().includes(query))
-    );
-  });
+  const q = query.toLowerCase();
+
+  // ✅ Filtrar en memoria instantáneamente
+  const filtered = photos.filter(p => 
+    (p.TIPO && p.TIPO.toLowerCase().includes(q)) ||
+    (p.LINK && p.LINK.toLowerCase().includes(q))
+  );
 
   filtered.slice(0, 120).forEach(p => {
-
     let fileId = p.LINK.match(/id=([^&]+)/)?.[1];
     if(!fileId) return;
 
@@ -313,8 +293,7 @@ function renderSearch(query){
 
     item.innerHTML = `
       <a data-fancybox="gallery" href="${full}">
-        <img src="${thumb}" loading="lazy"
-        onerror="this.parentElement.parentElement.remove()">
+        <img src="${thumb}" loading="lazy" onerror="this.parentElement.parentElement.remove()">
       </a>
     `;
 
