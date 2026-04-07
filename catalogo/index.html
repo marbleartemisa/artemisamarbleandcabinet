@@ -428,48 +428,62 @@ function editPhoto(photoID) {
   }, 2000);
 }
 
-function savePhoto(photoID) {
-  // Mostrar spinner
-  const spinner = document.getElementById('spinner');
-  if (spinner) spinner.style.display = 'inline';
 
-  // Preparar datos desde los inputs del modal
+
+function savePhoto(photoID){
+  const saveBtn = document.getElementById(`saveBtn_${photoID}`);
+  const spinner  = document.getElementById(`spinner_${photoID}`);
+  saveBtn.disabled = true;
+  spinner.style.display = 'inline';
+
   const params = new URLSearchParams({
     action: 'update',
     ID: photoID,
-    STONE: document.getElementById('STONE').value,
-    PROYECTO: document.getElementById('PROYECTO').value,
-    MEMO: document.getElementById('MEMO').value,
-    COLOURS: document.getElementById('COLOURS').value,
-    MATERIALES: document.getElementById('MATERIALES').value,
-    LOOKINGFOR: document.getElementById('LOOKINGFOR').value,
-    TIPO: document.getElementById('TIPO').value,
-    SUBTIPO: document.getElementById('SUBTIPO').value
+    STONE: document.getElementById(`STONE_${photoID}`).value,
+    MEMO: document.getElementById(`MEMO_${photoID}`).value,
+    COLOURS: document.getElementById(`COLOURS_${photoID}`).value,
+    MATERIALES: document.getElementById(`MATERIALES_${photoID}`).value,
+    LOOKINGFOR: document.getElementById(`LOOKINGFOR_${photoID}`).value,
+    TIPO: document.getElementById(`TIPO_${photoID}`).value,
+    SUBTIPO: document.getElementById(`SUBTIPO_${photoID}`).value
   });
 
   fetch(`${API}?${params.toString()}`)
     .then(res => res.json())
     .then(resp => {
-      if (spinner) spinner.style.display = 'none';
+      spinner.style.display = 'none';
+      saveBtn.disabled = false;
 
-      if (resp.success) {
-        alert("Datos guardados correctamente!");
-        // Cerrar modal
-        const modal = document.getElementById('editModal');
-        if (modal) modal.remove();
-        // Opcional: refrescar la galería
-        loadPhotos();
+      if(resp.success){
+        alert("Datos guardados ✅");
+
+        // 🔹 Actualizamos solo el objeto en memoria
+        const photo = photos.find(p => p.ID === photoID);
+        if(photo){
+          photo.STONE = document.getElementById(`STONE_${photoID}`).value;
+          photo.MEMO  = document.getElementById(`MEMO_${photoID}`).value;
+          photo.COLOURS = document.getElementById(`COLOURS_${photoID}`).value;
+          photo.MATERIALES = document.getElementById(`MATERIALES_${photoID}`).value;
+          photo.LOOKINGFOR = document.getElementById(`LOOKINGFOR_${photoID}`).value;
+          photo.TIPO = document.getElementById(`TIPO_${photoID}`).value;
+          photo.SUBTIPO = document.getElementById(`SUBTIPO_${photoID}`).value;
+        }
+
+        // 🔹 Cerramos modal automáticamente
+        document.getElementById('editModal').remove();
+
       } else {
-        alert("Error guardando los datos.");
+        alert("Error guardando ❌");
       }
     })
     .catch(err => {
-      if (spinner) spinner.style.display = 'none';
-      alert("Error de conexión. Intenta nuevamente.");
+      spinner.style.display = 'none';
+      saveBtn.disabled = false;
+      alert("Error de conexión ❌");
       console.error(err);
     });
 }
-
+  
 
 // 🔥 EFECTO 3D (AQUÍ VA EXACTAMENTE)
 document.addEventListener("mousemove", (e) => {
