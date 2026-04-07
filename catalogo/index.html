@@ -425,8 +425,7 @@ function renderSearch(query){
   }, 2000);
 }
 
-
-  function savePhoto(photoID){
+function savePhoto(photoID){
   const saveBtn = document.getElementById(`saveBtn_${photoID}`);
   const spinner = document.getElementById(`spinner_${photoID}`);
 
@@ -434,8 +433,8 @@ function renderSearch(query){
   if(saveBtn) saveBtn.disabled = true;
   if(spinner) spinner.style.display = 'inline';
 
-  // Recopilamos datos
-  const params = new URLSearchParams({
+  // Recopilamos datos del formulario
+  const payload = {
     action: 'update',
     ID: photoID,
     STONE: document.getElementById(`STONE_${photoID}`).value,
@@ -445,45 +444,48 @@ function renderSearch(query){
     LOOKINGFOR: document.getElementById(`LOOKINGFOR_${photoID}`).value,
     TIPO: document.getElementById(`TIPO_${photoID}`).value,
     SUBTIPO: document.getElementById(`SUBTIPO_${photoID}`).value
-  });
+  };
 
-  fetch(`${API}?${params.toString()}`)
-    .then(res => res.json())
-    .then(resp => {
-      if(saveBtn) saveBtn.disabled = false;
-      if(spinner) spinner.style.display = 'none';
+  fetch(API, {
+    method: "POST",
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  })
+  .then(res => res.json())
+  .then(resp => {
+    if(saveBtn) saveBtn.disabled = false;
+    if(spinner) spinner.style.display = 'none';
 
-      if(resp.success){
-        alert("Datos guardados ✅");
+    if(resp.success){
+      showToast("Datos guardados ✅");
 
-        // Actualizamos el objeto en memoria para que la galería esté sincronizada
-        const photo = photos.find(p => p.ID === photoID);
-        if(photo){
-          photo.STONE      = params.get('STONE');
-          photo.MEMO       = params.get('MEMO');
-          photo.COLOURS    = params.get('COLOURS');
-          photo.MATERIALES = params.get('MATERIALES');
-          photo.LOOKINGFOR = params.get('LOOKINGFOR');
-          photo.TIPO       = params.get('TIPO');
-          photo.SUBTIPO    = params.get('SUBTIPO');
-        }
-
-        // Cerramos modal
-        const modal = document.getElementById('editModal');
-        if(modal) modal.remove();
-
-      } else {
-        alert("Error guardando ❌");
+      // Actualizamos el objeto en memoria
+      const photo = photos.find(p => p.ID === photoID);
+      if(photo){
+        photo.STONE      = payload.STONE;
+        photo.MEMO       = payload.MEMO;
+        photo.COLOURS    = payload.COLOURS;
+        photo.MATERIALES = payload.MATERIALES;
+        photo.LOOKINGFOR = payload.LOOKINGFOR;
+        photo.TIPO       = payload.TIPO;
+        photo.SUBTIPO    = payload.SUBTIPO;
       }
-    })
-    .catch(err => {
-      if(saveBtn) saveBtn.disabled = false;
-      if(spinner) spinner.style.display = 'none';
-      alert("Error de conexión ❌");
-      console.error(err);
-    });
-}
 
+      // Cerramos modal
+      const modal = document.getElementById('editModal');
+      if(modal) modal.remove();
+    } else {
+      showToast("Error guardando ❌");
+    }
+  })
+  .catch(err => {
+    if(saveBtn) saveBtn.disabled = false;
+    if(spinner) spinner.style.display = 'none';
+    showToast("Error de conexión ❌");
+    console.error(err);
+  });
+}
+  
 // 🔥 EFECTO 3D (AQUÍ VA EXACTAMENTE)
 document.addEventListener("mousemove", (e) => {
   const img = document.querySelector(".fancybox__content img");
