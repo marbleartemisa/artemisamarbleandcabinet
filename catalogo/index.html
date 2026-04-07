@@ -150,24 +150,25 @@ searchBox.addEventListener("input", (e) => {
   
 const priorityOrder = ["Kitchen","Bathroom","Laundry","Closets & Shelves","Outdoor","BBQ Area","Office","Powder Room","Fireplace","Wall TV","Front desk"];
 
-
-async function loadPhotos(){
-
-  const cached = localStorage.getItem('photos');
-
-  if(cached){
-    photos = JSON.parse(cached);
-  } else {
+async function loadPhotos() {
+  try {
+    // 🚀 Siempre recargar desde el servidor
     const res = await fetch(API);
     const data = await res.json();
-    photos = data;
+
+    // Guardar en localStorage por si quieres usarlo más tarde
     localStorage.setItem('photos', JSON.stringify(data));
+
+    // Filtrar fotos que no tengan PARENTCHILD
+    photos = data.filter(item => !item.PARENTCHILD);
+
+    // Crear botones de filtros y renderizar galería
+    createFilters();
+    renderGallery();
+  } catch (err) {
+    console.error("Error cargando fotos:", err);
+    alert("No se pudieron cargar las fotos. Revisa la consola.");
   }
-
-  photos = photos.filter(item => !item.PARENTCHILD);
-
-  createFilters();
-  renderGallery();
 }
 
   
@@ -309,9 +310,10 @@ function renderSearch(query){
 }
 
 
-  function editPhoto(photoID){
-  const photo = photos.find(p=>p.ID===photoID);
-  if(!photo) return;
+// --- Mantener el modal de edición sin cambios, solo se asegura que siempre use photos actualizadas ---
+function editPhoto(photoID) {
+  const photo = photos.find(p => p.ID === photoID);
+  if (!photo) return;
 
   const formHtml = `
     <div id="editModal" style="
@@ -325,7 +327,6 @@ function renderSearch(query){
       align-items:center;
       z-index:9999;
     ">
-
       <div style="
         background:#ffffff;
         border-radius:16px;
@@ -337,52 +338,49 @@ function renderSearch(query){
         font-family:Inter, sans-serif;
         position:relative;
       ">
-
         <h2 style="margin-top:0;font-size:20px;">Editar Imagen</h2>
-        <p style="font-size:12px;color:#777;margin-bottom:15px;">
-          ID: ${photo.ID}
-        </p>
+        <p style="font-size:12px;color:#777;margin-bottom:15px;">ID: ${photo.ID}</p>
 
         <div class="form-group">
           <label>Stone</label>
-          <input id="STONE" value="${photo.STONE||''}">
+          <input id="STONE" value="${photo.STONE || ''}">
         </div>
 
         <div class="form-group">
           <label>Proyecto</label>
-          <input id="PROYECTO" value="${photo.PROYECTO||''}">
+          <input id="PROYECTO" value="${photo.PROYECTO || ''}">
         </div>
 
         <div class="form-group">
           <label>Memo</label>
-          <textarea id="MEMO">${photo.MEMO||''}</textarea>
+          <textarea id="MEMO">${photo.MEMO || ''}</textarea>
         </div>
 
         <div class="grid-2">
           <div class="form-group">
             <label>Tipo</label>
-            <input id="TIPO" value="${photo.TIPO||''}">
+            <input id="TIPO" value="${photo.TIPO || ''}">
           </div>
           <div class="form-group">
             <label>Subtipo</label>
-            <input id="SUBTIPO" value="${photo.SUBTIPO||''}">
+            <input id="SUBTIPO" value="${photo.SUBTIPO || ''}">
           </div>
         </div>
 
         <div class="grid-2">
           <div class="form-group">
             <label>Colores</label>
-            <input id="COLOURS" value="${photo.COLOURS||''}">
+            <input id="COLOURS" value="${photo.COLOURS || ''}">
           </div>
           <div class="form-group">
             <label>Materiales</label>
-            <input id="MATERIALES" value="${photo.MATERIALES||''}">
+            <input id="MATERIALES" value="${photo.MATERIALES || ''}">
           </div>
         </div>
 
         <div class="form-group">
           <label>Looking For (keywords)</label>
-          <input id="LOOKINGFOR" value="${photo.LOOKINGFOR||''}">
+          <input id="LOOKINGFOR" value="${photo.LOOKINGFOR || ''}">
         </div>
 
         <div style="display:flex;gap:10px;margin-top:20px;">
@@ -394,8 +392,7 @@ function renderSearch(query){
             padding:10px;
             border-radius:8px;
             cursor:pointer;
-            font-weight:600;
-          ">
+            font-weight:600;">
             💾 Guardar
           </button>
 
@@ -405,8 +402,7 @@ function renderSearch(query){
             border:none;
             padding:10px;
             border-radius:8px;
-            cursor:pointer;
-          ">
+            cursor:pointer;">
             🗑️ Borrar
           </button>
         </div>
@@ -418,13 +414,13 @@ function renderSearch(query){
           background:none;
           border:none;
           font-size:18px;
-          cursor:pointer;
-        ">✖</button>
+          cursor:pointer;">
+          ✖
+        </button>
 
       </div>
     </div>
   `;
-
   document.body.insertAdjacentHTML('beforeend', formHtml);
 }
 
