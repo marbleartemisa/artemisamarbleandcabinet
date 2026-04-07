@@ -238,27 +238,27 @@ function renderGallery(category='all', reset=true){
    let editButton = '';
 
 if(isAdmin){
-    editButton = `<button style="
-        position:absolute;
-        top:8px;
-        right:8px;
-        padding:6px 8px;
-        background:#f15a24;
-        color:white;
-        border:none;
-        border-radius:6px;
-        cursor:pointer;
-        z-index:999;
-        box-shadow:0 2px 6px rgba(0,0,0,0.3);
-    "
-    onclick="event.stopPropagation(); editPhoto('${p.ID}')"
-    >✏️</button>`;
-} // 👈 ESTA LLAVE FALTABA
+      editButton = `<button style="
+          position:absolute;
+          top:8px;
+          right:8px;
+          padding:6px 8px;
+          background:#f15a24;
+          color:white;
+          border:none;
+          border-radius:6px;
+          cursor:pointer;
+          z-index:9999;
+          pointer-events:auto;
+      "
+      onclick="event.stopPropagation(); editPhoto(\`${p.ID}\`)"
+      >✏️</button>`;
+      } // 👈 ESTA LLAVE FALTABA
 
 
     
         item.innerHTML = `
-          <a data-fancybox="gallery" href="${full}">
+          <a data-fancybox="gallery" href="${full}" style="display:block;">
             <img src="${thumb}" loading="lazy" onerror="this.parentElement.parentElement.remove()">
           </a>
           ${editButton}
