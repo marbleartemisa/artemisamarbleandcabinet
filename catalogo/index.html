@@ -384,7 +384,7 @@ function editPhoto(photoID) {
         </div>
 
         <div style="display:flex;gap:10px;margin-top:20px;">
-          <button onclick="to('${photoID}')" style="
+          <button id="saveBtn" style="
             flex:1;
             background:#f15a24;
             color:white;
@@ -396,7 +396,7 @@ function editPhoto(photoID) {
             💾 Guardar
           </button>
 
-          <button onclick="deletePhoto('${photoID}')" style="
+          <button id="deleteBtn" style="
             flex:1;
             background:#eee;
             border:none;
@@ -407,7 +407,7 @@ function editPhoto(photoID) {
           </button>
         </div>
 
-        <button onclick="document.getElementById('editModal').remove()" style="
+        <button id="closeModal" style="
           position:absolute;
           top:10px;
           right:10px;
@@ -421,10 +421,14 @@ function editPhoto(photoID) {
       </div>
     </div>
   `;
+
   document.body.insertAdjacentHTML('beforeend', formHtml);
+
+  // ✅ Event listeners sin inline JS
+  document.getElementById('saveBtn').addEventListener('click', () => savePhoto(photoID));
+  document.getElementById('deleteBtn').addEventListener('click', () => deletePhoto(photoID));
+  document.getElementById('closeModal').addEventListener('click', () => document.getElementById('editModal').remove());
 }
-
-
 
 function savePhoto(photoID){
 
@@ -456,6 +460,7 @@ function savePhoto(photoID){
     });
 }
 
+  
   
 
 // 🔥 EFECTO 3D (AQUÍ VA EXACTAMENTE)
