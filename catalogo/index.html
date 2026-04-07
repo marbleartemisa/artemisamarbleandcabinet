@@ -429,13 +429,15 @@ function editPhoto(photoID) {
 }
 
 
-
-function savePhoto(photoID){
+  function savePhoto(photoID){
   const saveBtn = document.getElementById(`saveBtn_${photoID}`);
-  const spinner  = document.getElementById(`spinner_${photoID}`);
-  saveBtn.disabled = true;
-  spinner.style.display = 'inline';
+  const spinner = document.getElementById(`spinner_${photoID}`);
 
+  // Mostramos spinner y deshabilitamos botón
+  if(saveBtn) saveBtn.disabled = true;
+  if(spinner) spinner.style.display = 'inline';
+
+  // Recopilamos datos
   const params = new URLSearchParams({
     action: 'update',
     ID: photoID,
@@ -451,39 +453,39 @@ function savePhoto(photoID){
   fetch(`${API}?${params.toString()}`)
     .then(res => res.json())
     .then(resp => {
-      spinner.style.display = 'none';
-      saveBtn.disabled = false;
+      if(saveBtn) saveBtn.disabled = false;
+      if(spinner) spinner.style.display = 'none';
 
       if(resp.success){
         alert("Datos guardados ✅");
 
-        // 🔹 Actualizamos solo el objeto en memoria
+        // Actualizamos el objeto en memoria para que la galería esté sincronizada
         const photo = photos.find(p => p.ID === photoID);
         if(photo){
-          photo.STONE = document.getElementById(`STONE_${photoID}`).value;
-          photo.MEMO  = document.getElementById(`MEMO_${photoID}`).value;
-          photo.COLOURS = document.getElementById(`COLOURS_${photoID}`).value;
-          photo.MATERIALES = document.getElementById(`MATERIALES_${photoID}`).value;
-          photo.LOOKINGFOR = document.getElementById(`LOOKINGFOR_${photoID}`).value;
-          photo.TIPO = document.getElementById(`TIPO_${photoID}`).value;
-          photo.SUBTIPO = document.getElementById(`SUBTIPO_${photoID}`).value;
+          photo.STONE      = params.get('STONE');
+          photo.MEMO       = params.get('MEMO');
+          photo.COLOURS    = params.get('COLOURS');
+          photo.MATERIALES = params.get('MATERIALES');
+          photo.LOOKINGFOR = params.get('LOOKINGFOR');
+          photo.TIPO       = params.get('TIPO');
+          photo.SUBTIPO    = params.get('SUBTIPO');
         }
 
-        // 🔹 Cerramos modal automáticamente
-        document.getElementById('editModal').remove();
+        // Cerramos modal
+        const modal = document.getElementById('editModal');
+        if(modal) modal.remove();
 
       } else {
         alert("Error guardando ❌");
       }
     })
     .catch(err => {
-      spinner.style.display = 'none';
-      saveBtn.disabled = false;
+      if(saveBtn) saveBtn.disabled = false;
+      if(spinner) spinner.style.display = 'none';
       alert("Error de conexión ❌");
       console.error(err);
     });
 }
-  
 
 // 🔥 EFECTO 3D (AQUÍ VA EXACTAMENTE)
 document.addEventListener("mousemove", (e) => {
