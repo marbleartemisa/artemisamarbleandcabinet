@@ -160,53 +160,59 @@ searchBox.addEventListener("input", (e) => {
 const priorityOrder = ["Kitchen","Bathroom","Laundry","Closets & Shelves","Outdoor","BBQ Area","Office","Powder Room","Fireplace","Wall TV","Front desk"];
 
 
- async function loadPhotos(){
+async function loadPhotos(){
 
   const cached = localStorage.getItem('photos');
 
   if(cached){
     photos = JSON.parse(cached);
-    renderGallery();
+
+    // 🔹 Render inmediato desde cache
+    createFilters();        // muestra los filtros
+    renderGallery();        // muestra las fotos
   }
 
-  // 🔥 SIEMPRE TRAER DATOS NUEVOS
+  // 🔥 Traer datos nuevos sin bloquear UI
   try{
     const res = await fetch(API);
     const data = await res.json();
 
-    photos = data;
-    localStorage.setItem('photos', JSON.stringify(data));
+    photos = data.filter(item => !item.PARENTCHILD);
 
-    photos = photos.filter(item => !item.PARENTCHILD);
+    localStorage.setItem('photos', JSON.stringify(photos));
 
+    // 🔹 Actualizar filtros y galería con datos nuevos
     createFilters();
     renderGallery();
-
+    
   }catch(e){
-    console.error("Error cargando datos nuevos");
+    console.error("Error cargando datos nuevos", e);
   }
 } 
   
 function createFilters(){
-  const tipos = [...new Set(photos.map(p=>p.TIPO).filter(Boolean))];
+  const tipos = [...new Set(photos.map(p => p.TIPO).filter(Boolean))];
 
-  filtersContainer.innerHTML = `<button class="filter-btn active" data-category="all">All</button>`;
+  // ⚡ Render inicial
+  if(filtersContainer.children.length === 0){
+    filtersContainer.innerHTML = `<button class="filter-btn active" data-category="all">All</button>`;
 
-  tipos.forEach(tipo=>{
-    const btn = document.createElement('button');
-    btn.className = "filter-btn";
-    btn.dataset.category = tipo;
-    btn.textContent = tipo;
-    filtersContainer.appendChild(btn);
-  });
-
-  document.querySelectorAll('.filter-btn').forEach(btn=>{
-    btn.addEventListener('click', ()=>{
-      document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
-      btn.classList.add('active');
-     renderGallery(btn.dataset.category, true);
+    tipos.forEach(tipo=>{
+      const btn = document.createElement('button');
+      btn.className = "filter-btn";
+      btn.dataset.category = tipo;
+      btn.textContent = tipo;
+      filtersContainer.appendChild(btn);
     });
-  });
+
+    document.querySelectorAll('.filter-btn').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+        btn.classList.add('active');
+        renderGallery(btn.dataset.category, true);
+      });
+    });
+  }
 }
 
 function renderGallery(category='all', reset=true){
