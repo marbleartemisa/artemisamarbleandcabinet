@@ -425,8 +425,8 @@ function editPhoto(photoID) {
 }
 
 
-  function savePhoto(photoID){
-  const params = new URLSearchParams({
+ function savePhoto(photoID){
+  const payload = {
     action: 'update',
     ID: photoID,
     STONE: document.getElementById('STONE').value,
@@ -436,17 +436,30 @@ function editPhoto(photoID) {
     LOOKINGFOR: document.getElementById('LOOKINGFOR').value,
     TIPO: document.getElementById('TIPO').value,
     SUBTIPO: document.getElementById('SUBTIPO').value
+  };
+
+  fetch(API, {
+    method: 'POST',
+    body: JSON.stringify(payload),
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  })
+  .then(res => res.json())
+  .then(resp => {
+    if(resp.success) {
+      alert("Datos guardados!");
+      // Refrescar datos desde servidor para actualizar modal si quieres
+      loadPhotos();
+    } else {
+      alert("Error guardando: " + (resp.error || "desconocido"));
+    }
+  })
+  .catch(err => {
+    console.error(err);
+    alert("Error de conexión al guardar");
   });
-
-  fetch(`${API}?${params.toString()}`)
-    .then(res => res.json())
-    .then(resp => {
-      if(resp.success) alert("Datos guardados!");
-      else             alert("Error guardando");
-    })
-    .catch(err => alert("Error conexión"));
 }
-
 
 // 🔥 EFECTO 3D (AQUÍ VA EXACTAMENTE)
 document.addEventListener("mousemove", (e) => {
