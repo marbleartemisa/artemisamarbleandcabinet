@@ -83,6 +83,15 @@ header nav a:hover { text-decoration:underline; }
   transform-style: preserve-3d;
   will-change: transform;
 }
+
+  /* Efecto fade para modal */
+#editModal { 
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+#editModal.show {
+  opacity: 1;
+}
 </style>
 </head>
 
@@ -315,7 +324,9 @@ function renderSearch(query){
   Fancybox.bind("[data-fancybox='gallery']", {});
 }
 
-
+// =========================
+// Editar foto (modal)
+// =========================
 function editPhoto(photoID){
   const photo = photos.find(p => p.ID === photoID);
   if(!photo) return;
@@ -411,75 +422,86 @@ function editPhoto(photoID){
   `;
 
   document.body.insertAdjacentHTML('beforeend', formHtml);
+
+  // 🔥 Aplica fade
+  const modal = document.getElementById('editModal');
+  setTimeout(()=>modal.classList.add('show'), 10);
 }
 
-
+// =========================
+// Guardar foto rápido
+// =========================
 async function savePhoto(photoID){
 
   const btn = document.getElementById("saveBtn");
   const spinner = document.getElementById("spinner");
   const text = document.getElementById("saveText");
 
-  // 🚫 bloquear doble click
   btn.disabled = true;
   spinner.style.display = "inline";
   text.innerText = "Guardando...";
 
-  const params = new URLSearchParams({
-    action: 'update',
-    ID: photoID,
-    STONE: document.getElementById('STONE').value,
-    MEMO: document.getElementById('MEMO').value,
-    COLOURS: document.getElementById('COLOURS').value,
-    MATERIALES: document.getElementById('MATERIALES').value,
-    LOOKINGFOR: document.getElementById('LOOKINGFOR').value,
-    TIPO: document.getElementById('TIPO').value,
-    SUBTIPO: document.getElementById('SUBTIPO').value
-  });
+  // 1️⃣ Leer valores
+  const stone = document.getElementById('STONE').value;
+  const memo = document.getElementById('MEMO').value;
+  const colours = document.getElementById('COLOURS').value;
+  const materiales = document.getElementById('MATERIALES').value;
+  const lookingfor = document.getElementById('LOOKINGFOR').value;
+  const tipo = document.getElementById('TIPO').value;
+  const subtipo = document.getElementById('SUBTIPO').value;
 
-  try{
+  // 2️⃣ Actualizar memoria y cache local INMEDIATAMENTE
+  const index = photos.findIndex(p => p.ID === photoID);
+  if(index !== -1){
+    photos[index] = {
+      ...photos[index],
+      STONE: stone,
+      MEMO: memo,
+      COLOURS: colours,
+      MATERIALES: materiales,
+      LOOKINGFOR: lookingfor,
+      TIPO: tipo,
+      SUBTIPO: subtipo
+    };
+  }
+  localStorage.setItem('photos', JSON.stringify(photos));
+
+  // 3️⃣ Cerrar modal y refrescar galería INMEDIATAMENTE
+  document.getElementById('editModal').remove();
+  renderGallery(currentCategory, true);
+
+  // 4️⃣ Guardar en servidor en segundo plano
+  try {
+    const params = new URLSearchParams({
+      action: 'update',
+      ID: photoID,
+      STONE: stone,
+      MEMO: memo,
+      COLOURS: colours,
+      MATERIALES: materiales,
+      LOOKINGFOR: lookingfor,
+      TIPO: tipo,
+      SUBTIPO: subtipo
+    });
+
     const res = await fetch(`${API}?${params.toString()}`);
     const resp = await res.json();
 
-    if(resp.success){
-
-      // ✅ actualizar en memoria
-      const index = photos.findIndex(p => p.ID === photoID);
-      if(index !== -1){
-        photos[index] = {
-          ...photos[index],
-          STONE: params.get("STONE"),
-          MEMO: params.get("MEMO"),
-          COLOURS: params.get("COLOURS"),
-          MATERIALES: params.get("MATERIALES"),
-          LOOKINGFOR: params.get("LOOKINGFOR"),
-          TIPO: params.get("TIPO"),
-          SUBTIPO: params.get("SUBTIPO")
-        };
-      }
-
-      // ✅ actualizar cache
-      localStorage.setItem('photos', JSON.stringify(photos));
-
-      // 🔥 cerrar modal
-      document.getElementById('editModal').remove();
-
-      // 🔥 refrescar galería
-      renderGallery(currentCategory, true);
-      await loadPhotos();
-    } else {
-      alert("Error guardando");
+    if(!resp.success){
+      alert("Error guardando en el servidor, cambios locales conservados.");
     }
 
-  }catch(err){
-    alert("Error conexión");
+  } catch(err) {
+    alert("Error de conexión, cambios locales guardados.");
   }
 
-  // 🔓 reactivar botón
   btn.disabled = false;
   spinner.style.display = "none";
   text.innerText = "💾 Guardar";
 }
+  
+
+
 
   
 
