@@ -425,15 +425,14 @@ function renderSearch(query){
   }, 2000);
 }
 
-function savePhoto(photoID){
+  function savePhoto(photoID){
   const saveBtn = document.getElementById(`saveBtn_${photoID}`);
   const spinner = document.getElementById(`spinner_${photoID}`);
+  const modal = document.getElementById('editModal');
 
-  // Mostramos spinner y deshabilitamos botón
   if(saveBtn) saveBtn.disabled = true;
   if(spinner) spinner.style.display = 'inline';
 
-  // Recopilamos datos del formulario
   const payload = {
     action: 'update',
     ID: photoID,
@@ -445,6 +444,9 @@ function savePhoto(photoID){
     TIPO: document.getElementById(`TIPO_${photoID}`).value,
     SUBTIPO: document.getElementById(`SUBTIPO_${photoID}`).value
   };
+
+  // Cerramos el modal inmediatamente para que no quede bloqueado
+  if(modal) modal.remove();
 
   fetch(API, {
     method: "POST",
@@ -470,10 +472,6 @@ function savePhoto(photoID){
         photo.TIPO       = payload.TIPO;
         photo.SUBTIPO    = payload.SUBTIPO;
       }
-
-      // Cerramos modal
-      const modal = document.getElementById('editModal');
-      if(modal) modal.remove();
     } else {
       showToast("Error guardando ❌");
     }
