@@ -273,7 +273,6 @@ function createFilters(){
 
 function renderGallery(category='all', reset=true){
 
-  // 🔥 PREVENIR DOBLE CARGA (CLAVE)
   if(isLoading) return;
   isLoading = true;
 
@@ -290,7 +289,6 @@ function renderGallery(category='all', reset=true){
 
   const slice = filtered.slice(currentIndex, currentIndex + PAGE_SIZE);
 
-  // 👉 SI YA NO HAY MÁS FOTOS, DETENER
   if(slice.length === 0){
     isLoading = false;
     return;
@@ -306,9 +304,8 @@ function renderGallery(category='all', reset=true){
 
     const fileId = match[1];
 
-    // 🔥 IMÁGENES MÁS GRANDES (AQUÍ EL CAMBIO)
-      const thumb = `https://lh3.googleusercontent.com/d/${fileId}=w800`;
-      const full  = `https://lh3.googleusercontent.com/d/${fileId}=w2400`;
+    const thumb = `https://lh3.googleusercontent.com/d/${fileId}=w800`;
+    const full  = `https://lh3.googleusercontent.com/d/${fileId}=w2400`;
 
     const item = document.createElement('div');
     item.className = 'grid-item';
@@ -337,12 +334,13 @@ function renderGallery(category='all', reset=true){
       <a data-fancybox="gallery" href="${full}">
         <img src="${thumb}" loading="lazy"
           onerror="this.closest('.grid-item').remove()">
-          style="width:100%; height:260px; object-fit:cover;"
       </a>
       ${adminButtons}
     `;
 
     fragment.appendChild(item);
+
+    // 🔥 Pinterest resize
     resizeGridItem(item);
   });
 
@@ -352,10 +350,8 @@ function renderGallery(category='all', reset=true){
 
   Fancybox.bind("[data-fancybox='gallery']", {});
 
-  // 🔥 LIBERA BLOQUEO
   isLoading = false;
 }
-  
 // =========================
 // Editar foto (modal)
 // =========================
