@@ -178,7 +178,7 @@ async function loadPhotos(){
     console.log("DATA BACKEND:", data); // 👈 DEBUG
 
     photos = data
-      .filter(item => !item.PARENTCHILD)
+      .filter(item => !item.PARENTCHILD || item.PARENTCHILD === "")
       .filter(item => item.ESTADO !== 'ELIMINADO');
 
     console.log("PHOTOS FILTRADAS:", photos); // 👈 DEBUG
@@ -231,7 +231,7 @@ function renderGallery(category='all', reset=true){
     currentIndex = 0;
     currentCategory = category;
   }
-
+const link = (p.LINK || "").trim();
   // ✅ Filtrar desde memoria inmediatamente
        const filtered = photos.filter(p => 
         (!p.ESTADO || p.ESTADO !== 'ELIMINADO') &&
@@ -242,12 +242,12 @@ function renderGallery(category='all', reset=true){
   const slice = filtered.slice(currentIndex, currentIndex + PAGE_SIZE);
   slice.forEach(p => {
 
-  let fileId = null;
+      let fileId = null;
+      const link = (p.LINK || "").trim();
+      
+      const match = link.match(/id=([^&]+)/);
+      if(match) fileId = match[1];
 
-  if(p.LINK.includes("drive.google.com")){
-    const match = p.LINK.match(/id=([^&]+)/) || p.LINK.match(/\/d\/([^/]+)/);
-    if(match) fileId = match[1];
-  }
 
   if(!fileId || !p.LINK) return;
   if(p.LINK.includes("undefined") || p.LINK.includes("null") || p.LINK.length < 10) return;
@@ -309,7 +309,6 @@ loadPhotos();
     const thumb = `https://lh3.googleusercontent.com/d/${fileId}=w400`;
     const full  = `https://lh3.googleusercontent.com/d/${fileId}=w2000`;
 
-    const item = document.createElement('div');
     item.className = 'grid-item';
 
     item.innerHTML = `
