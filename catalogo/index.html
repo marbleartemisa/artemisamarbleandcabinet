@@ -20,24 +20,46 @@ header nav a:hover { text-decoration:underline; }
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  grid-auto-rows: 8px; /* 🔥 base masonry */
   gap: 12px;
   max-width:1200px;
   margin:0 auto;
   padding:10px;
 }
-  
+  .grid-item {
+  position: relative;
+  overflow: hidden;
+  border-radius:10px;
+}
+
+/* 🔥 EFECTO BLUR LOADING */
+.grid-item img {
+  width:100%;
+  height:auto;
+  display:block;
+  filter: blur(12px);
+  transform: scale(1.05);
+  transition: 
+    filter 0.4s ease,
+    transform 0.4s ease,
+    opacity 0.4s ease;
+  opacity: 0;
+}
+
+/* cuando carga */
+.grid-item img.loaded {
+  filter: blur(0);
+  transform: scale(1);
+  opacity: 1;
+}
 
 .grid-item {
   cursor:pointer;
   position: relative; /* 👈 ESTA ES LA CLAVE */
 }
 
-.grid-item img {
-  width:100%;
-  border-radius:10px;
-  transition: transform 0.2s ease;
-}
+
 
 .grid-item img:hover {
   transform: scale(1.03);
@@ -285,8 +307,8 @@ function renderGallery(category='all', reset=true){
     const fileId = match[1];
 
     // 🔥 IMÁGENES MÁS GRANDES (AQUÍ EL CAMBIO)
-    const thumb = `https://lh3.googleusercontent.com/d/${fileId}=w600`;
-    const full  = `https://lh3.googleusercontent.com/d/${fileId}=w2000`;
+      const thumb = `https://lh3.googleusercontent.com/d/${fileId}=w800`;
+      const full  = `https://lh3.googleusercontent.com/d/${fileId}=w2400`;
 
     const item = document.createElement('div');
     item.className = 'grid-item';
@@ -314,13 +336,14 @@ function renderGallery(category='all', reset=true){
     item.innerHTML = `
       <a data-fancybox="gallery" href="${full}">
         <img src="${thumb}" loading="lazy"
-          style="width:100%; height:260px; object-fit:cover;"
           onerror="this.closest('.grid-item').remove()">
+          style="width:100%; height:260px; object-fit:cover;"
       </a>
       ${adminButtons}
     `;
 
     fragment.appendChild(item);
+    resizeGridItem(item);
   });
 
   gallery.appendChild(fragment);
@@ -548,7 +571,23 @@ function deletePhoto(photoID){
   });
 }
 
+function resizeGridItem(item){
+  const grid = document.querySelector('.grid');
+  const rowHeight = parseInt(getComputedStyle(grid).getPropertyValue('grid-auto-rows'));
+  const rowGap = parseInt(getComputedStyle(grid).getPropertyValue('gap'));
 
+  const img = item.querySelector('img');
+
+  if(!img) return;
+
+  img.onload = () => {
+    const rowSpan = Math.ceil((img.getBoundingClientRect().height + rowGap) / (rowHeight + rowGap));
+    item.style.gridRowEnd = "span " + rowSpan;
+
+    // 🔥 activar animación
+    img.classList.add("loaded");
+  };
+}
   
 
 // 🔥 EFECTO 3D (AQUÍ VA EXACTAMENTE)
@@ -587,7 +626,7 @@ let isLoadingMore = false;
 
 });
   
-
+  
 // 👇 AQUÍ MISMO PEGAS ESTO
 window.addEventListener("DOMContentLoaded", () => {
   loadPhotos();
