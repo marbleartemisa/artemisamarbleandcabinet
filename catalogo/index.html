@@ -252,8 +252,8 @@ function renderGallery(category='all', reset=true){
   if(!fileId || !p.LINK) return;
   if(p.LINK.includes("undefined") || p.LINK.includes("null") || p.LINK.length < 10) return;
 
-  const thumb = `https://lh3.googleusercontent.com/d/${fileId}=w600`;
-  const full  = `https://lh3.googleusercontent.com/d/${fileId}=w2000`;
+const thumb = p.LINK;
+const full  = p.LINK;
 
   const item = document.createElement('div');
   item.classList.add('grid-item');
