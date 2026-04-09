@@ -101,6 +101,12 @@ header nav a:hover { text-decoration:underline; }
 #editModal.show {
   opacity: 1;
 }
+
+@keyframes spin {
+  0% { transform: rotate(0deg);}
+  100% { transform: rotate(360deg);}
+}
+  
 </style>
 </head>
 
@@ -132,6 +138,19 @@ header nav a:hover { text-decoration:underline; }
   style="padding:10px;width:250px;border-radius:6px;border:1px solid #ccc;">
 </div>
 
+<div id="loader" style="text-align:center; margin:40px;">
+  <div style="
+    width:40px;
+    height:40px;
+    border:4px solid #ccc;
+    border-top:4px solid #f15a24;
+    border-radius:50%;
+    margin:auto;
+    animation: spin 1s linear infinite;
+  "></div>
+  <p style="margin-top:10px;color:#666;">Cargando galería...</p>
+</div>
+  
 <div class="grid" id="gallery"></div>
 
 <!-- Fancybox -->
@@ -186,7 +205,11 @@ async function loadPhotos(){
     localStorage.setItem('photos', JSON.stringify(photos));
 
     createFilters();
-    renderGallery();
+
+        setTimeout(() => {
+        renderGallery();
+        document.getElementById("loader").style.display = "none";
+        }, 50);
 
   }catch(e){
     console.error("Error cargando datos", e);
@@ -225,79 +248,95 @@ function createFilters(){
   }
 }
 
+
 function renderGallery(category='all', reset=true){
 
-  if(reset){
-    gallery.innerHTML = '';
-    currentIndex = 0;
-    currentCategory = category;
-  }
+  // 🔹 Spinner SIEMPRE al inicio
+  gallery.innerHTML = '<div style="text-align:center;padding:40px;font-size:18px;">⏳ Cargando imágenes...</div>';
 
-  const filtered = photos.filter(p => 
-    (!p.ESTADO || p.ESTADO !== 'ELIMINADO') &&
-    (category === 'all' || p.TIPO === category)
-  );
+  setTimeout(()=>{
 
-  const slice = filtered.slice(currentIndex, currentIndex + PAGE_SIZE);
-
-  // 🔥 ULTRA PERFORMANCE: fragment (evita reflows)
-  const fragment = document.createDocumentFragment();
-
-  slice.forEach(p => {
-
-    const link = (p.LINK || "").trim();
-    const match = link.match(/id=([^&]+)/);
-
-    if(!match) return;
-
-    const fileId = match[1];
-
-    // 🔥 THUMB LIGERO (CLAVE DEL RENDIMIENTO)
-    const thumb = `https://lh3.googleusercontent.com/d/${fileId}=w300`;
-    const full  = `https://lh3.googleusercontent.com/d/${fileId}=w1600`;
-
-    const item = document.createElement('div');
-    item.className = 'grid-item';
-
-    let adminButtons = '';
-
-    if(isAdmin){
-      adminButtons = `
-        <button style="
-          position:absolute; top:8px; right:8px;
-          background:#f15a24; color:white;
-          border:none; border-radius:6px;
-          padding:5px 7px; cursor:pointer; z-index:10;
-        " onclick="event.stopPropagation(); editPhoto('${p.ID}')">✏️</button>
-
-        <button style="
-          position:absolute; top:8px; right:40px;
-          background:#d11a2a; color:white;
-          border:none; border-radius:6px;
-          padding:5px 7px; cursor:pointer; z-index:10;
-        " onclick="event.stopPropagation(); deletePhoto('${p.ID}')">🗑️</button>
-      `;
+    if(reset){
+      gallery.innerHTML = '';
+      currentIndex = 0;
+      currentCategory = category;
     }
 
-    item.innerHTML = `
-      <a data-fancybox="gallery" href="${full}">
-        <img src="${thumb}" loading="lazy"
-          onerror="this.closest('.grid-item').remove()">
-      </a>
-      ${adminButtons}
-    `;
+    const filtered = photos.filter(p => 
+      (!p.ESTADO || p.ESTADO !== 'ELIMINADO') &&
+      (category === 'all' || p.TIPO === category)
+    );
 
-    fragment.appendChild(item);
-  });
+    // 🔴 SIN RESULTADOS
+    if(filtered.length === 0){
+      gallery.innerHTML = `
+        <div style="text-align:center;padding:40px;color:#777;">
+          No hay imágenes disponibles
+        </div>
+      `;
+      return;
+    }
 
-  gallery.appendChild(fragment);
+    const slice = filtered.slice(currentIndex, currentIndex + PAGE_SIZE);
 
-  currentIndex += PAGE_SIZE;
+    const fragment = document.createDocumentFragment();
 
-  Fancybox.bind("[data-fancybox='gallery']", {});
+    slice.forEach(p => {
+
+      if(!p.LINK) return;
+
+      const match = p.LINK.match(/id=([^&]+)/);
+      if(!match) return;
+
+      const fileId = match[1];
+
+      const thumb = `https://lh3.googleusercontent.com/d/${fileId}=w300`;
+      const full  = `https://lh3.googleusercontent.com/d/${fileId}=w1600`;
+
+      const item = document.createElement('div');
+      item.className = 'grid-item';
+
+      let adminButtons = '';
+
+      // 🔹 SOLO si hay admin Y hay fotos visibles
+      if(isAdmin && filtered.length > 0){
+        adminButtons = `
+          <button style="
+            position:absolute; top:8px; right:8px;
+            background:#f15a24; color:white;
+            border:none; border-radius:6px;
+            padding:5px 7px; cursor:pointer; z-index:10;
+          " onclick="event.stopPropagation(); editPhoto('${p.ID}')">✏️</button>
+
+          <button style="
+            position:absolute; top:8px; right:40px;
+            background:#d11a2a; color:white;
+            border:none; border-radius:6px;
+            padding:5px 7px; cursor:pointer; z-index:10;
+          " onclick="event.stopPropagation(); deletePhoto('${p.ID}')">🗑️</button>
+        `;
+      }
+
+      item.innerHTML = `
+        <a data-fancybox="gallery" href="${full}">
+          <img src="${thumb}" loading="lazy"
+            onerror="this.closest('.grid-item').remove()">
+        </a>
+        ${adminButtons}
+      `;
+
+      fragment.appendChild(item);
+    });
+
+    gallery.innerHTML = '';
+    gallery.appendChild(fragment);
+
+    currentIndex += PAGE_SIZE;
+
+    Fancybox.bind("[data-fancybox='gallery']", {});
+
+  }, 50); // 👈 micro-delay para que el spinner se vea
 }
-
-loadPhotos();
 
 
 // =========================
@@ -546,6 +585,18 @@ window.addEventListener('scroll', () => {
     renderGallery(currentCategory, false);
   }
 });
+
+  window.addEventListener('scroll', () => {
+  if(window.innerHeight + window.scrollY >= document.body.offsetHeight - 300){
+    renderGallery(currentCategory, false);
+  }
+});
+
+// 👇 AQUÍ MISMO PEGAS ESTO
+window.addEventListener("DOMContentLoaded", () => {
+  loadPhotos();
+});
+
   
 </script>
 
