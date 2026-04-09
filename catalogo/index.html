@@ -140,7 +140,7 @@ header nav a:hover { text-decoration:underline; }
 <script>
 const API = "https://script.google.com/macros/s/AKfycbwGGvL1ox8ZXJ08fRxKXgyJHQxzDOfwnCfpxcabCGJht5dh6R5ViTAeiGPQfa0LAXB2/exec";
 let photos = [];
-const PAGE_SIZE = 60;
+const PAGE_SIZE = 40;
 let currentIndex = 0;
 let currentCategory = 'all';
 
@@ -226,6 +226,7 @@ function createFilters(){
 }
 
 function renderGallery(category='all', reset=true){
+
   if(reset){
     gallery.innerHTML = '';
     currentIndex = 0;
@@ -234,50 +235,62 @@ function renderGallery(category='all', reset=true){
 
   const filtered = photos.filter(p => 
     (!p.ESTADO || p.ESTADO !== 'ELIMINADO') &&
-    (category==='all' || p.TIPO===category)
+    (category === 'all' || p.TIPO === category)
   );
 
   const slice = filtered.slice(currentIndex, currentIndex + PAGE_SIZE);
 
+  // 🔥 ULTRA PERFORMANCE: fragment (evita reflows)
+  const fragment = document.createDocumentFragment();
+
   slice.forEach(p => {
 
-    let fileId = null;
     const link = (p.LINK || "").trim();
-
     const match = link.match(/id=([^&]+)/);
-    if(match) fileId = match[1];
 
-    if(!fileId) return;
+    if(!match) return;
 
-    const thumb = p.LINK;
-    const full  = p.LINK;
+    const fileId = match[1];
+
+    // 🔥 THUMB LIGERO (CLAVE DEL RENDIMIENTO)
+    const thumb = `https://lh3.googleusercontent.com/d/${fileId}=w300`;
+    const full  = `https://lh3.googleusercontent.com/d/${fileId}=w1600`;
 
     const item = document.createElement('div');
-    item.classList.add('grid-item');
+    item.className = 'grid-item';
 
     let adminButtons = '';
 
     if(isAdmin){
       adminButtons = `
-        <button style="position:absolute; top:8px; right:8px;"
-          onclick="event.stopPropagation(); editPhoto('${p.ID}')">✏️</button>
+        <button style="
+          position:absolute; top:8px; right:8px;
+          background:#f15a24; color:white;
+          border:none; border-radius:6px;
+          padding:5px 7px; cursor:pointer; z-index:10;
+        " onclick="event.stopPropagation(); editPhoto('${p.ID}')">✏️</button>
 
-        <button style="position:absolute; top:8px; right:45px;"
-          onclick="event.stopPropagation(); deletePhoto('${p.ID}')">🗑️</button>
+        <button style="
+          position:absolute; top:8px; right:40px;
+          background:#d11a2a; color:white;
+          border:none; border-radius:6px;
+          padding:5px 7px; cursor:pointer; z-index:10;
+        " onclick="event.stopPropagation(); deletePhoto('${p.ID}')">🗑️</button>
       `;
     }
 
     item.innerHTML = `
       <a data-fancybox="gallery" href="${full}">
         <img src="${thumb}" loading="lazy"
-          onerror="this.parentElement.parentElement.remove()">
+          onerror="this.closest('.grid-item').remove()">
       </a>
       ${adminButtons}
     `;
 
-    gallery.appendChild(item);
-
+    fragment.appendChild(item);
   });
+
+  gallery.appendChild(fragment);
 
   currentIndex += PAGE_SIZE;
 
