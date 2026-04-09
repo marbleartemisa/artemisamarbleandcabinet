@@ -16,7 +16,7 @@ header nav a:hover { text-decoration:underline; }
 
 .filters { text-align:center; margin:20px 0; }
 .filters button { padding:10px 20px; margin:5px; border:none; background:#222; color:#fff; cursor:pointer; border-radius:4px; transition:0.3s;}
-.filters button.active, .filters button:hover { background:#f15a24; }usuario
+.filters button.active, .filters button:hover { background:#f15a24; }
 
 .grid {
   display: grid;
@@ -28,17 +28,14 @@ header nav a:hover { text-decoration:underline; }
 }
   
 
-  .grid-item {
-  height: 220px !important;
-  overflow: hidden !important;
-  border-radius:10px;
+.grid-item {
+  cursor:pointer;
+  position: relative; /* 👈 ESTA ES LA CLAVE */
 }
 
 .grid-item img {
-  width:100% !important;
-  height:100% !important;
-  object-fit: cover !important;
-  display:block;
+  width:100%;
+  border-radius:10px;
   transition: transform 0.2s ease;
 }
 
@@ -123,7 +120,9 @@ header nav a:hover { text-decoration:underline; }
   </nav>
 </header>
 <div style="text-align:center;margin:10px;">
-
+  <button id="adminLoginBtn" style="padding:8px 16px;background:#f15a24;color:white;border:none;border-radius:5px;cursor:pointer;">
+    Ingresar clave Admin
+  </button>
 </div>
 <div class="filters"></div>
 
@@ -144,22 +143,23 @@ let photos = [];
 const PAGE_SIZE = 40;
 let currentIndex = 0;
 let currentCategory = 'all';
-let currentUser = null;
-const usuarios = [
-  {usuario:"Damian Molina", clave:"Dam1975"},
-  {usuario:"Alberto Molina", clave:"Alb1975"},
-  {usuario:"Wendy Romanach", clave:"Wen1975"},
-  {usuario:"Carlos Herrera", clave:"Art2026"},
-  {usuario:"Jenny Perez", clave:"Jen1975"},
-  {usuario:"Eliana Pineda", clave:"Eli1975"},
-  {usuario:"Yoandry Perez", clave:"Yoa1975"},
-  {usuario:"Yozusi Urdaneta", clave:"Yoz1975"}
-];
-  
+
 const gallery = document.getElementById('gallery');
 const filtersContainer = document.querySelector('.filters');
 const searchBox = document.getElementById("searchBox");
 
+let isAdmin = false;
+
+document.getElementById('adminLoginBtn').addEventListener('click', () => {
+  const clave = prompt("Ingrese la clave de administrador:");
+  if(clave === "Artemisa2026"){ // cambiar por tu clave real
+    isAdmin = true;
+    alert("Modo administrador activado");
+    renderGallery(currentCategory, true); // refresca la galería para mostrar lápices
+  } else {
+    alert("Clave incorrecta");
+  }
+});
 
 searchBox.addEventListener("input", (e) => {
   const value = e.target.value.toLowerCase();
@@ -168,41 +168,6 @@ searchBox.addEventListener("input", (e) => {
   
 const priorityOrder = ["Kitchen","Bathroom","Laundry","Closets & Shelves","Outdoor","BBQ Area","Office","Powder Room","Fireplace","Wall TV","Front desk"];
 
-function populateUsers(){
-  const select = document.getElementById("loginUser");
-  select.innerHTML = '<option value="">Seleccione usuario</option>';
-
-  usuarios.forEach(u=>{
-    const opt = document.createElement("option");
-    opt.value = u.usuario;
-    opt.textContent = u.usuario;
-    select.appendChild(opt);
-  });
-}
-
-function login(){
-  const userName = document.getElementById("loginUser").value;
-  const pass = document.getElementById("loginPass").value;
-
-  const user = usuarios.find(u =>
-    u.usuario === userName && u.clave === pass
-  );
-
-  if(user){
-    currentUser = user;
-    localStorage.setItem("usuario", user.usuario);
-
-    document.getElementById("loginModal").style.display = "none";
-
-    renderGallery(currentCategory, true);
-  } else {
-    document.getElementById("loginError").style.display = "block";
-  }
-}
-
-function openLogin(){
-  document.getElementById("loginModal").style.display = "flex";
-}  
 
 async function loadPhotos(){
 
@@ -296,7 +261,7 @@ function renderGallery(category='all', reset=true){
 
     let adminButtons = '';
 
-    if(currentUser){
+    if(isAdmin){
       adminButtons = `
         <button style="
           position:absolute; top:8px; right:8px;
@@ -332,23 +297,9 @@ function renderGallery(category='all', reset=true){
   Fancybox.bind("[data-fancybox='gallery']", {});
 }
 
+loadPhotos();
 
-window.addEventListener("DOMContentLoaded", ()=>{
 
-  populateUsers();
-
-  const savedUser = localStorage.getItem("usuario");
-
-  if(savedUser){
-    currentUser = usuarios.find(u => u.usuario === savedUser);
-  } else {
-    openLogin();
-  }
-
-  loadPhotos(); // 🔥 EXACTAMENTE AQUÍ
-
-});
-  
 // =========================
 // Editar foto (modal)
 // =========================
@@ -490,12 +441,6 @@ async function savePhoto(photoID){
     };
   }
   localStorage.setItem('photos', JSON.stringify(photos));
-  
-const usuario = currentUser ? currentUser.usuario : "Desconocido";
-const fecha = new Date().toLocaleString();
-
-photos[index].MEMO = (photos[index].MEMO || '') +
-  `\n[EDITADO por ${usuario} - ${fecha}]`;
 
   // 3️⃣ Cerrar modal y refrescar galería INMEDIATAMENTE
   document.getElementById('editModal').remove();
@@ -533,11 +478,9 @@ photos[index].MEMO = (photos[index].MEMO || '') +
   
 function deletePhoto(photoID){
 
-  if(!currentUser) return alert("Debes iniciar sesión");
-
   if(!confirm("¿Seguro que deseas eliminar esta foto?")) return;
 
-  const usuario = currentUser.usuario;
+  const usuario = "admin"; // puedes luego hacerlo dinámico
   const fecha = new Date().toLocaleString();
 
   const index = photos.findIndex(p => p.ID === photoID);
@@ -548,16 +491,30 @@ function deletePhoto(photoID){
       `\n[ELIMINADO por ${usuario} - ${fecha}]`;
   }
 
+  // 🔹 Actualizar cache local inmediato
   localStorage.setItem('photos', JSON.stringify(photos));
+
+  // 🔹 Refrescar UI inmediato
   renderGallery(currentCategory, true);
 
+  // 🔹 Guardar en backend
   fetch(`${API}?${new URLSearchParams({
     action: 'delete',
     ID: photoID,
     ESTADO: 'ELIMINADO',
     MEMO: photos[index].MEMO
-  })}`);
+  })}`)
+  .then(r=>r.json())
+  .then(resp=>{
+    if(!resp.success){
+      alert("Error en servidor, pero eliminado localmente");
+    }
+  })
+  .catch(()=>{
+    alert("Sin conexión, eliminado localmente");
+  });
 }
+
 
   
 
@@ -591,23 +548,6 @@ window.addEventListener('scroll', () => {
 });
   
 </script>
-<!-- LOGIN MODAL -->
-<div id="loginModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);justify-content:center;align-items:center;z-index:9999;">
-  <div style="background:#1e1e2f;padding:25px;border-radius:12px;width:300px;text-align:center;color:white;">
-    <h3>Login</h3>
 
-    <select id="loginUser" style="width:100%;padding:10px;margin-bottom:10px;border-radius:6px;"></select>
-
-    <input type="password" id="loginPass" placeholder="Clave"
-      style="width:100%;padding:10px;margin-bottom:10px;border-radius:6px;">
-
-    <div id="loginError" style="color:red;display:none;">Datos incorrectos</div>
-
-    <button onclick="login()" style="padding:8px 16px;background:#f15a24;color:white;border:none;border-radius:6px;">
-      Entrar
-    </button>
-  </div>
-</div>
-  
 </body>
 </html>
