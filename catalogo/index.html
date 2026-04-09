@@ -171,42 +171,34 @@ const priorityOrder = ["Kitchen","Bathroom","Laundry","Closets & Shelves","Outdo
 
 async function loadPhotos(){
 
-  const cached = localStorage.getItem('photos');
-
-  // 🔹 1. Cargar desde cache (FILTRADO)
-  if(cached){
-    const cachedData = JSON.parse(cached);
-
-    photos = cachedData
-      .filter(item => !item.PARENTCHILD)
-      .filter(item => item.ESTADO !== 'ELIMINADO');
-
-    createFilters();
-    renderGallery();
-  }
-
-  // 🔥 2. Traer datos nuevos
   try{
     const res = await fetch(API);
     const data = await res.json();
 
-    // 🔹 3. Guardar TODO en cache (sin filtrar)
-    localStorage.setItem('photos', JSON.stringify(data));
+    console.log("DATA BACKEND:", data); // 👈 DEBUG
 
-    // 🔹 4. Filtrar para mostrar
     photos = data
       .filter(item => !item.PARENTCHILD)
       .filter(item => item.ESTADO !== 'ELIMINADO');
 
+    console.log("PHOTOS FILTRADAS:", photos); // 👈 DEBUG
+
+    localStorage.setItem('photos', JSON.stringify(photos));
+
     createFilters();
     renderGallery();
-    
+
   }catch(e){
-    console.error("Error cargando datos nuevos", e);
+    console.error("Error cargando datos", e);
+
+    // fallback cache
+    const cached = localStorage.getItem('photos');
+    if(cached){
+      photos = JSON.parse(cached);
+      renderGallery();
+    }
   }
 }
-
-
   
 function createFilters(){
   const tipos = [...new Set(photos.map(p => p.TIPO).filter(Boolean))];
