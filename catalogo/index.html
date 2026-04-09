@@ -258,21 +258,38 @@ const full  = p.LINK;
   const item = document.createElement('div');
   item.classList.add('grid-item');
 
-  let adminButtons = '';
-  if(isAdmin){
-    adminButtons = `
-      <button onclick="event.stopPropagation(); editPhoto('${p.ID}')">✏️</button>
-      <button onclick="event.stopPropagation(); deletePhoto('${p.ID}')">🗑️</button>
-    `;
-  }
+let adminButtons = '';
 
-  item.innerHTML = `
-    <a data-fancybox="gallery" href="${full}">
-      <img src="${thumb}" loading="lazy" onerror="this.parentElement.parentElement.remove()">
-    </a>
-    ${adminButtons}
+if(isAdmin){
+  adminButtons = `
+    <button style="
+      position:absolute; top:8px; right:8px;
+      padding:6px 8px;
+      background:#f15a24; color:white;
+      border:none; border-radius:6px;
+      cursor:pointer; z-index:999;
+    " onclick="event.stopPropagation(); editPhoto('${p.ID}')">✏️</button>
+
+    <button style="
+      position:absolute; top:8px; right:45px;
+      padding:6px 8px;
+      background:#d11a2a; color:white;
+      border:none; border-radius:6px;
+      cursor:pointer; z-index:999;
+    " onclick="event.stopPropagation(); deletePhoto('${p.ID}')">🗑️</button>
   `;
+}
 
+item.innerHTML = `
+  <a data-fancybox="gallery" href="${full}">
+    <img src="${thumb}" loading="lazy"
+      onerror="this.parentElement.parentElement.remove()">
+  </a>
+  ${adminButtons}
+`;
+
+
+    
   gallery.appendChild(item);
 
 }); // ✅ CIERRE CORRECTO
