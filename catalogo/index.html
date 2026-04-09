@@ -20,7 +20,7 @@ header nav a:hover { text-decoration:underline; }
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 12px;
   max-width:1200px;
   margin:0 auto;
@@ -162,7 +162,7 @@ let photos = [];
 const PAGE_SIZE = 40;
 let currentIndex = 0;
 let currentCategory = 'all';
-
+let isLoading = false;
 const gallery = document.getElementById('gallery');
 const filtersContainer = document.querySelector('.filters');
 const searchBox = document.getElementById("searchBox");
@@ -251,100 +251,88 @@ function createFilters(){
 
 function renderGallery(category='all', reset=true){
 
-  // 🔥 SOLO spinner en carga inicial
+  // 🔥 PREVENIR DOBLE CARGA (CLAVE)
+  if(isLoading) return;
+  isLoading = true;
+
   if(reset){
-    gallery.innerHTML = '<div style="text-align:center;padding:40px;font-size:18px;">⏳ Cargando imágenes...</div>';
+    gallery.innerHTML = '';
+    currentIndex = 0;
+    currentCategory = category;
   }
 
-  setTimeout(()=>{
+  const filtered = photos.filter(p => 
+    (!p.ESTADO || p.ESTADO !== 'ELIMINADO') &&
+    (category === 'all' || p.TIPO === category)
+  );
 
-    if(reset){
-      gallery.innerHTML = '';
-      currentIndex = 0;
-      currentCategory = category;
-    }
+  const slice = filtered.slice(currentIndex, currentIndex + PAGE_SIZE);
 
-    const filtered = photos.filter(p => 
-      (!p.ESTADO || p.ESTADO !== 'ELIMINADO') &&
-      (category === 'all' || p.TIPO === category)
-    );
+  // 👉 SI YA NO HAY MÁS FOTOS, DETENER
+  if(slice.length === 0){
+    isLoading = false;
+    return;
+  }
 
-    // 🔴 SIN RESULTADOS
-    if(filtered.length === 0){
-      gallery.innerHTML = `
-        <div style="text-align:center;padding:40px;color:#777;">
-          No hay imágenes disponibles
-        </div>
+  const fragment = document.createDocumentFragment();
+
+  slice.forEach(p => {
+
+    const link = (p.LINK || "").trim();
+    const match = link.match(/id=([^&]+)/);
+    if(!match) return;
+
+    const fileId = match[1];
+
+    // 🔥 IMÁGENES MÁS GRANDES (AQUÍ EL CAMBIO)
+    const thumb = `https://lh3.googleusercontent.com/d/${fileId}=w600`;
+    const full  = `https://lh3.googleusercontent.com/d/${fileId}=w2000`;
+
+    const item = document.createElement('div');
+    item.className = 'grid-item';
+
+    let adminButtons = '';
+
+    if(isAdmin){
+      adminButtons = `
+        <button style="
+          position:absolute; top:8px; right:8px;
+          background:#f15a24; color:white;
+          border:none; border-radius:6px;
+          padding:5px 7px; cursor:pointer; z-index:10;
+        " onclick="event.stopPropagation(); editPhoto('${p.ID}')">✏️</button>
+
+        <button style="
+          position:absolute; top:8px; right:40px;
+          background:#d11a2a; color:white;
+          border:none; border-radius:6px;
+          padding:5px 7px; cursor:pointer; z-index:10;
+        " onclick="event.stopPropagation(); deletePhoto('${p.ID}')">🗑️</button>
       `;
-      return;
     }
 
-    const slice = filtered.slice(currentIndex, currentIndex + PAGE_SIZE);
+    item.innerHTML = `
+      <a data-fancybox="gallery" href="${full}">
+        <img src="${thumb}" loading="lazy"
+          style="width:100%; height:260px; object-fit:cover;"
+          onerror="this.closest('.grid-item').remove()">
+      </a>
+      ${adminButtons}
+    `;
 
-    // 🔴 SI YA NO HAY MÁS → NO HACE NADA
-    if(slice.length === 0) return;
+    fragment.appendChild(item);
+  });
 
-    const fragment = document.createDocumentFragment();
+  gallery.appendChild(fragment);
 
-    slice.forEach(p => {
+  currentIndex += PAGE_SIZE;
 
-      if(!p.LINK) return;
+  Fancybox.bind("[data-fancybox='gallery']", {});
 
-      const match = p.LINK.match(/id=([^&]+)/);
-      if(!match) return;
-
-      const fileId = match[1];
-
-      const thumb = `https://lh3.googleusercontent.com/d/${fileId}=w300`;
-      const full  = `https://lh3.googleusercontent.com/d/${fileId}=w1600`;
-
-      const item = document.createElement('div');
-      item.className = 'grid-item';
-
-      let adminButtons = '';
-
-      if(isAdmin){
-        adminButtons = `
-          <button style="
-            position:absolute; top:8px; right:8px;
-            background:#f15a24; color:white;
-            border:none; border-radius:6px;
-            padding:5px 7px; cursor:pointer; z-index:10;
-          " onclick="event.stopPropagation(); editPhoto('${p.ID}')">✏️</button>
-
-          <button style="
-            position:absolute; top:8px; right:40px;
-            background:#d11a2a; color:white;
-            border:none; border-radius:6px;
-            padding:5px 7px; cursor:pointer; z-index:10;
-          " onclick="event.stopPropagation(); deletePhoto('${p.ID}')">🗑️</button>
-        `;
-      }
-
-      item.innerHTML = `
-        <a data-fancybox="gallery" href="${full}">
-          <img src="${thumb}" loading="lazy"
-            onerror="this.closest('.grid-item').remove()">
-        </a>
-        ${adminButtons}
-      `;
-
-      fragment.appendChild(item);
-    });
-
-    // 🔥 SOLO limpia si es reset
-    if(reset){
-      gallery.innerHTML = '';
-    }
-
-    gallery.appendChild(fragment);
-
-    currentIndex += PAGE_SIZE;
-
-    Fancybox.bind("[data-fancybox='gallery']", {});
-
-  }, reset ? 50 : 0); // 👈 solo delay en carga inicial
+  // 🔥 LIBERA BLOQUEO
+  isLoading = false;
 }
+  
 // =========================
 // Editar foto (modal)
 // =========================
@@ -588,18 +576,17 @@ document.addEventListener("mouseleave", () => {
 
 let isLoadingMore = false;
 
-window.addEventListener('scroll', () => {
 
-  if(isLoadingMore) return;
+  window.addEventListener('scroll', () => {
 
-  if(window.innerHeight + window.scrollY >= document.body.offsetHeight - 300){
-    isLoadingMore = true;
+  if(isLoading) return;
 
+  if(window.innerHeight + window.scrollY >= document.body.offsetHeight - 500){
     renderGallery(currentCategory, false);
-
-    setTimeout(()=> isLoadingMore = false, 300);
   }
+
 });
+  
 
 // 👇 AQUÍ MISMO PEGAS ESTO
 window.addEventListener("DOMContentLoaded", () => {
