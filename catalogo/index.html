@@ -288,8 +288,6 @@ item.innerHTML = `
   ${adminButtons}
 `;
 
-
-    
   gallery.appendChild(item);
 
 }); // ✅ CIERRE CORRECTO
@@ -306,51 +304,6 @@ currentIndex += PAGE_SIZE; // ✅ FUERA del loop
 
 loadPhotos();
 
-
-  function renderGallery(category='all', reset=true){
-  if(reset){
-    gallery.innerHTML = '';
-    currentIndex = 0;
-    currentCategory = category;
-  }
-
-  const filtered = photos.filter(p => 
-    category==='all' || p.TIPO===category
-  );
-
-  const slice = filtered.slice(currentIndex, currentIndex + PAGE_SIZE);
-
-  slice.forEach(p => {
-
-    let fileId = null;
-    const link = (p.LINK || "").trim();
-
-    const match = link.match(/id=([^&]+)/);
-    if(match) fileId = match[1];
-
-    if(!fileId) return;
-
-    const thumb = `https://lh3.googleusercontent.com/d/${fileId}=w600`;
-    const full  = `https://lh3.googleusercontent.com/d/${fileId}=w2000`;
-
-    const item = document.createElement('div');
-    item.classList.add('grid-item');
-
-    item.innerHTML = `
-      <a data-fancybox="gallery" href="${full}">
-        <img src="${thumb}" loading="lazy"
-          onerror="this.parentElement.parentElement.remove()">
-      </a>
-    `;
-
-    gallery.appendChild(item);
-
-  });
-
-  currentIndex += PAGE_SIZE;
-
-  Fancybox.bind("[data-fancybox='gallery']", {});
-}
 
 // =========================
 // Editar foto (modal)
