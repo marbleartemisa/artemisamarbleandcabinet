@@ -26,6 +26,7 @@ header nav a:hover { text-decoration:underline; }
   margin:0 auto;
   padding:10px;
 }
+  
 
 .grid-item {
   cursor:pointer;
@@ -42,6 +43,14 @@ header nav a:hover { text-decoration:underline; }
   transform: scale(1.03);
 }
 
+.grid-item button {
+  opacity: 0.9;
+}
+.grid-item button:hover {
+  opacity: 1;
+  transform: scale(1.1);
+}
+  
 .form-group {
   display:flex;
   flex-direction:column;
@@ -164,31 +173,40 @@ async function loadPhotos(){
 
   const cached = localStorage.getItem('photos');
 
+  // 🔹 1. Cargar desde cache (FILTRADO)
   if(cached){
-    photos = JSON.parse(cached);
+    const cachedData = JSON.parse(cached);
 
-    // 🔹 Render inmediato desde cache
-    createFilters();        // muestra los filtros
-    renderGallery();        // muestra las fotos
+    photos = cachedData
+      .filter(item => !item.PARENTCHILD)
+      .filter(item => item.ESTADO !== 'ELIMINADO');
+
+    createFilters();
+    renderGallery();
   }
 
-  // 🔥 Traer datos nuevos sin bloquear UI
+  // 🔥 2. Traer datos nuevos
   try{
     const res = await fetch(API);
     const data = await res.json();
 
-    photos = data.filter(item => !item.PARENTCHILD);
+    // 🔹 3. Guardar TODO en cache (sin filtrar)
+    localStorage.setItem('photos', JSON.stringify(data));
 
-    localStorage.setItem('photos', JSON.stringify(photos));
+    // 🔹 4. Filtrar para mostrar
+    photos = data
+      .filter(item => !item.PARENTCHILD)
+      .filter(item => item.ESTADO !== 'ELIMINADO');
 
-    // 🔹 Actualizar filtros y galería con datos nuevos
     createFilters();
     renderGallery();
     
   }catch(e){
     console.error("Error cargando datos nuevos", e);
   }
-} 
+}
+
+
   
 function createFilters(){
   const tipos = [...new Set(photos.map(p => p.TIPO).filter(Boolean))];
