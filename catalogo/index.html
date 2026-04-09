@@ -231,75 +231,57 @@ function renderGallery(category='all', reset=true){
     currentIndex = 0;
     currentCategory = category;
   }
-const link = (p.LINK || "").trim();
-  // ✅ Filtrar desde memoria inmediatamente
-       const filtered = photos.filter(p => 
-        (!p.ESTADO || p.ESTADO !== 'ELIMINADO') &&
-        (category==='all' || p.TIPO===category)
-      );
 
-  // ✅ Mostrar solo el slice actual para paginación
+  const filtered = photos.filter(p => 
+    (!p.ESTADO || p.ESTADO !== 'ELIMINADO') &&
+    (category==='all' || p.TIPO===category)
+  );
+
   const slice = filtered.slice(currentIndex, currentIndex + PAGE_SIZE);
+
   slice.forEach(p => {
 
-      let fileId = null;
-      const link = (p.LINK || "").trim();
-      
-      const match = link.match(/id=([^&]+)/);
-      if(match) fileId = match[1];
+    let fileId = null;
+    const link = (p.LINK || "").trim();
 
+    const match = link.match(/id=([^&]+)/);
+    if(match) fileId = match[1];
 
-  if(!fileId || !p.LINK) return;
-  if(p.LINK.includes("undefined") || p.LINK.includes("null") || p.LINK.length < 10) return;
+    if(!fileId) return;
 
-const thumb = p.LINK;
-const full  = p.LINK;
+    const thumb = p.LINK;
+    const full  = p.LINK;
 
-  const item = document.createElement('div');
-  item.classList.add('grid-item');
+    const item = document.createElement('div');
+    item.classList.add('grid-item');
 
-let adminButtons = '';
+    let adminButtons = '';
 
-if(isAdmin){
-  adminButtons = `
-    <button style="
-      position:absolute; top:8px; right:8px;
-      padding:6px 8px;
-      background:#f15a24; color:white;
-      border:none; border-radius:6px;
-      cursor:pointer; z-index:999;
-    " onclick="event.stopPropagation(); editPhoto('${p.ID}')">✏️</button>
+    if(isAdmin){
+      adminButtons = `
+        <button style="position:absolute; top:8px; right:8px;"
+          onclick="event.stopPropagation(); editPhoto('${p.ID}')">✏️</button>
 
-    <button style="
-      position:absolute; top:8px; right:45px;
-      padding:6px 8px;
-      background:#d11a2a; color:white;
-      border:none; border-radius:6px;
-      cursor:pointer; z-index:999;
-    " onclick="event.stopPropagation(); deletePhoto('${p.ID}')">🗑️</button>
-  `;
-}
+        <button style="position:absolute; top:8px; right:45px;"
+          onclick="event.stopPropagation(); deletePhoto('${p.ID}')">🗑️</button>
+      `;
+    }
 
-item.innerHTML = `
-  <a data-fancybox="gallery" href="${full}">
-    <img src="${thumb}" loading="lazy"
-      onerror="this.parentElement.parentElement.remove()">
-  </a>
-  ${adminButtons}
-`;
+    item.innerHTML = `
+      <a data-fancybox="gallery" href="${full}">
+        <img src="${thumb}" loading="lazy"
+          onerror="this.parentElement.parentElement.remove()">
+      </a>
+      ${adminButtons}
+    `;
 
-  gallery.appendChild(item);
+    gallery.appendChild(item);
 
-}); // ✅ CIERRE CORRECTO
-
-currentIndex += PAGE_SIZE; // ✅ FUERA del loop
-
-  Fancybox.bind("[data-fancybox='gallery']", {
-    dragToClose: false,
-    infinite: true,
-    Toolbar: { display: ["zoom","close"] },
-    Image: { zoom: true, Pan: true, wheel: "zoom" }
   });
+
+  currentIndex += PAGE_SIZE;
+
+  Fancybox.bind("[data-fancybox='gallery']", {});
 }
 
 loadPhotos();
