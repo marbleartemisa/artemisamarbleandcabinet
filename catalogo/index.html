@@ -27,18 +27,16 @@ header nav a:hover { text-decoration:underline; }
   padding:10px;
 }
   
-
 .grid-item {
-  cursor:pointer;
-  position: relative; /* 👈 ESTA ES LA CLAVE */
+  height: 220px;
+  border-radius:10px;
+  overflow:hidden;
 }
 
-
-
-  .grid-item img {
+.grid-item img {
   width:100%;
-  max-height: 220px;
-  object-fit: cover;
+  height:100%;
+  object-fit:cover;
 }
 
 .grid-item img:hover {
