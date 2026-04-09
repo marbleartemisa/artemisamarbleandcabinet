@@ -290,35 +290,47 @@ currentIndex += PAGE_SIZE; // ✅ FUERA del loop
 loadPhotos();
 
 
-  function renderSearch(query){
-  gallery.innerHTML = '';
-  currentIndex = 0;
+  function renderGallery(category='all', reset=true){
+  if(reset){
+    gallery.innerHTML = '';
+    currentIndex = 0;
+    currentCategory = category;
+  }
 
-  const q = query.toLowerCase();
-
-  // ✅ Filtrar en memoria instantáneamente
   const filtered = photos.filter(p => 
-    (p.TIPO && p.TIPO.toLowerCase().includes(q)) ||
-    (p.LINK && p.LINK.toLowerCase().includes(q))
+    category==='all' || p.TIPO===category
   );
 
-  filtered.slice(0, 120).forEach(p => {
-    let fileId = p.LINK.match(/id=([^&]+)/)?.[1];
+  const slice = filtered.slice(currentIndex, currentIndex + PAGE_SIZE);
+
+  slice.forEach(p => {
+
+    let fileId = null;
+    const link = (p.LINK || "").trim();
+
+    const match = link.match(/id=([^&]+)/);
+    if(match) fileId = match[1];
+
     if(!fileId) return;
 
-    const thumb = `https://lh3.googleusercontent.com/d/${fileId}=w400`;
+    const thumb = `https://lh3.googleusercontent.com/d/${fileId}=w600`;
     const full  = `https://lh3.googleusercontent.com/d/${fileId}=w2000`;
 
-    item.className = 'grid-item';
+    const item = document.createElement('div');
+    item.classList.add('grid-item');
 
     item.innerHTML = `
       <a data-fancybox="gallery" href="${full}">
-        <img src="${thumb}" loading="lazy" onerror="this.parentElement.parentElement.remove()">
+        <img src="${thumb}" loading="lazy"
+          onerror="this.parentElement.parentElement.remove()">
       </a>
     `;
 
     gallery.appendChild(item);
+
   });
+
+  currentIndex += PAGE_SIZE;
 
   Fancybox.bind("[data-fancybox='gallery']", {});
 }
