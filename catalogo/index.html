@@ -251,8 +251,10 @@ function createFilters(){
 
 function renderGallery(category='all', reset=true){
 
-  // 🔹 Spinner SIEMPRE al inicio
-  gallery.innerHTML = '<div style="text-align:center;padding:40px;font-size:18px;">⏳ Cargando imágenes...</div>';
+  // 🔥 SOLO spinner en carga inicial
+  if(reset){
+    gallery.innerHTML = '<div style="text-align:center;padding:40px;font-size:18px;">⏳ Cargando imágenes...</div>';
+  }
 
   setTimeout(()=>{
 
@@ -279,6 +281,9 @@ function renderGallery(category='all', reset=true){
 
     const slice = filtered.slice(currentIndex, currentIndex + PAGE_SIZE);
 
+    // 🔴 SI YA NO HAY MÁS → NO HACE NADA
+    if(slice.length === 0) return;
+
     const fragment = document.createDocumentFragment();
 
     slice.forEach(p => {
@@ -298,8 +303,7 @@ function renderGallery(category='all', reset=true){
 
       let adminButtons = '';
 
-      // 🔹 SOLO si hay admin Y hay fotos visibles
-      if(isAdmin && filtered.length > 0){
+      if(isAdmin){
         adminButtons = `
           <button style="
             position:absolute; top:8px; right:8px;
@@ -328,17 +332,19 @@ function renderGallery(category='all', reset=true){
       fragment.appendChild(item);
     });
 
-    gallery.innerHTML = '';
+    // 🔥 SOLO limpia si es reset
+    if(reset){
+      gallery.innerHTML = '';
+    }
+
     gallery.appendChild(fragment);
 
     currentIndex += PAGE_SIZE;
 
     Fancybox.bind("[data-fancybox='gallery']", {});
 
-  }, 50); // 👈 micro-delay para que el spinner se vea
+  }, reset ? 50 : 0); // 👈 solo delay en carga inicial
 }
-
-
 // =========================
 // Editar foto (modal)
 // =========================
@@ -580,15 +586,18 @@ document.addEventListener("mouseleave", () => {
   if (img) img.style.transform = "rotateX(0) rotateY(0) scale(1)";
 });
 
-window.addEventListener('scroll', () => {
-  if(window.innerHeight + window.scrollY >= document.body.offsetHeight - 300){
-    renderGallery(currentCategory, false);
-  }
-});
+let isLoadingMore = false;
 
-  window.addEventListener('scroll', () => {
+window.addEventListener('scroll', () => {
+
+  if(isLoadingMore) return;
+
   if(window.innerHeight + window.scrollY >= document.body.offsetHeight - 300){
+    isLoadingMore = true;
+
     renderGallery(currentCategory, false);
+
+    setTimeout(()=> isLoadingMore = false, 300);
   }
 });
 
