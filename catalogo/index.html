@@ -141,7 +141,19 @@ let photos = [];
 const PAGE_SIZE = 40;
 let currentIndex = 0;
 let currentCategory = 'all';
-
+let currentUser = null;
+const usuarios = [ ... ];
+const usuarios = [
+  {usuario:"Damian Molina", clave:"Dam1975"},
+  {usuario:"Alberto Molina", clave:"Alb1975"},
+  {usuario:"Wendy Romanach", clave:"Wen1975"},
+  {usuario:"Carlos Herrera", clave:"Art2026"},
+  {usuario:"Jenny Perez", clave:"Jen1975"},
+  {usuario:"Eliana Pineda", clave:"Eli1975"},
+  {usuario:"Yoandry Perez", clave:"Yoa1975"},
+  {usuario:"Yozusi Urdaneta", clave:"Yoz1975"}
+];
+  
 const gallery = document.getElementById('gallery');
 const filtersContainer = document.querySelector('.filters');
 const searchBox = document.getElementById("searchBox");
@@ -318,9 +330,9 @@ function renderGallery(category='all', reset=true){
   Fancybox.bind("[data-fancybox='gallery']", {});
 }
 
-loadPhotos();
 
 window.addEventListener("DOMContentLoaded", ()=>{
+
   populateUsers();
 
   const savedUser = localStorage.getItem("usuario");
@@ -330,7 +342,11 @@ window.addEventListener("DOMContentLoaded", ()=>{
   } else {
     openLogin();
   }
+
+  loadPhotos(); // 🔥 EXACTAMENTE AQUÍ
+
 });
+  
 // =========================
 // Editar foto (modal)
 // =========================
