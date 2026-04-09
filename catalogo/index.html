@@ -223,7 +223,10 @@ function renderGallery(category='all', reset=true){
   }
 
   // ✅ Filtrar desde memoria inmediatamente
-  const filtered = photos.filter(p => category==='all' || p.TIPO===category);
+       const filtered = photos.filter(p => 
+        (!p.ESTADO || p.ESTADO !== 'ELIMINADO') &&
+        (category==='all' || p.TIPO===category)
+      );
 
   // ✅ Mostrar solo el slice actual para paginación
   const slice = filtered.slice(currentIndex, currentIndex + PAGE_SIZE);
@@ -243,25 +246,37 @@ function renderGallery(category='all', reset=true){
     const item = document.createElement('div');
     item.classList.add('grid-item');
 
-    let editButton = '';
-    if(isAdmin){
-      editButton = `<button style="
-          position:absolute; top:8px; right:8px; padding:6px 8px;
-          background:#f15a24; color:white; border:none; border-radius:6px;
-          cursor:pointer; z-index:999; box-shadow:0 2px 6px rgba(0,0,0,0.3);
-        " onclick="event.stopPropagation(); editPhoto('${p.ID}')">✏️</button>`;
-    }
+const item = document.createElement('div');
+item.classList.add('grid-item');
 
-    item.innerHTML = `
-      <a data-fancybox="gallery" href="${full}" style="display:block;">
-        <img src="${thumb}" loading="lazy" onerror="this.parentElement.parentElement.remove()">
-      </a>
-      ${editButton}
-    `;
+let adminButtons = '';
+if(isAdmin){
+  adminButtons = `
+    <button style="
+      position:absolute; top:8px; right:8px; padding:6px 8px;
+      background:#f15a24; color:white; border:none; border-radius:6px;
+      cursor:pointer; z-index:999;
+    " onclick="event.stopPropagation(); editPhoto('${p.ID}')">✏️</button>
 
-    gallery.appendChild(item);
-  });
+    <button style="
+      position:absolute; top:8px; right:45px; padding:6px 8px;
+      background:#d11a2a; color:white; border:none; border-radius:6px;
+      cursor:pointer; z-index:999;
+    " onclick="event.stopPropagation(); deletePhoto('${p.ID}')">🗑️</button>
+  `;
+}
 
+item.innerHTML = `
+  <a data-fancybox="gallery" href="${full}" style="display:block;">
+    <img src="${thumb}" loading="lazy" onerror="this.parentElement.parentElement.remove()">
+  </a>
+  ${adminButtons}
+`;
+
+gallery.appendChild(item);
+
+
+  
   currentIndex += PAGE_SIZE;
 
   Fancybox.bind("[data-fancybox='gallery']", {
@@ -485,7 +500,44 @@ async function savePhoto(photoID){
   text.innerText = "💾 Guardar";
 }
   
+function deletePhoto(photoID){
 
+  if(!confirm("¿Seguro que deseas eliminar esta foto?")) return;
+
+  const usuario = "admin"; // puedes luego hacerlo dinámico
+  const fecha = new Date().toLocaleString();
+
+  const index = photos.findIndex(p => p.ID === photoID);
+
+  if(index !== -1){
+    photos[index].ESTADO = "ELIMINADO";
+    photos[index].MEMO = (photos[index].MEMO || '') + 
+      `\n[ELIMINADO por ${usuario} - ${fecha}]`;
+  }
+
+  // 🔹 Actualizar cache local inmediato
+  localStorage.setItem('photos', JSON.stringify(photos));
+
+  // 🔹 Refrescar UI inmediato
+  renderGallery(currentCategory, true);
+
+  // 🔹 Guardar en backend
+  fetch(`${API}?${new URLSearchParams({
+    action: 'delete',
+    ID: photoID,
+    ESTADO: 'ELIMINADO',
+    MEMO: photos[index].MEMO
+  })}`)
+  .then(r=>r.json())
+  .then(resp=>{
+    if(!resp.success){
+      alert("Error en servidor, pero eliminado localmente");
+    }
+  })
+  .catch(()=>{
+    alert("Sin conexión, eliminado localmente");
+  });
+}
 
 
   
