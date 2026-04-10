@@ -305,8 +305,8 @@ function renderGallery(category='all', reset=true){
     const fileId = match[1];
 
     const thumb = `https://lh3.googleusercontent.com/d/${fileId}=w800`;
-    const full  = `https://lh3.googleusercontent.com/d/${fileId}=w2400`;
-
+    const full  = `https://lh3.googleusercontent.com/d/${fileId}=s0`;
+    
     const item = document.createElement('div');
     item.className = 'grid-item';
 
@@ -348,10 +348,35 @@ function renderGallery(category='all', reset=true){
 
   currentIndex += PAGE_SIZE;
 
-  Fancybox.bind("[data-fancybox='gallery']", {});
+  Fancybox.bind("[data-fancybox='gallery']", {
+  animated: true,
+  dragToClose: false,
+
+  closeButton: "top",   // 👈 AQUÍ
+  showClass: "fancybox-zoomIn",  // 👈 AQUÍ
+  hideClass: "fancybox-zoomOut",  // 👈 AQUÍ
+
+  Images: {
+    zoom: true,
+    wheel: "zoom",
+    click: "toggleZoom",
+    Panzoom: {
+      maxScale: 6
+    }
+  },
+
+  Toolbar: {
+    display: [
+      "zoom",
+      "fullscreen",
+      "close"
+    ]
+  }
+});
 
   isLoading = false;
 }
+  
 // =========================
 // Editar foto (modal)
 // =========================
