@@ -132,6 +132,9 @@ header nav a {
     <a class="portal-btn" href="https://marbleartemisa.github.io/sop-site/">Portal-SOP</a>
   </nav>
   
+  
+</header>
+
 <div style="
   display:flex;
   justify-content:center;
@@ -152,12 +155,6 @@ header nav a {
   </button>
 
 </div>
-
-
-  
-</header>
-
-
 
 <div class="filters"></div>
 
@@ -307,7 +304,7 @@ async function uploadWizard(){
       file: base64,
       fileName: file.name,
       STONE: document.getElementById("wSTONE").value,
-      PROYECTO: document.getElementById("wPROYECTOID").value,
+      PROYECTOID: document.getElementById("wPROYECTOID").value,
       MEMO: document.getElementById("wMEMO").value,
       TIPO: document.getElementById("wTIPO")?.value || "",
       SUBTIPO: document.getElementById("wSUBTIPO")?.value || ""
@@ -417,7 +414,7 @@ function draw(list){
 
     div.innerHTML = `
       <a data-fancybox="g" href="${full}">
-        <img src="${thumb}">
+        <img src="${thumb}" onload="this.classList.add('loaded')">
       </a>
     `;
 
