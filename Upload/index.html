@@ -246,39 +246,80 @@ async function uploadWizard(){
 
   const files = document.getElementById("wizFiles").files;
 
-  for(const file of files){
-
-    const base64 = await fileToBase64(file);
-
-    const payload = {
-      file: base64,
-      fileName: file.name,
-      STONE: document.getElementById("wSTONE").value,
-      PROYECTOID: document.getElementById("wPROYECTOID").value,
-      MEMO: document.getElementById("wMEMO").value,
-      TIPO: document.getElementById("wTIPO")?.value || "",
-      SUBTIPO: document.getElementById("wSUBTIPO")?.value || ""
-    };
-
-  
-
-
-    await fetch(API, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(payload)
-    });
+  if(files.length === 0){
+    alert("Selecciona archivos primero");
+    return;
   }
 
-  alert("Upload completo 🚀");
-  document.getElementById("wizardModal").remove();
-  loadPhotos();
+  const btn = document.querySelector("#wizardModal button[onclick='uploadWizard()']");
+  if(btn){
+    btn.innerText = "Subiendo...";
+    btn.disabled = true;
+  }
+
+  let errores = [];
+  let exitos = 0;
+
+  for(const file of files){
+
+    try{
+
+      // 🔴 VALIDACIÓN DE TAMAÑO (CLAVE)
+      if(file.size > 3.5 * 1024 * 1024){
+        errores.push(file.name + " (demasiado grande)");
+        continue;
+      }
+
+      const base64 = await fileToBase64(file);
+
+      const payload = {
+        file: base64,
+        fileName: file.name,
+        STONE: document.getElementById("wSTONE").value,
+        PROYECTOID: document.getElementById("wPROYECTOID").value, // ✅ CORRECTO
+        MEMO: document.getElementById("wMEMO").value,
+        TIPO: document.getElementById("wTIPO").value,
+        SUBTIPO: document.getElementById("wSUBTIPO").value
+      };
+
+      const res = await fetch(API, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(payload)
+      });
+
+      const data = await res.json();
+
+      if(!data.success){
+        throw new Error(data.error || "Error en servidor");
+      }
+
+      exitos++;
+
+    }catch(err){
+      console.error("ERROR SUBIENDO:", file.name, err);
+      errores.push(file.name);
+    }
+  }
+
+  // 🔥 RESULTADO FINAL
+  let mensaje = `Subidos: ${exitos}`;
+
+  if(errores.length){
+    mensaje += `\nErrores:\n` + errores.join("\n");
+  }
+
+  alert(mensaje);
+
+  if(btn){
+    btn.innerText = "🚀 Upload";
+    btn.disabled = false;
+  }
+
+  closeWizard();
 }
-
-
-
 
 
 function goStep2(){
