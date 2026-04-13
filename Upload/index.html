@@ -111,16 +111,7 @@ header nav a {
   gap:10px;
 }
   
-<button onclick="openBatchWizard()" style="
-  padding:10px 14px;
-  background:#f15a24;
-  color:#fff;
-  border:none;
-  border-radius:6px;
-  cursor:pointer;
-">
-📦 Project Batch Upload
-</button>
+
   
   
 </style>
@@ -140,27 +131,33 @@ header nav a {
     <a href="/artemisamarbleandcabinet/contacts">Contact</a>
     <a class="portal-btn" href="https://marbleartemisa.github.io/sop-site/">Portal-SOP</a>
   </nav>
-</header>
-
-<button onclick="openBatchWizard()" style="
-  padding:10px 14px;
-  background:#f15a24;
-  color:#fff;
-  border:none;
-  border-radius:6px;
-  cursor:pointer;
+  
+<div style="
+  display:flex;
+  justify-content:center;
+  margin:30px 0;
 ">
-📦 Project Batch Upload
-</button>
+
+  <button onclick="openBatchWizard()" style="
+    padding:14px 22px;
+    background:#f15a24;
+    color:#fff;
+    border:none;
+    border-radius:8px;
+    font-size:16px;
+    cursor:pointer;
+    box-shadow:0 4px 12px rgba(0,0,0,0.2);
+  ">
+    📦 Project Batch Upload
+  </button>
+
+</div>
 
 
   
 </header>
 
-<!-- SEARCH -->
-<div style="text-align:center;margin:10px;">
-  <input id="searchBox" placeholder="Search..." style="padding:10px;width:300px;">
-</div>
+
 
 <div class="filters"></div>
 
@@ -176,43 +173,9 @@ let isSearching = false;
 let isAdmin = false;
 const gallery = document.getElementById("gallery");
 
-/* =========================
-   SEARCH
-========================= */
-searchBox.addEventListener("input", (e) => {
-  const val = e.target.value.toLowerCase();
-  isSearching = val.length > 0;
-  renderSearch(val);
-});
 
-/* =========================
-   RENDER SEARCH
-========================= */
-function renderSearch(q){
 
-  gallery.innerHTML = "";
 
-  if(!q){
-    isSearching = false;
-    renderGallery();
-    return;
-  }
-
-  const filtered = photos.filter(p=>{
-    const txt = `
-      ${p.STONE||''}
-      ${p.MEMO||''}
-      ${p.COLOURS||''}
-      ${p.MATERIALES||''}
-      ${p.TIPO||''}
-      ${p.SUBTIPO||''}
-    `.toLowerCase();
-
-    return q.split(" ").every(w=>txt.includes(w));
-  });
-
-  draw(filtered);
-}
 
 function fileToBase64(file){
   return new Promise((resolve,reject)=>{
@@ -231,7 +194,9 @@ function openBatchWizard(){
 
   const html = `
   <div id="wizardModal" style="
-    position:fixed;top:0;left:0;width:100%;height:100%;
+    position:fixed;
+    top:0;left:0;
+    width:100%;height:100%;
     background:rgba(0,0,0,0.6);
     display:flex;
     justify-content:center;
@@ -244,7 +209,17 @@ function openBatchWizard(){
       width:600px;
       padding:20px;
       border-radius:12px;
+      position:relative;
     ">
+
+      <!-- BOTON CERRAR -->
+      <span onclick="closeWizard()" style="
+        position:absolute;
+        top:10px;
+        right:15px;
+        cursor:pointer;
+        font-size:20px;
+      ">✖</span>
 
       <h2>📦 Project Batch Upload</h2>
 
@@ -259,6 +234,7 @@ function openBatchWizard(){
           background:#000;
           color:#fff;
           border:none;
+          border-radius:6px;
         ">
           Next →
         </button>
@@ -267,9 +243,12 @@ function openBatchWizard(){
       <!-- STEP 2 -->
       <div id="step2" style="display:none;">
 
-        <input id="wSTONE" placeholder="STONE">
-        <input id="wPROYECTOID" placeholder="PROYECTO">
-        <textarea id="wMEMO" placeholder="MEMO"></textarea>
+        <input id="wSTONE" placeholder="STONE" style="width:100%;margin-top:10px;">
+        <input id="wPROYECTOID" placeholder="PROYECTO" style="width:100%;margin-top:10px;">
+        <textarea id="wMEMO" placeholder="MEMO" style="width:100%;margin-top:10px;"></textarea>
+
+        <input id="wTIPO" placeholder="TIPO" style="width:100%;margin-top:10px;">
+        <input id="wSUBTIPO" placeholder="SUBTIPO" style="width:100%;margin-top:10px;">
 
         <button onclick="goStep3()" style="
           width:100%;
@@ -277,7 +256,8 @@ function openBatchWizard(){
           background:#000;
           color:#fff;
           border:none;
-          margin-top:10px;
+          border-radius:6px;
+          margin-top:15px;
         ">
           Next →
         </button>
@@ -287,7 +267,12 @@ function openBatchWizard(){
       <!-- STEP 3 -->
       <div id="step3" style="display:none;">
 
-        <div id="preview"></div>
+        <div id="preview" style="
+          max-height:150px;
+          overflow:auto;
+          margin-bottom:10px;
+          font-size:14px;
+        "></div>
 
         <button onclick="uploadWizard()" style="
           width:100%;
@@ -295,7 +280,7 @@ function openBatchWizard(){
           background:#f15a24;
           color:#fff;
           border:none;
-          margin-top:10px;
+          border-radius:8px;
         ">
           🚀 Upload
         </button>
@@ -322,11 +307,14 @@ async function uploadWizard(){
       file: base64,
       fileName: file.name,
       STONE: document.getElementById("wSTONE").value,
-      PROYECTO: document.getElementById("...").value
+      PROYECTO: document.getElementById("wPROYECTOID").value,
       MEMO: document.getElementById("wMEMO").value,
       TIPO: document.getElementById("wTIPO")?.value || "",
       SUBTIPO: document.getElementById("wSUBTIPO")?.value || ""
     };
+
+  
+
 
     await fetch(API, {
       method: "POST",
@@ -342,25 +330,15 @@ async function uploadWizard(){
   loadPhotos();
 }
 
-  
+
+
+
 
 function goStep2(){
-<div id="step2" style="display:none;">
-
-  <input id="wSTONE" placeholder="STONE">
-  <input id="wPROYECTOID" placeholder="PROYECTO">
-  <textarea id="wMEMO" placeholder="MEMO"></textarea>
-
-  <input id="wTIPO" placeholder="TIPO">
-  <input id="wSUBTIPO" placeholder="SUBTIPO">
-
-  <button onclick="goStep3()">Next →</button>
-</div>
+  document.getElementById("step1").style.display = "none";
+  document.getElementById("step2").style.display = "block";
 }
 
-
-
-  
 function goStep3(){
   document.getElementById("step2").style.display = "none";
   document.getElementById("step3").style.display = "block";
@@ -375,6 +353,11 @@ function goStep3(){
   document.getElementById("preview").innerHTML = html;
 }
 
+function closeWizard(){
+  document.getElementById("wizardModal").remove();
+}
+
+  
   
   function nextStep(step){
 
@@ -396,9 +379,7 @@ function goStep3(){
   }
 }
 
-function closeWizard(){
-  document.getElementById("wizardModal").remove();
-}
+
   
 /* =========================
    LOAD
