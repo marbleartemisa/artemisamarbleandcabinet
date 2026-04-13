@@ -110,7 +110,19 @@ header nav a {
   grid-template-columns:1fr 1fr;
   gap:10px;
 }
-
+  
+<button onclick="openBatchWizard()" style="
+  padding:10px 14px;
+  background:#f15a24;
+  color:#fff;
+  border:none;
+  border-radius:6px;
+  cursor:pointer;
+">
+📦 Project Batch Upload
+</button>
+  
+  
 </style>
 </head>
 
@@ -196,6 +208,161 @@ function renderSearch(q){
   draw(filtered);
 }
 
+function openBatchWizard(){
+
+  const html = `
+  <div id="wizardModal" style="
+    position:fixed;top:0;left:0;width:100%;height:100%;
+    background:rgba(0,0,0,0.6);
+    display:flex;justify-content:center;align-items:center;
+    z-index:99999;
+  ">
+
+    <div style="
+      background:#fff;
+      width:600px;
+      border-radius:14px;
+      padding:20px;
+      max-height:90vh;
+      overflow:auto;
+    ">
+
+      <h2>📦 Project Batch Upload</h2>
+
+      <!-- STEP INDICATOR -->
+      <div style="display:flex;justify-content:space-between;margin:15px 0;">
+        <div id="step1" style="font-weight:bold;color:#f15a24;">1. Files</div>
+        <div id="step2">2. Project Info</div>
+        <div id="step3">3. Upload</div>
+      </div>
+
+      <!-- STEP 1 -->
+      <div id="wizardStep1">
+        <input type="file" id="wizFiles" multiple style="width:100%;">
+        <button onclick="nextStep(2)" style="margin-top:15px;width:100%;padding:10px;background:#000;color:#fff;border:none;">
+          Next →
+        </button>
+      </div>
+
+      <!-- STEP 2 -->
+      <div id="wizardStep2" style="display:none;">
+
+        <div class="form-group">
+          <label>STONE</label>
+          <input id="wSTONE">
+        </div>
+
+        <div class="form-group">
+          <label>PROYECTOID</label>
+          <input id="wPROYECTOID">
+        </div>
+
+        <div class="form-group">
+          <label>MEMO</label>
+          <textarea id="wMEMO"></textarea>
+        </div>
+
+        <div class="grid-2">
+          <div class="form-group">
+            <label>TIPO</label>
+            <input id="wTIPO">
+          </div>
+          <div class="form-group">
+            <label>SUBTIPO</label>
+            <input id="wSUBTIPO">
+          </div>
+        </div>
+
+        <button onclick="nextStep(3)" style="width:100%;padding:10px;background:#000;color:#fff;border:none;">
+          Next →
+        </button>
+      </div>
+
+      <!-- STEP 3 -->
+      <div id="wizardStep3" style="display:none;">
+
+        <p>📸 Files ready to upload</p>
+        <div id="previewList" style="font-size:12px;color:#555;"></div>
+
+        <button onclick="uploadWizard()" style="
+          width:100%;
+          margin-top:15px;
+          padding:12px;
+          background:#f15a24;
+          color:#fff;
+          border:none;
+          border-radius:8px;
+        ">
+          🚀 Upload All
+        </button>
+
+        <button onclick="closeWizard()" style="width:100%;margin-top:10px;">
+          Cancel
+        </button>
+
+      </div>
+
+    </div>
+  </div>
+  `;
+
+  document.body.insertAdjacentHTML("beforeend", html);
+}
+
+async function uploadWizard(){
+
+  const files = document.getElementById("wizFiles").files;
+
+  const base = {
+    STONE: wSTONE.value,
+    PROYECTOID: wPROYECTOID.value,
+    MEMO: wMEMO.value,
+    TIPO: wTIPO.value,
+    SUBTIPO: wSUBTIPO.value
+  };
+
+  for(const f of files){
+
+    const fd = new FormData();
+    fd.append("file", f);
+
+    Object.keys(base).forEach(k=>{
+      fd.append(k, base[k]);
+    });
+
+    await fetch(API,{method:"POST",body:fd});
+  }
+
+  alert("✅ Upload completo");
+  closeWizard();
+  loadPhotos();
+}
+
+  
+  function nextStep(step){
+
+  document.getElementById("wizardStep1").style.display = step === 1 ? "block":"none";
+  document.getElementById("wizardStep2").style.display = step === 2 ? "block":"none";
+  document.getElementById("wizardStep3").style.display = step === 3 ? "block":"none";
+
+  document.getElementById("step1").style.color = step >= 1 ? "#f15a24":"#000";
+  document.getElementById("step2").style.color = step >= 2 ? "#f15a24":"#000";
+  document.getElementById("step3").style.color = step >= 3 ? "#f15a24":"#000";
+
+  if(step === 3){
+    const files = document.getElementById("wizFiles").files;
+    let html = "";
+    for(let f of files){
+      html += "📄 " + f.name + "<br>";
+    }
+    document.getElementById("previewList").innerHTML = html;
+  }
+}
+
+function closeWizard(){
+  document.getElementById("wizardModal").remove();
+}
+  
 /* =========================
    LOAD
 ========================= */
