@@ -118,7 +118,9 @@ header nav a {
 </head>
 
 <body>
-
+body {
+  transform: none !important;
+}
 <header>
   <div class="logo"><img src="/artemisamarbleandcabinet/logo.png" height="100"></div>
   <nav>
@@ -184,22 +186,26 @@ function fileToBase64(file){
 }
   
 function openBatchWizard(){
-
+  Fancybox.close();
+  document.body.style.overflow = "hidden";
   // evitar duplicados
   const old = document.getElementById("wizardModal");
   if(old) old.remove();
 
   const html = `
   <div id="wizardModal" style="
-    position:fixed;
-    top:0;left:0;
-    width:100%;height:100%;
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100vh;
     background:rgba(0,0,0,0.6);
     display:flex;
     justify-content:center;
     align-items:center;
-    z-index:99999;
+    z-index:2147483647;
   ">
+
+
 
     <div style="
       background:#fff;
@@ -350,10 +356,11 @@ function goStep3(){
   document.getElementById("preview").innerHTML = html;
 }
 
+
 function closeWizard(){
+  document.body.style.overflow = "auto";
   document.getElementById("wizardModal").remove();
 }
-
   
   
   function nextStep(step){
