@@ -211,7 +211,15 @@ function renderSearch(q){
   draw(filtered);
 }
 
-
+function fileToBase64(file){
+  return new Promise((resolve,reject)=>{
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result.split(",")[1]);
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+  
 function openBatchWizard(){
 
   // evitar duplicados
@@ -299,43 +307,33 @@ function openBatchWizard(){
 }
 
 
+
 async function uploadWizard(){
 
   const files = document.getElementById("wizFiles").files;
 
-  if(!files.length){
-    alert("Selecciona archivos");
-    return;
-  }
-
-  const base = {
-    STONE: document.getElementById("wSTONE").value,
-    PROYECTOID: document.getElementById("wPROYECTOID").value,
-    MEMO: document.getElementById("wMEMO").value
-  };
-
   for(const file of files){
 
-    const fd = new FormData();
-    fd.append("file", file);
-    fd.append("fileName", file.name);
+    const base64 = await fileToBase64(file);
 
-    Object.keys(base).forEach(k=>{
-      fd.append(k, base[k]);
-    });
+    const payload = {
+      file: base64,
+      fileName: file.name,
+      STONE: document.getElementById("wSTONE").value,
+      PROYECTOID: document.getElementById("wPROYECTOID").value,
+      MEMO: document.getElementById("wMEMO").value,
+      TIPO: document.getElementById("wTIPO").value,
+      SUBTIPO: document.getElementById("wSUBTIPO").value
+    };
 
-    await fetch(API,{
-      method:"POST",
-      body: fd
+    await fetch(API, {
+      method: "POST",
+      body: JSON.stringify(payload)
     });
   }
 
-  alert("✅ Upload completo");
-
-  document.getElementById("wizardModal").remove();
-  loadPhotos();
+  alert("Upload completo");
 }
-
   
 
 function goStep2(){
