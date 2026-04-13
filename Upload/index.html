@@ -241,7 +241,6 @@ function openBatchWizard(){
   document.body.insertAdjacentHTML("beforeend", html);
 }
 
-
 async function uploadWizard(){
 
   const files = document.getElementById("wizFiles").files;
@@ -264,7 +263,7 @@ async function uploadWizard(){
 
     try{
 
-      // 🔴 VALIDACIÓN DE TAMAÑO (CLAVE)
+      // 🔴 VALIDACIÓN DE TAMAÑO
       if(file.size > 3.5 * 1024 * 1024){
         errores.push(file.name + " (demasiado grande)");
         continue;
@@ -272,22 +271,22 @@ async function uploadWizard(){
 
       const base64 = await fileToBase64(file);
 
-      const payload = {
-        file: base64,
-        fileName: file.name,
-        STONE: document.getElementById("wSTONE").value,
-        PROYECTOID: document.getElementById("wPROYECTOID").value, // ✅ CORRECTO
-        MEMO: document.getElementById("wMEMO").value,
-        TIPO: document.getElementById("wTIPO").value,
-        SUBTIPO: document.getElementById("wSUBTIPO").value
-      };
+      // 🔥 FORM DATA (REEMPLAZA payload)
+      const fd = new FormData();
+      fd.append("file", base64);
+      fd.append("fileName", file.name);
+      fd.append("STONE", document.getElementById("wSTONE").value);
+      fd.append("PROYECTOID", document.getElementById("wPROYECTOID").value);
+      fd.append("MEMO", document.getElementById("wMEMO").value);
+      fd.append("TIPO", document.getElementById("wTIPO").value);
+      fd.append("SUBTIPO", document.getElementById("wSUBTIPO").value);
 
-         const res = await fetch(API, {
-              method: "POST",
-              body: JSON.stringify(payload),
-              mode: "no-cors"
-            });
-        exitos++;
+      // 🔥 FETCH LIMPIO (SIN no-cors, SIN headers)
+      const res = await fetch(API, {
+        method: "POST",
+        body: fd
+      });
+
       const data = await res.json();
 
       if(!data.success){
@@ -318,7 +317,6 @@ async function uploadWizard(){
 
   closeWizard();
 }
-
 
 function goStep2(){
   document.getElementById("step1").style.display = "none";
