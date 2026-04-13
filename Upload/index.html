@@ -307,7 +307,6 @@ function openBatchWizard(){
 }
 
 
-
 async function uploadWizard(){
 
   const files = document.getElementById("wizFiles").files;
@@ -320,27 +319,45 @@ async function uploadWizard(){
       file: base64,
       fileName: file.name,
       STONE: document.getElementById("wSTONE").value,
-      PROYECTOID: document.getElementById("wPROYECTOID").value,
+      PROYECTO: document.getElementById("...").value
       MEMO: document.getElementById("wMEMO").value,
-      TIPO: document.getElementById("wTIPO").value,
-      SUBTIPO: document.getElementById("wSUBTIPO").value
+      TIPO: document.getElementById("wTIPO")?.value || "",
+      SUBTIPO: document.getElementById("wSUBTIPO")?.value || ""
     };
 
     await fetch(API, {
       method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
       body: JSON.stringify(payload)
     });
   }
 
-  alert("Upload completo");
+  alert("Upload completo 🚀");
+  document.getElementById("wizardModal").remove();
+  loadPhotos();
 }
+
   
 
 function goStep2(){
-  document.getElementById("step1").style.display = "none";
-  document.getElementById("step2").style.display = "block";
+<div id="step2" style="display:none;">
+
+  <input id="wSTONE" placeholder="STONE">
+  <input id="wPROYECTOID" placeholder="PROYECTO">
+  <textarea id="wMEMO" placeholder="MEMO"></textarea>
+
+  <input id="wTIPO" placeholder="TIPO">
+  <input id="wSUBTIPO" placeholder="SUBTIPO">
+
+  <button onclick="goStep3()">Next →</button>
+</div>
 }
 
+
+
+  
 function goStep3(){
   document.getElementById("step2").style.display = "none";
   document.getElementById("step3").style.display = "block";
