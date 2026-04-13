@@ -188,6 +188,7 @@ let isLoading = false;
 const gallery = document.getElementById('gallery');
 const filtersContainer = document.querySelector('.filters');
 const searchBox = document.getElementById("searchBox");
+let isSearching = false;
 
 let isAdmin = false;
 
@@ -202,9 +203,18 @@ document.getElementById('adminLoginBtn').addEventListener('click', () => {
   }
 });
 
+
+let searchTimeout;
+
 searchBox.addEventListener("input", (e) => {
+  clearTimeout(searchTimeout);
+
   const value = e.target.value.toLowerCase();
-  renderSearch(value);
+
+  searchTimeout = setTimeout(() => {
+    isSearching = value.length > 0;
+    renderSearch(value);
+  }, 300);
 });
   
 const priorityOrder = ["Kitchen","Bathroom","Laundry","Closets & Shelves","Outdoor","BBQ Area","Office","Powder Room","Fireplace","Wall TV","Front desk"];
@@ -378,16 +388,21 @@ function renderGallery(category='all', reset=true){
 }
 
 
-  function renderSearch(query){
+function renderSearch(query){
 
-  // 🔥 reset total
+  // 🔥 limpiar galería siempre
   gallery.innerHTML = '';
   currentIndex = 0;
 
-  if(!query){
+  // 🔥 si no hay búsqueda → volver a modo normal
+  if(!query || query.trim() === ""){
+    isSearching = false;
     renderGallery(currentCategory, true);
     return;
   }
+
+  // 🔥 activar modo búsqueda
+  isSearching = true;
 
   const filtered = photos.filter(p => {
 
@@ -402,10 +417,16 @@ function renderGallery(category='all', reset=true){
       ${p.SUBTIPO || ''}
     `.toLowerCase();
 
-    return text.includes(query);
+    // 🔥 búsqueda multi-palabra (PRO)
+    return query.split(" ").every(word => text.includes(word));
   });
 
-  // 🔥 render directo (sin paginación para búsqueda)
+  // 🔥 si no hay resultados
+  if(filtered.length === 0){
+    gallery.innerHTML = "<p style='text-align:center;'>No se encontraron resultados</p>";
+    return;
+  }
+
   const fragment = document.createDocumentFragment();
 
   filtered.forEach(p => {
@@ -726,17 +747,17 @@ document.addEventListener("mouseleave", () => {
 
 let isLoadingMore = false;
 
+  
+window.addEventListener('scroll', () => {
 
-  window.addEventListener('scroll', () => {
-
-  if(isLoading) return;
+  if(isLoading || isSearching) return; // 🔥 AQUÍ LA CLAVE
 
   if(window.innerHeight + window.scrollY >= document.body.offsetHeight - 500){
     renderGallery(currentCategory, false);
   }
 
 });
-  
+
   
 // 👇 AQUÍ MISMO PEGAS ESTO
 window.addEventListener("DOMContentLoaded", () => {
