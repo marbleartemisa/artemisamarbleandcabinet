@@ -57,7 +57,16 @@ header nav a {
   grid-template-columns:1fr 1fr;
   gap:10px;
 }
-  
+input, textarea {
+  font-size:14px;
+  transition:0.2s;
+}
+
+input:focus, textarea:focus {
+  outline:none;
+  border:1px solid #f15a24;
+  box-shadow:0 0 0 2px rgba(241,90,36,0.1);
+}  
 
   
   
@@ -169,48 +178,100 @@ function openBatchWizard(){
         font-size:20px;
       ">✖</span>
 
-      <h2>📦 Project Batch Upload</h2>
+      <h2 style="margin-bottom:5px;">📦 Batch Upload</h2>
+          <p style="margin:0;color:#777;font-size:13px;">
+            Sube múltiples imágenes a un proyecto
+          </p>
 
       <!-- STEP 1 -->
-      <div id="step1">
-        <input type="file" id="wizFiles" multiple style="width:100%;">
-
-        <button onclick="goStep2()" style="
-          margin-top:15px;
-          width:100%;
-          padding:10px;
-          background:#000;
-          color:#fff;
-          border:none;
-          border-radius:6px;
-        ">
-          Next →
-        </button>
-      </div>
+          <div id="step1">
+            <div id="dropZone" style="
+              border:2px dashed #ccc;
+              border-radius:12px;
+              padding:30px;
+              text-align:center;
+              cursor:pointer;
+              transition:0.2s;
+              background:#fafafa;
+            ">
+              <div style="font-size:30px;">📁</div>
+              <div style="margin-top:10px;font-weight:600;">
+                Arrastra archivos aquí
+              </div>
+              <div style="font-size:12px;color:#777;">
+                o haz click para seleccionar
+              </div>
+          
+              <input type="file" id="wizFiles" multiple style="display:none;">
+            </div>
+          
+            <button onclick="goStep2()" style="
+              margin-top:20px;
+              width:100%;
+              padding:12px;
+              background:#000;
+              color:#fff;
+              border:none;
+              border-radius:8px;
+              font-size:14px;
+            ">
+              Continuar →
+            </button>
+          
+          </div>
+      
 
       <!-- STEP 2 -->
-      <div id="step2" style="display:none;">
+       <div id="step2" style="display:none;">
 
-        <input id="wSTONE" placeholder="STONE" style="width:100%;margin-top:10px;">
-        <input id="wPROYECTOID" placeholder="PROYECTO" style="width:100%;margin-top:10px;">
-        <textarea id="wMEMO" placeholder="MEMO" style="width:100%;margin-top:10px;"></textarea>
+              <div class="grid-2">
+            
+                <div class="form-group">
+                  <label style="font-size:12px;color:#777;">STONE</label>
+                  <input id="wSTONE" placeholder="Ej: Calacatta Gold">
+                </div>
+            
+                <div class="form-group">
+                  <label style="font-size:12px;color:#777;">PROYECTO</label>
+                  <input id="wPROYECTOID" placeholder="Nombre del proyecto">
+                </div>
+            
+              </div>
+            
+              <div class="form-group">
+                <label style="font-size:12px;color:#777;">MEMO</label>
+                <textarea id="wMEMO" placeholder="Descripción..."></textarea>
+              </div>
+            
+              <div class="grid-2">
+            
+                <div class="form-group">
+                  <label style="font-size:12px;color:#777;">TIPO</label>
+                  <input id="wTIPO" placeholder="Kitchen, Bar...">
+                </div>
+            
+                <div class="form-group">
+                  <label style="font-size:12px;color:#777;">SUBTIPO</label>
+                  <input id="wSUBTIPO" placeholder="Countertop...">
+                </div>
+            
+              </div>
+            
+              <button onclick="goStep3()" style="
+                width:100%;
+                padding:12px;
+                background:#000;
+                color:#fff;
+                border:none;
+                border-radius:8px;
+                margin-top:15px;
+              ">
+                Continuar →
+              </button>
+            
+            </div>
 
-        <input id="wTIPO" placeholder="TIPO" style="width:100%;margin-top:10px;">
-        <input id="wSUBTIPO" placeholder="SUBTIPO" style="width:100%;margin-top:10px;">
 
-        <button onclick="goStep3()" style="
-          width:100%;
-          padding:10px;
-          background:#000;
-          color:#fff;
-          border:none;
-          border-radius:6px;
-          margin-top:15px;
-        ">
-          Next →
-        </button>
-
-      </div>
 
       <!-- STEP 3 -->
       <div id="step3" style="display:none;">
@@ -243,84 +304,113 @@ function openBatchWizard(){
 }
 
 async function uploadWizard(){
+  
+const files = document.getElementById("wizFiles").files;
+const preview = document.getElementById("preview");
 
-  const files = document.getElementById("wizFiles").files;
+if(files.length === 0){
+  alert("Selecciona archivos primero");
+  return;
+}
 
-  if(files.length === 0){
-    alert("Selecciona archivos primero");
-    return;
-  }
+// limpiar preview para usarlo como progreso
+preview.innerHTML = "";
 
-  const btn = document.querySelector("#wizardModal button[onclick='uploadWizard()']");
-  if(btn){
-    btn.innerText = "Subiendo...";
-    btn.disabled = true;
-  }
+let errores = 0;
+let exitos = 0;
 
-  let errores = [];
-  let exitos = 0;
+for(const file of files){
 
-  for(const file of files){
+  // crear fila visual
+  const row = document.createElement("div");
+  row.style.marginBottom = "10px";
 
-    try{
+  row.innerHTML = `
+    <div style="font-size:13px;margin-bottom:4px;">${file.name}</div>
 
-      if(file.size > 2.5 * 1024 * 1024){
-        errores.push(file.name + " (demasiado grande)");
-        continue;
-      }
+    
+    <div style="
+      height:6px;
+      background:#eee;
+      border-radius:4px;
+      overflow:hidden;
+    ">
+      <div style="
+        height:100%;
+        width:0%;
+        background:#f15a24;
+        transition:0.3s;
+      "></div>
+    </div>
+  `;
 
-      const base64 = await fileToBase64(file);
+  preview.appendChild(row);
 
-      const payload = {
-        file: base64,
-        fileName: file.name,
-        STONE: document.getElementById("wSTONE").value,
-        PROYECTOID: document.getElementById("wPROYECTOID").value,
-        MEMO: document.getElementById("wMEMO").value,
-        TIPO: document.getElementById("wTIPO").value,
-        SUBTIPO: document.getElementById("wSUBTIPO").value
-      };
+  const bar = row.querySelector("div div");
 
-      const res = await fetch(API, {
-        method: "POST",
-        body: JSON.stringify(payload)
-      });
+  try{
 
-      const data = await res.json();
-
-      if(!data.success){
-        throw new Error(data.error || "Error en servidor");
-      }
-
-      exitos++;
-
-    }catch(err){
-      console.error("ERROR SUBIENDO:", file.name, err);
-      errores.push(file.name);
+    if(file.size > 2.5 * 1024 * 1024){
+      bar.style.width = "100%";
+      bar.style.background = "red";
+      errores++;
+      continue;
     }
 
-  } // ✅ CIERRE CORRECTO DEL FOR
+    const base64 = await fileToBase64(file);
 
-  // 🔥 RESULTADO FINAL (FUERA DEL LOOP)
-  let mensaje = `Subidos: ${exitos}`;
+    bar.style.width = "40%";
 
-  if(errores.length){
-    mensaje += `\nErrores:\n` + errores.join("\n");
+    const payload = {
+      file: base64,
+      fileName: file.name,
+      STONE: document.getElementById("wSTONE").value,
+      PROYECTOID: document.getElementById("wPROYECTOID").value,
+      MEMO: document.getElementById("wMEMO").value,
+      TIPO: document.getElementById("wTIPO").value,
+      SUBTIPO: document.getElementById("wSUBTIPO").value
+    };
+
+    const res = await fetch(API, {
+      method: "POST",
+      headers: { "Content-Type":"application/json" },
+      body: JSON.stringify(payload)
+    });
+
+    const data = await res.json();
+
+    if(!data.success){
+      throw new Error();
+    }
+
+    bar.style.width = "100%";
+    bar.style.background = "green";
+
+    exitos++;
+
+  }catch(err){
+
+    bar.style.width = "100%";
+    bar.style.background = "red";
+
+    errores++;
   }
-
-  alert(mensaje);
-
-  if(btn){
-    btn.innerText = "🚀 Upload";
-    btn.disabled = false;
-  }
-
-  closeWizard();
 }
+
+// resultado final
+alert(`✅ ${exitos} subidos\n❌ ${errores} errores`);
+
+closeWizard();
+}
+
+
+
+  
 function goStep2(){
   document.getElementById("step1").style.display = "none";
   document.getElementById("step2").style.display = "block";
 }
+
 
 function goStep3(){
   document.getElementById("step2").style.display = "none";
@@ -329,8 +419,34 @@ function goStep3(){
   const files = document.getElementById("wizFiles").files;
   let html = "";
 
-  for(let f of files){
-    html += "📄 " + f.name + "<br>";
+  for(let i=0;i<files.length;i++){
+    const f = files[i];
+    const url = URL.createObjectURL(f);
+
+    html += `
+      <div style="
+        display:flex;
+        align-items:center;
+        gap:10px;
+        margin-bottom:10px;
+        padding:6px;
+        border-bottom:1px solid #eee;
+      ">
+        <img src="${url}" style="
+          width:60px;
+          height:60px;
+          object-fit:cover;
+          border-radius:6px;
+        ">
+        
+        <div style="flex:1;">
+          <div style="font-size:14px;">${f.name}</div>
+          <div style="font-size:12px;color:#666;">
+            ${(f.size/1024).toFixed(1)} KB
+          </div>
+        </div>
+      </div>
+    `;
   }
 
   document.getElementById("preview").innerHTML = html;
@@ -377,15 +493,15 @@ function openBatchUpload(){
     display:flex;justify-content:center;align-items:center;
     z-index:9999;
   ">
-
     <div style="
       background:#fff;
-      width:500px;
-      padding:20px;
-      border-radius:12px;
-      max-height:90vh;
-      overflow:auto;
-    ">
+      width:650px;
+      padding:25px;
+      border-radius:16px;
+      position:relative;
+      box-shadow:0 20px 60px rgba(0,0,0,0.25);
+      font-family:Inter,sans-serif;
+">
 
       <h2>📦 Upload Batch</h2>
 
@@ -432,6 +548,32 @@ function openBatchUpload(){
 
   document.body.insertAdjacentHTML("beforeend", html);
 }
+
+  setTimeout(()=>{
+  const drop = document.getElementById("dropZone");
+  const input = document.getElementById("wizFiles");
+
+  drop.onclick = () => input.click();
+
+  drop.ondragover = e => {
+    e.preventDefault();
+    drop.style.borderColor = "#f15a24";
+    drop.style.background = "#fff3ee";
+  };
+
+  drop.ondragleave = () => {
+    drop.style.borderColor = "#ccc";
+    drop.style.background = "#fafafa";
+  };
+
+  drop.ondrop = e => {
+    e.preventDefault();
+    input.files = e.dataTransfer.files;
+    drop.style.borderColor = "#ccc";
+    drop.style.background = "#fafafa";
+  };
+
+},100);
 
 /* =========================
    UPLOAD BATCH
