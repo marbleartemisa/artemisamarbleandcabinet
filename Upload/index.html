@@ -574,66 +574,50 @@ function initDropZone(){
   }
 
   // =========================
-  // CLICK (SEGURO Y SIMPLE)
+  // CLICK (SEGURO)
   // =========================
-  drop.onclick = (e) => {
-    e.preventDefault();
-    input.value = ""; // reset seguro
+  drop.onclick = () => {
+    input.value = "";
     input.click();
   };
 
   // =========================
-  // BLOQUEO GLOBAL DRAG (CRÍTICO)
-  // evita abrir archivos en el navegador
+  // DRAG OVER
   // =========================
-  document.addEventListener("dragover", (e) => {
-    e.preventDefault();
-  }, true);
-
-  document.addEventListener("drop", (e) => {
-    e.preventDefault();
-  }, true);
-
-  // =========================
-  // DRAG OVER UI
-  // =========================
-  drop.ondragover = (e) => {
+  drop.addEventListener("dragover", (e) => {
     e.preventDefault();
     e.stopPropagation();
 
     drop.style.borderColor = "#f15a24";
     drop.style.background = "#fff3ee";
-  };
+  });
 
   // =========================
   // DRAG LEAVE
   // =========================
-  drop.ondragleave = (e) => {
+  drop.addEventListener("dragleave", (e) => {
     e.preventDefault();
     e.stopPropagation();
 
     drop.style.borderColor = "#ccc";
     drop.style.background = "#fafafa";
-  };
+  });
 
   // =========================
-  // DROP REAL (FIX FINAL)
+  // DROP
   // =========================
-  drop.ondrop = (e) => {
+  drop.addEventListener("drop", (e) => {
     e.preventDefault();
     e.stopPropagation();
 
-    const files = e.dataTransfer?.files;
+    const files = e.dataTransfer.files;
 
-    if(!files || files.length === 0){
-      console.warn("No files dropped");
-      return;
-    }
+    if(!files || files.length === 0) return;
 
     const dt = new DataTransfer();
 
-    for(const file of files){
-      dt.items.add(file);
+    for(const f of files){
+      dt.items.add(f);
     }
 
     input.files = dt.files;
@@ -642,9 +626,9 @@ function initDropZone(){
     drop.style.background = "#fafafa";
 
     console.log("DROP OK:", input.files.length);
-  };
+  });
+
 }
-  
 /* =========================
    UPLOAD BATCH
 ========================= */
@@ -675,13 +659,7 @@ async function uploadBatch(){
   loadPhotos();
 }
 
-document.addEventListener("dragover", (e) => {
-  e.preventDefault();
-}, true);
 
-document.addEventListener("drop", (e) => {
-  e.preventDefault();
-}, true);
 
 </script>
 
