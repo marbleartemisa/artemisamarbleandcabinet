@@ -311,13 +311,23 @@ function openBatchWizard(){
 });
 }
 
+let isUploading = false; // 🔴 BLOQUEO GLOBAL
+
 async function uploadWizard(){
+
+  if(isUploading){
+    alert("Ya hay una subida en progreso");
+    return;
+  }
+
+  isUploading = true; // 🔴 BLOQUEA DOBLE CLICK
 
   const files = document.getElementById("wizFiles").files;
   const preview = document.getElementById("preview");
 
   if(!files || files.length === 0){
     alert("Selecciona archivos primero");
+    isUploading = false;
     return;
   }
 
@@ -326,11 +336,10 @@ async function uploadWizard(){
   let errores = 0;
   let exitos = 0;
 
-  for(const file of files){
+  for(let i = 0; i < files.length; i++){
 
-    // =========================
-    // UI ROW
-    // =========================
+    const file = files[i];
+
     const row = document.createElement("div");
     row.style.marginBottom = "10px";
 
@@ -339,44 +348,23 @@ async function uploadWizard(){
         ${file.name}
       </div>
 
-      <div style="
-        height:6px;
-        background:#eee;
-        border-radius:4px;
-        overflow:hidden;
-      ">
-        <div class="bar" style="
-          height:100%;
-          width:0%;
-          background:#f15a24;
-          transition:0.3s;
-        "></div>
+      <div style="height:6px;background:#eee;border-radius:4px;overflow:hidden;">
+        <div class="bar" style="height:100%;width:0%;background:#f15a24;transition:0.3s;"></div>
       </div>
     `;
 
     preview.appendChild(row);
 
-    // ✅ FIX: selector estable (NO nth-child)
     const bar = row.querySelector(".bar");
 
     try{
 
-      // =========================
-      // VALIDACIÓN TAMAÑO
-      // =========================
-      if(file.size > 2.5 * 1024 * 1024){
-        bar.style.width = "100%";
-        bar.style.background = "red";
-        errores++;
-        continue;
-      }
+      // ⚡ progreso real inicial
+      bar.style.width = "10%";
 
-      // =========================
-      // CONVERTIR
-      // =========================
       const base64 = await fileToBase64(file);
 
-      bar.style.width = "30%";
+      bar.style.width = "40%";
 
       const payload = {
         file: base64,
@@ -388,28 +376,30 @@ async function uploadWizard(){
         SUBTIPO: document.getElementById("wSUBTIPO").value
       };
 
-      // =========================
-      // FETCH (ESTABLE PARA APPS SCRIPT)
-      // =========================
-      const res = await fetch(API, {
-        method: "POST",
-        body: JSON.stringify(payload)
-      });
-
+          const res = await fetch(API, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify(payload)
+          });
+          
+          bar.style.width = "70%"; // ⚡ progreso intermedio real
+      
       const text = await res.text();
-      let data;
 
+      let data;
       try {
         data = JSON.parse(text);
       } catch (e) {
-        console.log("Respuesta backend:", text);
-        throw new Error("Backend no devuelve JSON válido");
+        throw new Error("Backend no JSON");
       }
 
       if(!data.success){
         throw new Error("Upload fallido");
       }
 
+      // ⚡ final OK
       bar.style.width = "100%";
       bar.style.background = "green";
 
@@ -428,9 +418,10 @@ async function uploadWizard(){
 
   alert(`✅ ${exitos} subidos\n❌ ${errores} errores`);
 
+  isUploading = false; // 🔵 desbloquea
+
   closeWizard();
 }
-
 function goStep2(){
 
   const files = document.getElementById("wizFiles").files;
