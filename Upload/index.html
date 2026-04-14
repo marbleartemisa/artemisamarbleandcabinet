@@ -301,7 +301,9 @@ function openBatchWizard(){
   `;
 
   document.body.insertAdjacentHTML("beforeend", html);
-  setTimeout(initDropZone, 50);
+  requestAnimationFrame(() => {
+  setTimeout(initDropZone, 100);
+});
 }
 
 async function uploadWizard(){
@@ -561,58 +563,61 @@ function initDropZone(){
   const drop = document.getElementById("dropZone");
   const input = document.getElementById("wizFiles");
 
-  if(!drop || !input) return;
+  if(!drop || !input){
+    console.error("DropZone o input no existen aún");
+    return;
+  }
 
   // =========================
-  // CLICK → abrir selector
+  // CLICK (FORZADO + CAPTURE)
   // =========================
-  drop.addEventListener("click", (e) => {
+  drop.addEventListener("click", function(e){
     e.preventDefault();
     e.stopPropagation();
+    input.value = ""; // reset seguro
     input.click();
-  });
+  }, true);
 
   // =========================
-  // DRAG GLOBAL FIX (IMPORTANTE)
-  // evita que el browser abra el archivo
+  // BLOQUEO GLOBAL DRAG (CRÍTICO)
   // =========================
-  document.addEventListener("dragover", (e)=>{
+  window.addEventListener("dragover", function(e){
     e.preventDefault();
-  });
+  }, false);
 
-  document.addEventListener("drop", (e)=>{
+  window.addEventListener("drop", function(e){
     e.preventDefault();
-  });
+  }, false);
 
   // =========================
-  // DRAG OVER UI
+  // UI DRAG OVER
   // =========================
-  drop.addEventListener("dragover", (e)=>{
+  drop.addEventListener("dragover", function(e){
     e.preventDefault();
     drop.style.borderColor = "#f15a24";
     drop.style.background = "#fff3ee";
   });
 
-  // =========================
-  // DRAG LEAVE
-  // =========================
-  drop.addEventListener("dragleave", ()=>{
+  drop.addEventListener("dragleave", function(){
     drop.style.borderColor = "#ccc";
     drop.style.background = "#fafafa";
   });
 
   // =========================
-  // DROP FILES (CORRECTO)
+  // DROP REAL
   // =========================
-  drop.addEventListener("drop", (e)=>{
+  drop.addEventListener("drop", function(e){
     e.preventDefault();
     e.stopPropagation();
 
     const files = e.dataTransfer.files;
 
+    if(!files || files.length === 0) return;
+
     const dt = new DataTransfer();
-    for(let f of files){
-      dt.items.add(f);
+
+    for(let i = 0; i < files.length; i++){
+      dt.items.add(files[i]);
     }
 
     input.files = dt.files;
@@ -620,10 +625,12 @@ function initDropZone(){
     drop.style.borderColor = "#ccc";
     drop.style.background = "#fafafa";
 
-    console.log("Archivos cargados:", input.files.length);
+    console.log("DROP OK:", input.files.length);
   });
 
 }
+
+  
 /* =========================
    UPLOAD BATCH
 ========================= */
