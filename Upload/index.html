@@ -312,102 +312,123 @@ function openBatchWizard(){
 }
 
 async function uploadWizard(){
-  
-const files = document.getElementById("wizFiles").files;
-const preview = document.getElementById("preview");
 
-if(files.length === 0){
-  alert("Selecciona archivos primero");
-  return;
-}
+  const files = document.getElementById("wizFiles").files;
+  const preview = document.getElementById("preview");
 
-// limpiar preview para usarlo como progreso
-preview.innerHTML = "";
+  if(!files || files.length === 0){
+    alert("Selecciona archivos primero");
+    return;
+  }
 
-let errores = 0;
-let exitos = 0;
+  preview.innerHTML = "";
 
-for(const file of files){
+  let errores = 0;
+  let exitos = 0;
 
-  // crear fila visual
-  const row = document.createElement("div");
-  row.style.marginBottom = "10px";
+  for(const file of files){
 
-  row.innerHTML = `
-    <div style="font-size:13px;margin-bottom:4px;">${file.name}</div>
+    // =========================
+    // UI ROW
+    // =========================
+    const row = document.createElement("div");
+    row.style.marginBottom = "10px";
 
-    
-    <div style="
-      height:6px;
-      background:#eee;
-      border-radius:4px;
-      overflow:hidden;
-    ">
+    row.innerHTML = `
+      <div style="font-size:13px;margin-bottom:4px;">
+        ${file.name}
+      </div>
+
       <div style="
-        height:100%;
-        width:0%;
-        background:#f15a24;
-        transition:0.3s;
-      "></div>
-    </div>
-  `;
+        height:6px;
+        background:#eee;
+        border-radius:4px;
+        overflow:hidden;
+      ">
+        <div class="bar" style="
+          height:100%;
+          width:0%;
+          background:#f15a24;
+          transition:0.3s;
+        "></div>
+      </div>
+    `;
 
-  preview.appendChild(row);
+    preview.appendChild(row);
 
- const bar = row.querySelector("div div:nth-child(1)");
-  try{
+    // ✅ FIX: selector estable (NO nth-child)
+    const bar = row.querySelector(".bar");
 
-    if(file.size > 2.5 * 1024 * 1024){
+    try{
+
+      // =========================
+      // VALIDACIÓN TAMAÑO
+      // =========================
+      if(file.size > 2.5 * 1024 * 1024){
+        bar.style.width = "100%";
+        bar.style.background = "red";
+        errores++;
+        continue;
+      }
+
+      // =========================
+      // CONVERTIR
+      // =========================
+      const base64 = await fileToBase64(file);
+
+      bar.style.width = "30%";
+
+      const payload = {
+        file: base64,
+        fileName: file.name,
+        STONE: document.getElementById("wSTONE").value,
+        PROYECTOID: document.getElementById("wPROYECTOID").value,
+        MEMO: document.getElementById("wMEMO").value,
+        TIPO: document.getElementById("wTIPO").value,
+        SUBTIPO: document.getElementById("wSUBTIPO").value
+      };
+
+      // =========================
+      // FETCH (ESTABLE PARA APPS SCRIPT)
+      // =========================
+      const res = await fetch(API, {
+        method: "POST",
+        body: JSON.stringify(payload)
+      });
+
+      const text = await res.text();
+      let data;
+
+      try {
+        data = JSON.parse(text);
+      } catch (e) {
+        console.log("Respuesta backend:", text);
+        throw new Error("Backend no devuelve JSON válido");
+      }
+
+      if(!data.success){
+        throw new Error("Upload fallido");
+      }
+
+      bar.style.width = "100%";
+      bar.style.background = "green";
+
+      exitos++;
+
+    } catch(err){
+
+      console.error(err);
+
       bar.style.width = "100%";
       bar.style.background = "red";
+
       errores++;
-      continue;
     }
-
-    const base64 = await fileToBase64(file);
-
-    bar.style.width = "40%";
-
-    const payload = {
-      file: base64,
-      fileName: file.name,
-      STONE: document.getElementById("wSTONE").value,
-      PROYECTOID: document.getElementById("wPROYECTOID").value,
-      MEMO: document.getElementById("wMEMO").value,
-      TIPO: document.getElementById("wTIPO").value,
-      SUBTIPO: document.getElementById("wSUBTIPO").value
-    };
-
-    const res = await fetch(API, {
-      method: "POST",
-      headers: { "Content-Type":"application/json" },
-      body: JSON.stringify(payload)
-    });
-
-    const data = await res.json();
-
-    if(!data.success){
-      throw new Error();
-    }
-
-    bar.style.width = "100%";
-    bar.style.background = "green";
-
-    exitos++;
-
-  }catch(err){
-
-    bar.style.width = "100%";
-    bar.style.background = "red";
-
-    errores++;
   }
-}
 
-// resultado final
-alert(`✅ ${exitos} subidos\n❌ ${errores} errores`);
+  alert(`✅ ${exitos} subidos\n❌ ${errores} errores`);
 
-closeWizard();
+  closeWizard();
 }
 
 function goStep2(){
