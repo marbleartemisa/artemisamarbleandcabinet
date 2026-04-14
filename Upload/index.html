@@ -201,8 +201,13 @@ function openBatchWizard(){
               <div style="font-size:12px;color:#777;">
                 o haz click para seleccionar
               </div>
-          
-              <input type="file" id="wizFiles" multiple style="display:none;" accept="image/*">
+                <<input type="file" id="wizFiles" multiple accept="image/*" style="
+                      position:absolute;
+                      width:1px;
+                      height:1px;
+                      opacity:0;
+                      pointer-events:none;
+                    ">
             </div>
           
             <button onclick="goStep2()" style="
@@ -569,55 +574,73 @@ function initDropZone(){
   }
 
   // =========================
-  // CLICK (FORZADO + CAPTURE)
+  // CLICK (ULTRA ROBUSTO)
   // =========================
   drop.addEventListener("click", function(e){
     e.preventDefault();
     e.stopPropagation();
-    input.value = ""; // reset seguro
-    input.click();
+
+    console.log("CLICK DROPZONE");
+
+    input.value = "";
+
+    // 🔥 FIX IMPORTANTE: forzar apertura fuera del stack de eventos
+    setTimeout(() => {
+      input.click();
+    }, 0);
+
   }, true);
 
   // =========================
-  // BLOQUEO GLOBAL DRAG (CRÍTICO)
+  // BLOQUEO GLOBAL DRAG (EVITA QUE ABRA ARCHIVOS EN EL BROWSER)
   // =========================
-  window.addEventListener("dragover", function(e){
+  document.addEventListener("dragover", function(e){
     e.preventDefault();
-  }, false);
+  }, { passive: false });
 
-  window.addEventListener("drop", function(e){
+  document.addEventListener("drop", function(e){
     e.preventDefault();
-  }, false);
+  }, { passive: false });
 
   // =========================
   // UI DRAG OVER
   // =========================
   drop.addEventListener("dragover", function(e){
     e.preventDefault();
+    e.stopPropagation();
+
     drop.style.borderColor = "#f15a24";
     drop.style.background = "#fff3ee";
   });
 
-  drop.addEventListener("dragleave", function(){
+  // =========================
+  // DRAG LEAVE
+  // =========================
+  drop.addEventListener("dragleave", function(e){
+    e.preventDefault();
+
     drop.style.borderColor = "#ccc";
     drop.style.background = "#fafafa";
   });
 
   // =========================
-  // DROP REAL
+  // DROP REAL (FIX ROBUSTO)
   // =========================
   drop.addEventListener("drop", function(e){
     e.preventDefault();
     e.stopPropagation();
 
-    const files = e.dataTransfer.files;
+    const files = e.dataTransfer?.files;
 
-    if(!files || files.length === 0) return;
+    if(!files || files.length === 0){
+      console.warn("No files detected on drop");
+      return;
+    }
 
     const dt = new DataTransfer();
 
-    for(let i = 0; i < files.length; i++){
-      dt.items.add(files[i]);
+    for(const file of files){
+      dt.items.add(file);
     }
 
     input.files = dt.files;
@@ -626,10 +649,9 @@ function initDropZone(){
     drop.style.background = "#fafafa";
 
     console.log("DROP OK:", input.files.length);
-  });
+  }, true);
 
 }
-
   
 /* =========================
    UPLOAD BATCH
