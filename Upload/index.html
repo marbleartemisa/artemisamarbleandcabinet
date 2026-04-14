@@ -563,33 +563,54 @@ function initDropZone(){
 
   if(!drop || !input) return;
 
-  // CLICK
-  drop.addEventListener("click", () => {
+  // =========================
+  // CLICK → abrir selector
+  // =========================
+  drop.addEventListener("click", (e) => {
+    e.preventDefault();
+    e.stopPropagation();
     input.click();
   });
 
-  // DRAG OVER
+  // =========================
+  // DRAG GLOBAL FIX (IMPORTANTE)
+  // evita que el browser abra el archivo
+  // =========================
+  document.addEventListener("dragover", (e)=>{
+    e.preventDefault();
+  });
+
+  document.addEventListener("drop", (e)=>{
+    e.preventDefault();
+  });
+
+  // =========================
+  // DRAG OVER UI
+  // =========================
   drop.addEventListener("dragover", (e)=>{
     e.preventDefault();
     drop.style.borderColor = "#f15a24";
     drop.style.background = "#fff3ee";
   });
 
+  // =========================
   // DRAG LEAVE
+  // =========================
   drop.addEventListener("dragleave", ()=>{
     drop.style.borderColor = "#ccc";
     drop.style.background = "#fafafa";
   });
 
-  // DROP (FIX REAL)
+  // =========================
+  // DROP FILES (CORRECTO)
+  // =========================
   drop.addEventListener("drop", (e)=>{
     e.preventDefault();
+    e.stopPropagation();
 
     const files = e.dataTransfer.files;
 
-    // 👇 HACK correcto para asignar archivos
     const dt = new DataTransfer();
-
     for(let f of files){
       dt.items.add(f);
     }
