@@ -569,88 +569,39 @@ function initDropZone(){
   const input = document.getElementById("wizFiles");
 
   if(!drop || !input){
-    console.error("DropZone o input no existen aún");
+    console.error("DropZone o input no existe");
     return;
   }
 
+  // 🔥 FORZAR INPUT SIEMPRE FUNCIONAL (SIN EVENTOS COMPLEJOS)
+  drop.onclick = () => {
+    input.click();
+  };
+
   // =========================
-  // CLICK (ULTRA ROBUSTO)
+  // DRAG & DROP SIMPLE Y SEGURO
   // =========================
-  drop.addEventListener("click", function(e){
+  drop.ondragover = (e) => {
     e.preventDefault();
-    e.stopPropagation();
-
-    console.log("CLICK DROPZONE");
-
-    input.value = "";
-
-    // 🔥 FIX IMPORTANTE: forzar apertura fuera del stack de eventos
-    setTimeout(() => {
-      input.click();
-    }, 0);
-
-  }, true);
-
-  // =========================
-  // BLOQUEO GLOBAL DRAG (EVITA QUE ABRA ARCHIVOS EN EL BROWSER)
-  // =========================
-  document.addEventListener("dragover", function(e){
-    e.preventDefault();
-  }, { passive: false });
-
-  document.addEventListener("drop", function(e){
-    e.preventDefault();
-  }, { passive: false });
-
-  // =========================
-  // UI DRAG OVER
-  // =========================
-  drop.addEventListener("dragover", function(e){
-    e.preventDefault();
-    e.stopPropagation();
-
     drop.style.borderColor = "#f15a24";
     drop.style.background = "#fff3ee";
-  });
+  };
 
-  // =========================
-  // DRAG LEAVE
-  // =========================
-  drop.addEventListener("dragleave", function(e){
-    e.preventDefault();
-
+  drop.ondragleave = () => {
     drop.style.borderColor = "#ccc";
     drop.style.background = "#fafafa";
-  });
+  };
 
-  // =========================
-  // DROP REAL (FIX ROBUSTO)
-  // =========================
-  drop.addEventListener("drop", function(e){
+  drop.ondrop = (e) => {
     e.preventDefault();
-    e.stopPropagation();
 
-    const files = e.dataTransfer?.files;
-
-    if(!files || files.length === 0){
-      console.warn("No files detected on drop");
-      return;
-    }
-
-    const dt = new DataTransfer();
-
-    for(const file of files){
-      dt.items.add(file);
-    }
-
-    input.files = dt.files;
+    input.files = e.dataTransfer.files;
 
     drop.style.borderColor = "#ccc";
     drop.style.background = "#fafafa";
 
-    console.log("DROP OK:", input.files.length);
-  }, true);
-
+    console.log("FILES:", input.files.length);
+  };
 }
   
 /* =========================
