@@ -263,28 +263,29 @@ async function uploadWizard(){
 
     try{
 
-      // 🔴 VALIDACIÓN DE TAMAÑO
-      if(file.size > 3.5 * 1024 * 1024){
+      if(file.size > 2.5 * 1024 * 1024){
         errores.push(file.name + " (demasiado grande)");
         continue;
       }
 
       const base64 = await fileToBase64(file);
 
-      // 🔥 FORM DATA (REEMPLAZA payload)
-      const fd = new FormData();
-      fd.append("file", base64);
-      fd.append("fileName", file.name);
-      fd.append("STONE", document.getElementById("wSTONE").value);
-      fd.append("PROYECTOID", document.getElementById("wPROYECTOID").value);
-      fd.append("MEMO", document.getElementById("wMEMO").value);
-      fd.append("TIPO", document.getElementById("wTIPO").value);
-      fd.append("SUBTIPO", document.getElementById("wSUBTIPO").value);
+      const payload = {
+        file: base64,
+        fileName: file.name,
+        STONE: document.getElementById("wSTONE").value,
+        PROYECTOID: document.getElementById("wPROYECTOID").value,
+        MEMO: document.getElementById("wMEMO").value,
+        TIPO: document.getElementById("wTIPO").value,
+        SUBTIPO: document.getElementById("wSUBTIPO").value
+      };
 
-      // 🔥 FETCH LIMPIO (SIN no-cors, SIN headers)
       const res = await fetch(API, {
         method: "POST",
-        body: fd
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(payload)
       });
 
       const data = await res.json();
@@ -299,9 +300,10 @@ async function uploadWizard(){
       console.error("ERROR SUBIENDO:", file.name, err);
       errores.push(file.name);
     }
-  }
 
-  // 🔥 RESULTADO FINAL
+  } // ✅ CIERRE CORRECTO DEL FOR
+
+  // 🔥 RESULTADO FINAL (FUERA DEL LOOP)
   let mensaje = `Subidos: ${exitos}`;
 
   if(errores.length){
@@ -317,7 +319,6 @@ async function uploadWizard(){
 
   closeWizard();
 }
-
 function goStep2(){
   document.getElementById("step1").style.display = "none";
   document.getElementById("step2").style.display = "block";
