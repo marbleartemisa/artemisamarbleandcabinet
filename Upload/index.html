@@ -313,6 +313,8 @@ function openBatchWizard(){
 
 let isUploading = false; // 🔴 BLOQUEO GLOBAL
 
+
+
 async function uploadWizard(){
 
   if(isUploading){
@@ -320,7 +322,7 @@ async function uploadWizard(){
     return;
   }
 
-  isUploading = true; // 🔴 BLOQUEA DOBLE CLICK
+  isUploading = true;
 
   const files = document.getElementById("wizFiles").files;
   const preview = document.getElementById("preview");
@@ -336,9 +338,7 @@ async function uploadWizard(){
   let errores = 0;
   let exitos = 0;
 
-  for(let i = 0; i < files.length; i++){
-
-    const file = files[i];
+  for(const file of files){
 
     const row = document.createElement("div");
     row.style.marginBottom = "10px";
@@ -357,45 +357,45 @@ async function uploadWizard(){
 
     const bar = row.querySelector(".bar");
 
-    try{
+    try {
 
-      // ⚡ progreso real inicial
+      // progreso inicial
       bar.style.width = "10%";
 
       const base64 = await fileToBase64(file);
 
       bar.style.width = "40%";
 
-          const payload = {
-            file: base64,
-            fileName: file.name,
-            STONE: document.getElementById("wSTONE").value,
-            PROYECTOID: document.getElementById("wPROYECTOID").value,
-            MEMO: document.getElementById("wMEMO").value,
-            TIPO: document.getElementById("wTIPO").value,
-            SUBTIPO: document.getElementById("wSUBTIPO").value
-          };
-          
-          const res = await fetch(API, {
-            method: "POST",
-            body: JSON.stringify(payload) // ✅ SIN HEADERS
-          });
-          
-          const text = await res.text();
-          
-          let data;
-          try {
-            data = JSON.parse(text);
-          } catch (e) {
-            console.log("Respuesta backend:", text);
-            throw new Error("Backend no devuelve JSON válido");
-          }
+      const payload = {
+        file: base64,
+        fileName: file.name,
+        STONE: document.getElementById("wSTONE").value,
+        PROYECTOID: document.getElementById("wPROYECTOID").value,
+        MEMO: document.getElementById("wMEMO").value,
+        TIPO: document.getElementById("wTIPO").value,
+        SUBTIPO: document.getElementById("wSUBTIPO").value
+      };
+
+      // 🔥 IMPORTANTE: BACK TO ORIGINAL (SIN HEADERS)
+      const res = await fetch(API, {
+        method: "POST",
+        body: JSON.stringify(payload)
+      });
+
+      const text = await res.text();
+
+      let data;
+      try {
+        data = JSON.parse(text);
+      } catch (e) {
+        console.log("Respuesta backend:", text);
+        throw new Error("Backend no devuelve JSON válido");
+      }
 
       if(!data.success){
         throw new Error("Upload fallido");
       }
 
-      // ⚡ final OK
       bar.style.width = "100%";
       bar.style.background = "green";
 
@@ -414,11 +414,14 @@ async function uploadWizard(){
 
   alert(`✅ ${exitos} subidos\n❌ ${errores} errores`);
 
-  isUploading = false; // 🔵 desbloquea
+  isUploading = false;
 
   closeWizard();
 }
-function goStep2(){
+  
+  
+  
+  function goStep2(){
 
   const files = document.getElementById("wizFiles").files;
 
