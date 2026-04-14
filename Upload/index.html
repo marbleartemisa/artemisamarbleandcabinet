@@ -202,7 +202,7 @@ function openBatchWizard(){
                 o haz click para seleccionar
               </div>
           
-              <input type="file" id="wizFiles" multiple style="display:none;">
+              <input type="file" id="wizFiles" multiple style="display:none;" accept="image/*">
             </div>
           
             <button onclick="goStep2()" style="
@@ -301,6 +301,7 @@ function openBatchWizard(){
   `;
 
   document.body.insertAdjacentHTML("beforeend", html);
+  setTimeout(initDropZone, 50);
 }
 
 async function uploadWizard(){
@@ -346,8 +347,7 @@ for(const file of files){
 
   preview.appendChild(row);
 
-  const bar = row.querySelector("div div");
-
+ const bar = row.querySelector("div div:nth-child(1)");
   try{
 
     if(file.size > 2.5 * 1024 * 1024){
@@ -403,14 +403,20 @@ alert(`✅ ${exitos} subidos\n❌ ${errores} errores`);
 closeWizard();
 }
 
-
-
-  
 function goStep2(){
+
+  const files = document.getElementById("wizFiles").files;
+
+  // 🔴 VALIDACIÓN: evitar avanzar sin archivos
+  if(!files || files.length === 0){
+    alert("Selecciona al menos un archivo");
+    return;
+  }
+
+  // ✅ continuar flujo normal
   document.getElementById("step1").style.display = "none";
   document.getElementById("step2").style.display = "block";
 }
-
 
 function goStep3(){
   document.getElementById("step2").style.display = "none";
@@ -422,6 +428,7 @@ function goStep3(){
   for(let i=0;i<files.length;i++){
     const f = files[i];
     const url = URL.createObjectURL(f);
+    setTimeout(()=> URL.revokeObjectURL(url), 5000);
 
     html += `
       <div style="
@@ -549,32 +556,53 @@ function openBatchUpload(){
   document.body.insertAdjacentHTML("beforeend", html);
 }
 
-  setTimeout(()=>{
+function initDropZone(){
+
   const drop = document.getElementById("dropZone");
   const input = document.getElementById("wizFiles");
 
-  drop.onclick = () => input.click();
+  if(!drop || !input) return;
 
-  drop.ondragover = e => {
+  // CLICK
+  drop.addEventListener("click", () => {
+    input.click();
+  });
+
+  // DRAG OVER
+  drop.addEventListener("dragover", (e)=>{
     e.preventDefault();
     drop.style.borderColor = "#f15a24";
     drop.style.background = "#fff3ee";
-  };
+  });
 
-  drop.ondragleave = () => {
+  // DRAG LEAVE
+  drop.addEventListener("dragleave", ()=>{
     drop.style.borderColor = "#ccc";
     drop.style.background = "#fafafa";
-  };
+  });
 
-  drop.ondrop = e => {
+  // DROP (FIX REAL)
+  drop.addEventListener("drop", (e)=>{
     e.preventDefault();
-    input.files = e.dataTransfer.files;
+
+    const files = e.dataTransfer.files;
+
+    // 👇 HACK correcto para asignar archivos
+    const dt = new DataTransfer();
+
+    for(let f of files){
+      dt.items.add(f);
+    }
+
+    input.files = dt.files;
+
     drop.style.borderColor = "#ccc";
     drop.style.background = "#fafafa";
-  };
 
-},100);
+    console.log("Archivos cargados:", input.files.length);
+  });
 
+}
 /* =========================
    UPLOAD BATCH
 ========================= */
