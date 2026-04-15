@@ -366,15 +366,21 @@ async function uploadWizard(){
 
       bar.style.width = "40%";
 
+
       const payload = {
-        file: base64,
-        fileName: file.name,
-        STONE: document.getElementById("wSTONE").value,
-        PROYECTOID: document.getElementById("wPROYECTOID").value,
-        MEMO: document.getElementById("wMEMO").value,
-        TIPO: document.getElementById("wTIPO").value,
-        SUBTIPO: document.getElementById("wSUBTIPO").value
-      };
+            file: base64,
+            fileName: file.name,
+            STONE: document.getElementById("wSTONE").value,
+            PROYECTOID: document.getElementById("wPROYECTOID").value,
+            MEMO: document.getElementById("wMEMO").value,
+            TIPO: document.getElementById("wTIPO").value,
+            SUBTIPO: document.getElementById("wSUBTIPO").value,
+          
+            // 🔥 NUEVOS CAMPOS
+            COLOURS: document.getElementById("wCOLOURS").value,
+            MATERIALES: document.getElementById("wMATERIALES").value,
+            LOOKINGFOR: document.getElementById("wLOOKINGFOR").value
+          };
 
       // 🔥 IMPORTANTE: BACK TO ORIGINAL (SIN HEADERS)
       const res = await fetch(API, {
@@ -526,7 +532,7 @@ function openBatchUpload(){
       position:relative;
       box-shadow:0 20px 60px rgba(0,0,0,0.25);
       font-family:Inter,sans-serif;
-">
+    ">
 
       <h2>📦 Upload Batch</h2>
 
@@ -551,6 +557,26 @@ function openBatchUpload(){
         <textarea id="bMEMO"></textarea>
       </div>
 
+      <!-- 🔥 NUEVOS CAMPOS -->
+      <div class="grid-2">
+
+        <div class="form-group">
+          <label>COLOURS</label>
+          <input id="bCOLOURS" placeholder="White, Black, Gold...">
+        </div>
+
+        <div class="form-group">
+          <label>MATERIALES</label>
+          <input id="bMATERIALES" placeholder="Quartz, Marble...">
+        </div>
+
+      </div>
+
+      <div class="form-group">
+        <label>LOOKING FOR</label>
+        <input id="bLOOKINGFOR" placeholder="Modern, Luxury, Minimalist...">
+      </div>
+
       <button onclick="uploadBatch()" style="
         width:100%;
         padding:12px;
@@ -573,6 +599,10 @@ function openBatchUpload(){
 
   document.body.insertAdjacentHTML("beforeend", html);
 }
+
+
+
+  
 
 function initDropZone(){
 
