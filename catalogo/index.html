@@ -208,6 +208,7 @@ document.getElementById('adminLoginBtn').addEventListener('click', () => {
 let searchTimeout;
 
 searchBox.addEventListener("input", (e) => {
+
   clearTimeout(searchTimeout);
 
   const value = e.target.value.toLowerCase();
@@ -215,44 +216,30 @@ searchBox.addEventListener("input", (e) => {
   searchTimeout = setTimeout(() => {
 
     isSearching = value.length > 0;
-
-    // 🔥 BUSCA INMEDIATO (con lo que haya cargado)
     renderSearch(value);
-
-    // 🔥 CARGA TODO EN BACKGROUND (sin bloquear)
-    if(value.length > 0 && !allLoaded){
-      loadAllPhotos().then(() => {
-        allLoaded = true;
-
-        // 🔥 RE-EJECUTA SEARCH con todos los datos
-        renderSearch(value);
-      });
-    }
 
   }, 300);
 });
   
 const priorityOrder = ["Kitchen","Bathroom","Laundry","Closets & Shelves","Outdoor","BBQ Area","Office","Powder Room","Fireplace","Wall TV","Front desk"];
 
-async function loadAllPhotos(){
 
-  let offset = photos.length;
 
-  while(true){
+async function loadPhotos(offset = 0){
+
+  try{
 
     const res = await fetch(`${API}?offset=${offset}&limit=${PAGE_SIZE}`);
 
-    const text = await res.text();   // 🔥 IGUAL QUE loadPhotos
+    const text = await res.text();
 
     let data;
     try {
       data = JSON.parse(text);
-    } catch(err){
-      console.log("❌ JSON ERROR:", text);
-      break;
+    } catch(e){
+      console.log("❌ RESPUESTA NO JSON:", text);
+      return;
     }
-
-    if(!data || data.length === 0) break;
 
     const processed = data.map(p => ({
       ...p,
@@ -269,11 +256,18 @@ async function loadAllPhotos(){
     }));
 
     photos = photos.concat(processed);
-    offset += PAGE_SIZE;
-  }
 
-  console.log("✅ TODAS LAS FOTOS CARGADAS:", photos.length);
+    createFilters();
+    renderGallery(currentCategory, false);
+
+    document.getElementById("loader").style.display = "none";
+
+  } catch(err){
+    console.error("❌ ERROR API:", err);
+  }
 }
+
+  
 
   
 function createFilters(){
@@ -301,37 +295,7 @@ function createFilters(){
   }
 }
 
-async function loadAllPhotos(){
 
-  let offset = photos.length;
-
-  while(true){
-
-    const res = await fetch(`${API}?offset=${offset}&limit=${PAGE_SIZE}`);
-    const data = await res.json();
-
-    if(!data || data.length === 0) break;
-
-    const processed = data.map(p => ({
-      ...p,
-      _searchText: [
-        p.STONE,
-        p.PROYECTOID,
-        p.MEMO,
-        p.COLOURS,
-        p.MATERIALES,
-        p.LOOKINGFOR,
-        p.TIPO,
-        p.SUBTIPO
-      ].filter(Boolean).join(" ").toLowerCase()
-    }));
-
-    photos = photos.concat(processed);
-    offset += PAGE_SIZE;
-  }
-
-  console.log("✅ TODAS LAS FOTOS CARGADAS:", photos.length);
-}
 function renderGallery(category='all', reset=true){
 
   if(isLoading) return;
@@ -797,12 +761,9 @@ window.addEventListener('scroll', () => {
 
 });
   
-  
-// 👇 AQUÍ MISMO PEGAS ESTO
 window.addEventListener("DOMContentLoaded", () => {
-  loadPhotos();        // galería paginada
+  loadPhotos(0);
 });
-
   
 </script>
 
