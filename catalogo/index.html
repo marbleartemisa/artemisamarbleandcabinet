@@ -182,8 +182,6 @@ header nav a:hover { text-decoration:underline; }
 const API = "https://script.google.com/macros/s/AKfycbyy4H8o3wD8oXRdFMAv5oZHuWrbJ4gY_jNoR9MSBKLqQZbIuBiXJH8Dq4S-jAz6ZlZo/exec";
 let allLoaded = false;
 let photos = [];
-let allPhotos = [];
-let searchIndexReady = false;
 const PAGE_SIZE = 40;
 let currentIndex = 0;
 let currentCategory = 'all';
@@ -226,20 +224,24 @@ searchBox.addEventListener("input", (e) => {
     isSearching = true;
 
     // 🔥 SOLO cargar todo una vez
-        if (!searchIndexReady) {
-          document.getElementById("loader").style.display = "block";
-        
-          await loadAllPhotos();
-        
-          searchIndexReady = true;
-        
-          document.getElementById("loader").style.display = "none";
-        }
-
-    renderSearch(value);
-
-  }, 300);
-});
+      searchBox.addEventListener("input", (e) => {
+        clearTimeout(searchTimeout);
+      
+        searchTimeout = setTimeout(() => {
+      
+          const value = e.target.value.toLowerCase().trim();
+      
+          if(!value){
+            isSearching = false;
+            renderGallery(currentCategory, true);
+            return;
+          }
+      
+          isSearching = true;
+          renderSearch(value);
+      
+        }, 300);
+      });
   
 const priorityOrder = ["Kitchen","Bathroom","Laundry","Closets & Shelves","Outdoor","BBQ Area","Office","Powder Room","Fireplace","Wall TV","Front desk"];
 
@@ -276,8 +278,10 @@ async function loadPhotos(offset = 0){
 
     // 🔥 1. ACTUALIZAS MEMORIA
     photos = photos.concat(processed);
-    localStorage.setItem('photos', JSON.stringify(photos));
-    
+    if (processed.length < PAGE_SIZE) {
+            allLoaded = true;
+          }
+   
     // 🔥 2. GUARDAS CACHE (AQUÍ VA EXACTAMENTE)
     localStorage.setItem('photos', JSON.stringify(photos));
 
@@ -482,7 +486,7 @@ function renderSearch(query){
 
   const words = query.toLowerCase().split(" ").filter(w => w);
 
-  const filtered = allPhotos.filter(p => {
+  const filtered = photos.filter(p => {
 
     if (p.ESTADO === 'ELIMINADO') return false;
 
@@ -496,6 +500,7 @@ function renderSearch(query){
 
   });
 
+  
   if(filtered.length === 0){
     gallery.innerHTML = "<p style='text-align:center;'>No results</p>";
     return;
@@ -813,16 +818,21 @@ let isLoadingMore = false;
 
 window.addEventListener('scroll', async () => {
 
-  if(isLoading || isSearching || allLoaded) return;
-
-  if(window.innerHeight + window.scrollY >= document.body.offsetHeight - 500){
-    isLoading = true;
-    await loadPhotos(photos.length);
-    isLoading = false;
-  }
-
-});
-  
+      if(isLoading) return;
+      if(isSearching) return;
+    
+      const nearBottom =
+        window.innerHeight + window.scrollY >= document.body.offsetHeight - 500;
+    
+      if(!nearBottom) return;
+    
+      isLoading = true;
+    
+      await loadPhotos(photos.length);
+    
+      isLoading = false;
+    });
+    
   window.addEventListener("DOMContentLoaded", () => {
   
     const cache = localStorage.getItem('photos');
