@@ -255,7 +255,8 @@ async function loadPhotos(offset = 0){
     createFilters();
     renderGallery(currentCategory, false);
 
-    document.getElementById("loader").style.display = "none";
+    const loader = document.getElementById("loader");
+    if(loader) loader.style.display = "none";
 
   }catch(e){
     console.error("❌ Error cargando datos:", e);
@@ -435,8 +436,9 @@ function renderSearch(query){
   // 🔥 activar modo búsqueda
   isSearching = true;
 
- const filtered = searchData.filter(p => {
+  const source = searchData.length ? searchData : photos;
 
+  const filtered = source.filter(p => {
   const text = [
     p.STONE,
     p.PROYECTOID,       // 🔥 CORREGIDO (antes PROYECTOID)
