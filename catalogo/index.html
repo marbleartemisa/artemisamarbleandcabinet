@@ -180,7 +180,7 @@ header nav a:hover { text-decoration:underline; }
 
 <script>
 const API = "https://script.google.com/macros/s/AKfycbyy4H8o3wD8oXRdFMAv5oZHuWrbJ4gY_jNoR9MSBKLqQZbIuBiXJH8Dq4S-jAz6ZlZo/exec";
-
+let allLoaded = false;
 let photos = [];
 const PAGE_SIZE = 40;
 let currentIndex = 0;
@@ -207,14 +207,21 @@ document.getElementById('adminLoginBtn').addEventListener('click', () => {
 
 let searchTimeout;
 
-searchBox.addEventListener("input", (e) => {
+  searchBox.addEventListener("input", async (e) => {
   clearTimeout(searchTimeout);
 
   const value = e.target.value.toLowerCase();
 
-  searchTimeout = setTimeout(() => {
+  searchTimeout = setTimeout(async () => {
+
+    if(value.length > 0 && !allLoaded){
+      await loadAllPhotos();   // 🔥 cargar todo antes de buscar
+      allLoaded = true;
+    }
+
     isSearching = value.length > 0;
     renderSearch(value);
+
   }, 300);
 });
   
@@ -304,7 +311,37 @@ function createFilters(){
   }
 }
 
+async function loadAllPhotos(){
 
+  let offset = photos.length;
+
+  while(true){
+
+    const res = await fetch(`${API}?offset=${offset}&limit=${PAGE_SIZE}`);
+    const data = await res.json();
+
+    if(!data || data.length === 0) break;
+
+    const processed = data.map(p => ({
+      ...p,
+      _searchText: [
+        p.STONE,
+        p.PROYECTOID,
+        p.MEMO,
+        p.COLOURS,
+        p.MATERIALES,
+        p.LOOKINGFOR,
+        p.TIPO,
+        p.SUBTIPO
+      ].filter(Boolean).join(" ").toLowerCase()
+    }));
+
+    photos = photos.concat(processed);
+    offset += PAGE_SIZE;
+  }
+
+  console.log("✅ TODAS LAS FOTOS CARGADAS:", photos.length);
+}
 function renderGallery(category='all', reset=true){
 
   if(isLoading) return;
