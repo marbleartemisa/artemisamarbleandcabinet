@@ -179,8 +179,7 @@ header nav a:hover { text-decoration:underline; }
 <script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.js"></script>
 
 <script>
-const API = "https://script.google.com/macros/s/AKfycbyy4H8o3wD8oXRdFMAv5oZHuWrbJ4gY_jNoR9MSBKLqQZbIuBiXJH8Dq4S-jAz6ZlZo/exec";
-let allLoaded = false;
+const API = "https://script.google.com/macros/s/AKfycbwGGvL1ox8ZXJ08fRxKXgyJHQxzDOfwnCfpxcabCGJht5dh6R5ViTAeiGPQfa0LAXB2/exec";
 let photos = [];
 const PAGE_SIZE = 40;
 let currentIndex = 0;
@@ -189,7 +188,6 @@ let isLoading = false;
 const gallery = document.getElementById('gallery');
 const filtersContainer = document.querySelector('.filters');
 const searchBox = document.getElementById("searchBox");
-let isSearching = false;
 
 let isAdmin = false;
 
@@ -204,120 +202,47 @@ document.getElementById('adminLoginBtn').addEventListener('click', () => {
   }
 });
 
-
-let searchTimeout;
-
 searchBox.addEventListener("input", (e) => {
-  clearTimeout(searchTimeout);
-
-  searchTimeout = setTimeout(() => {
-
-    const value = e.target.value.toLowerCase().trim();
-
-    if (!value) {
-      isSearching = false;
-      renderGallery(currentCategory, true);
-      return;
-    }
-
-    isSearching = true;
-    renderSearch(value);
-
-  }, 300);
+  const value = e.target.value.toLowerCase();
+  renderSearch(value);
 });
-
   
 const priorityOrder = ["Kitchen","Bathroom","Laundry","Closets & Shelves","Outdoor","BBQ Area","Office","Powder Room","Fireplace","Wall TV","Front desk"];
 
 
-async function loadPhotos(offset = 0){
+async function loadPhotos(){
 
   try{
+    const res = await fetch(API);
+    const data = await res.json();
 
-    const res = await fetch(`${API}?offset=${offset}&limit=${PAGE_SIZE}`);
+    console.log("DATA BACKEND:", data); // 👈 DEBUG
 
-    const text = await res.text();
+    photos = data
+      .filter(item => !item.PARENTCHILD || item.PARENTCHILD === "")
+      .filter(item => item.ESTADO !== 'ELIMINADO');
 
-    let data;
-    try {
-      data = JSON.parse(text);
-    } catch(e){
-      console.log("❌ RESPUESTA NO JSON:", text);
-      return;
-    }
+    console.log("PHOTOS FILTRADAS:", photos); // 👈 DEBUG
 
-    const processed = data.map(p => ({
-      ...p,
-      _searchText: [
-        p.STONE || '',
-        p.PROYECTOID || '',
-        p.MEMO || '',
-        p.COLOURS || '',
-        p.MATERIALES || '',
-        p.LOOKINGFOR || '',
-        p.TIPO || '',
-        p.SUBTIPO || ''
-      ].join(" ").toLowerCase()
-    }));
-
-    // 🔥 1. ACTUALIZAS MEMORIA
-    photos = photos.concat(processed);
-    if (processed.length < PAGE_SIZE) {
-            allLoaded = true;
-          }
-   
-    // 🔥 2. GUARDAS CACHE (AQUÍ VA EXACTAMENTE)
     localStorage.setItem('photos', JSON.stringify(photos));
 
-    // 🔥 3. LUEGO UI
     createFilters();
-    renderGallery(currentCategory, false);
 
-    document.getElementById("loader").style.display = "none";
+        setTimeout(() => {
+        renderGallery();
+        document.getElementById("loader").style.display = "none";
+        }, 50);
 
-  } catch(err){
-    console.error("❌ ERROR API:", err);
-  }
-}
+  }catch(e){
+    console.error("Error cargando datos", e);
 
-  
-async function loadAllPhotos() {
-  let offset = 0;
-
-  allPhotos = [];
-
-  while (true) {
-    const res = await fetch(`${API}?offset=${offset}&limit=${PAGE_SIZE}`);
-    const text = await res.text();
-
-    let data;
-    try {
-      data = JSON.parse(text);
-    } catch (e) {
-      break;
+    // fallback cache
+    const cached = localStorage.getItem('photos');
+    if(cached){
+      photos = JSON.parse(cached);
+      renderGallery();
     }
-
-    if (!data || data.length === 0) break;
-
-    const processed = data.map(p => ({
-      ...p,
-      _searchText: [
-        p.STONE || '',
-        p.PROYECTOID || '',
-        p.MEMO || '',
-        p.COLOURS || '',
-        p.MATERIALES || '',
-        p.LOOKINGFOR || '',
-        p.TIPO || '',
-        p.SUBTIPO || ''
-      ].join(" ").toLowerCase()
-    }));
-
-    allPhotos = allPhotos.concat(processed);
-    offset += PAGE_SIZE;
   }
-
-  console.log("✅ SEARCH INDEX READY:", allPhotos.length);
 }
   
 function createFilters(){
@@ -379,7 +304,7 @@ function renderGallery(category='all', reset=true){
 
     const fileId = match[1];
 
-    const thumb = `https://lh3.googleusercontent.com/d/${fileId}=w300`;
+    const thumb = `https://lh3.googleusercontent.com/d/${fileId}=w800`;
     const full  = `https://lh3.googleusercontent.com/d/${fileId}=s0`;
     
     const item = document.createElement('div');
@@ -407,17 +332,15 @@ function renderGallery(category='all', reset=true){
 
     item.innerHTML = `
       <a data-fancybox="gallery" href="${full}">
-        <img src="${thumb}" 
-              loading="lazy"
-              decoding="async"
-              fetchpriority="low"
-              onerror="this.closest('.grid-item').remove()">
+        <img src="${thumb}" loading="lazy"
+          onerror="this.closest('.grid-item').remove()">
       </a>
       ${adminButtons}
     `;
 
     fragment.appendChild(item);
 
+    // 🔥 Pinterest resize
     resizeGridItem(item);
   });
 
@@ -425,77 +348,67 @@ function renderGallery(category='all', reset=true){
 
   currentIndex += PAGE_SIZE;
 
-  // ✅ Fancybox SOLO UNA VEZ
-  if(!window.fancyboxInitialized){
-    Fancybox.bind("[data-fancybox='gallery']", {
-      animated: true,
-      dragToClose: false,
-      closeButton: "top",
-      showClass: "fancybox-zoomIn",
-      hideClass: "fancybox-zoomOut",
-      Images: {
-        zoom: true,
-        wheel: "zoom",
-        click: "toggleZoom",
-        Panzoom: { maxScale: 6 }
-      },
-      Toolbar: {
-        display: ["zoom","fullscreen","close"]
-      }
-    });
+  Fancybox.bind("[data-fancybox='gallery']", {
+  animated: true,
+  dragToClose: false,
 
-    window.fancyboxInitialized = true;
+  closeButton: "top",   // 👈 AQUÍ
+  showClass: "fancybox-zoomIn",  // 👈 AQUÍ
+  hideClass: "fancybox-zoomOut",  // 👈 AQUÍ
+
+  Images: {
+    zoom: true,
+    wheel: "zoom",
+    click: "toggleZoom",
+    Panzoom: {
+      maxScale: 6
+    }
+  },
+
+  Toolbar: {
+    display: [
+      "zoom",
+      "fullscreen",
+      "close"
+    ]
   }
+});
 
   isLoading = false;
 }
 
-function renderSearch(query){
 
-  if(!photos || photos.length === 0){
-    console.warn("⏳ Esperando carga de fotos...");
-    return;
-  }
+  function renderSearch(query){
 
-  gallery.innerHTML = "";
+  // 🔥 reset total
+  gallery.innerHTML = '';
   currentIndex = 0;
 
-  if(!query || query.trim() === ""){
-    isSearching = false;
+  if(!query){
     renderGallery(currentCategory, true);
     return;
   }
 
-  isSearching = true;
-
-  const words = query.toLowerCase().split(" ").filter(w => w);
-
   const filtered = photos.filter(p => {
 
-    if (p.ESTADO === 'ELIMINADO') return false;
+    const text = `
+      ${p.STONE || ''}
+      ${p.PROYECTOID || ''}
+      ${p.MEMO || ''}
+      ${p.COLOURS || ''}
+      ${p.MATERIALES || ''}
+      ${p.LOOKINGFOR || ''}
+      ${p.TIPO || ''}
+      ${p.SUBTIPO || ''}
+    `.toLowerCase();
 
-    // 🔥 RESPETA FILTRO DE CATEGORÍA
-    if(currentCategory !== 'all' && p.TIPO !== currentCategory) return false;
-
-    // 🔥 MÁS FLEXIBLE (ANTES ERA every)
-    return words.every(word =>
-      (p._searchText || "").includes(word)
-    );
-
+    return text.includes(query);
   });
 
-  
-  if(filtered.length === 0){
-    gallery.innerHTML = "<p style='text-align:center;'>No results</p>";
-    return;
-  }
-
+  // 🔥 render directo (sin paginación para búsqueda)
   const fragment = document.createDocumentFragment();
 
-  // 🔥 LIMITA RESULTADOS PARA PERFORMANCE
-  const limited = filtered.slice(0, 80);
-
-  limited.forEach(p => {
+  filtered.forEach(p => {
 
     const link = (p.LINK || "").trim();
     const match = link.match(/id=([^&]+)/);
@@ -503,33 +416,49 @@ function renderSearch(query){
 
     const fileId = match[1];
 
-    const thumb = `https://lh3.googleusercontent.com/d/${fileId}=w400`;
+    const thumb = `https://lh3.googleusercontent.com/d/${fileId}=w800`;
     const full  = `https://lh3.googleusercontent.com/d/${fileId}=s0`;
 
     const item = document.createElement('div');
     item.className = 'grid-item';
 
+    let adminButtons = '';
+
+    if(isAdmin){
+      adminButtons = `
+        <button style="
+          position:absolute; top:8px; right:8px;
+          background:#f15a24; color:white;
+          border:none; border-radius:6px;
+          padding:5px 7px; cursor:pointer; z-index:10;
+        " onclick="event.stopPropagation(); editPhoto('${p.ID}')">✏️</button>
+
+        <button style="
+          position:absolute; top:8px; right:40px;
+          background:#d11a2a; color:white;
+          border:none; border-radius:6px;
+          padding:5px 7px; cursor:pointer; z-index:10;
+        " onclick="event.stopPropagation(); deletePhoto('${p.ID}')">🗑️</button>
+      `;
+    }
+
     item.innerHTML = `
       <a data-fancybox="gallery" href="${full}">
-        <img 
-          src="${thumb}" 
-          loading="lazy"
-          decoding="async"
-          fetchpriority="low"
-          onerror="this.closest('.grid-item').remove()"
-        >
+        <img src="${thumb}" loading="lazy"
+          onerror="this.closest('.grid-item').remove()">
       </a>
-      ${isAdmin ? `
-        <button style="position:absolute; top:8px; right:8px; background:#f15a24; color:white; border:none; border-radius:6px; padding:5px; cursor:pointer;" onclick="event.stopPropagation(); editPhoto('${p.ID}')">✏️</button>
-      ` : ''}
+      ${adminButtons}
     `;
 
     fragment.appendChild(item);
-
     resizeGridItem(item);
   });
 
   gallery.appendChild(fragment);
+
+  Fancybox.bind("[data-fancybox='gallery']", {
+    animated: true
+  });
 }
   
 // =========================
@@ -564,15 +493,9 @@ function editPhoto(photoID){
         <h2>Editar Imagen</h2>
         <p style="font-size:12px;color:#777;">ID: ${photo.ID}</p>
 
-       <div class="grid-2">
-          <div class="form-group">
-            <label>Stone</label>
-            <input id="STONE" value="${photo.STONE||''}">
-          </div>
-          <div class="form-group">
-            <label>Proyecto</label>
-            <input id="PROYECTOID" value="${photo.PROYECTOID||''}">
-          </div>
+        <div class="form-group">
+          <label>Stone</label>
+          <input id="STONE" value="${photo.STONE||''}">
         </div>
 
         <div class="form-group">
@@ -657,7 +580,6 @@ async function savePhoto(photoID){
 
   // 1️⃣ Leer valores
   const stone = document.getElementById('STONE').value;
-  const proyectoid = document.getElementById('PROYECTOID').value;
   const memo = document.getElementById('MEMO').value;
   const colours = document.getElementById('COLOURS').value;
   const materiales = document.getElementById('MATERIALES').value;
@@ -671,7 +593,6 @@ async function savePhoto(photoID){
     photos[index] = {
       ...photos[index],
       STONE: stone,
-      PROYECTOID:proyectoid,
       MEMO: memo,
       COLOURS: colours,
       MATERIALES: materiales,
@@ -692,7 +613,6 @@ async function savePhoto(photoID){
       action: 'update',
       ID: photoID,
       STONE: stone,
-      PROYECTOID:proyectoid,
       MEMO: memo,
       COLOURS: colours,
       MATERIALES: materiales,
@@ -800,36 +720,23 @@ document.addEventListener("mouseleave", () => {
 
 let isLoadingMore = false;
 
-window.addEventListener('scroll', async () => {
 
-      if(isLoading) return;
-      if(isSearching) return;
-    
-      const nearBottom =
-        window.innerHeight + window.scrollY >= document.body.offsetHeight - 500;
-    
-      if(!nearBottom) return;
-    
-      isLoading = true;
-    
-      await loadPhotos(photos.length);
-    
-      isLoading = false;
-    });
-    
+  window.addEventListener('scroll', () => {
 
-      window.addEventListener("DOMContentLoaded", () => {
-        const cache = localStorage.getItem('photos');
-      
-        if (cache) {
-          photos = JSON.parse(cache);
-          createFilters();
-          renderGallery('all', true);
-          document.getElementById("loader").style.display = "none";
-        } else {
-          loadPhotos(0);
-        }
-      });
+  if(isLoading) return;
+
+  if(window.innerHeight + window.scrollY >= document.body.offsetHeight - 500){
+    renderGallery(currentCategory, false);
+  }
+
+});
+  
+  
+// 👇 AQUÍ MISMO PEGAS ESTO
+window.addEventListener("DOMContentLoaded", () => {
+  loadPhotos();
+});
+
   
 </script>
 
