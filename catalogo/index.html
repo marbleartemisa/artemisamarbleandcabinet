@@ -182,6 +182,8 @@ header nav a:hover { text-decoration:underline; }
 const API = "https://script.google.com/macros/s/AKfycbyy4H8o3wD8oXRdFMAv5oZHuWrbJ4gY_jNoR9MSBKLqQZbIuBiXJH8Dq4S-jAz6ZlZo/exec";
 let allLoaded = false;
 let photos = [];
+let allPhotos = [];
+let searchIndexReady = false;
 const PAGE_SIZE = 40;
 let currentIndex = 0;
 let currentCategory = 'all';
@@ -224,18 +226,15 @@ searchBox.addEventListener("input", (e) => {
     isSearching = true;
 
     // 🔥 SOLO cargar todo una vez
-    if (!allLoaded) {
-      document.getElementById("loader").style.display = "block";
-
-      try {
-        await loadAllPhotos();
-        allLoaded = true;
-      } catch(err){
-        console.error("Error cargando fotos:", err);
-      }
-
-      document.getElementById("loader").style.display = "none";
-    }
+        if (!searchIndexReady) {
+          document.getElementById("loader").style.display = "block";
+        
+          await loadAllPhotos();
+        
+          searchIndexReady = true;
+        
+          document.getElementById("loader").style.display = "none";
+        }
 
     renderSearch(value);
 
@@ -277,7 +276,8 @@ async function loadPhotos(offset = 0){
 
     // 🔥 1. ACTUALIZAS MEMORIA
     photos = photos.concat(processed);
-
+    localStorage.setItem('photos', JSON.stringify(photos));
+    
     // 🔥 2. GUARDAS CACHE (AQUÍ VA EXACTAMENTE)
     localStorage.setItem('photos', JSON.stringify(photos));
 
@@ -294,7 +294,9 @@ async function loadPhotos(offset = 0){
 
   
 async function loadAllPhotos() {
-  let offset = photos.length;
+  let offset = 0;
+
+  allPhotos = [];
 
   while (true) {
     const res = await fetch(`${API}?offset=${offset}&limit=${PAGE_SIZE}`);
@@ -311,7 +313,7 @@ async function loadAllPhotos() {
 
     const processed = data.map(p => ({
       ...p,
-     _searchText: [
+      _searchText: [
         p.STONE || '',
         p.PROYECTOID || '',
         p.MEMO || '',
@@ -320,14 +322,14 @@ async function loadAllPhotos() {
         p.LOOKINGFOR || '',
         p.TIPO || '',
         p.SUBTIPO || ''
-          ].join(" ").toLowerCase()
+      ].join(" ").toLowerCase()
     }));
 
-    photos = photos.concat(processed);
+    allPhotos = allPhotos.concat(processed);
     offset += PAGE_SIZE;
   }
 
-  console.log("✅ TOTAL CARGADAS:", photos.length);
+  console.log("✅ SEARCH INDEX READY:", allPhotos.length);
 }
   
 function createFilters(){
@@ -480,7 +482,7 @@ function renderSearch(query){
 
   const words = query.toLowerCase().split(" ").filter(w => w);
 
-  const filtered = photos.filter(p => {
+  const filtered = allPhotos.filter(p => {
 
     if (p.ESTADO === 'ELIMINADO') return false;
 
@@ -488,7 +490,7 @@ function renderSearch(query){
     if(currentCategory !== 'all' && p.TIPO !== currentCategory) return false;
 
     // 🔥 MÁS FLEXIBLE (ANTES ERA every)
-    return words.some(word =>
+    return words.every(word =>
       (p._searchText || "").includes(word)
     );
 
@@ -827,7 +829,7 @@ window.addEventListener('scroll', async () => {
   
     if(cache){
       photos = JSON.parse(cache);
-      allLoaded = true;
+      searchIndexReady = false;
       createFilters();
       renderGallery('all', true);
       document.getElementById("loader").style.display = "none";
