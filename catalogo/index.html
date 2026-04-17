@@ -207,20 +207,27 @@ document.getElementById('adminLoginBtn').addEventListener('click', () => {
 
 let searchTimeout;
 
-  searchBox.addEventListener("input", async (e) => {
+searchBox.addEventListener("input", (e) => {
   clearTimeout(searchTimeout);
 
   const value = e.target.value.toLowerCase();
 
-  searchTimeout = setTimeout(async () => {
-
-    if(value.length > 0 && !allLoaded){
-      await loadAllPhotos();   // 🔥 cargar todo antes de buscar
-      allLoaded = true;
-    }
+  searchTimeout = setTimeout(() => {
 
     isSearching = value.length > 0;
+
+    // 🔥 BUSCA INMEDIATO (con lo que haya cargado)
     renderSearch(value);
+
+    // 🔥 CARGA TODO EN BACKGROUND (sin bloquear)
+    if(value.length > 0 && !allLoaded){
+      loadAllPhotos().then(() => {
+        allLoaded = true;
+
+        // 🔥 RE-EJECUTA SEARCH con todos los datos
+        renderSearch(value);
+      });
+    }
 
   }, 300);
 });
