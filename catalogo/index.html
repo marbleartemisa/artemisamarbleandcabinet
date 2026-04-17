@@ -222,11 +222,27 @@ searchBox.addEventListener("input", (e) => {
 const priorityOrder = ["Kitchen","Bathroom","Laundry","Closets & Shelves","Outdoor","BBQ Area","Office","Powder Room","Fireplace","Wall TV","Front desk"];
 
 
+
 async function loadPhotos(offset = 0){
 
   try{
+
     const res = await fetch(`${API}?offset=${offset}&limit=${PAGE_SIZE}`);
-    const data = await res.json();
+
+    // 🔥 VALIDACIÓN CRÍTICA
+    if(!res.ok){
+      throw new Error("HTTP Error " + res.status);
+    }
+
+    const text = await res.text();
+
+    let data;
+    try {
+      data = JSON.parse(text);
+    } catch(err){
+      console.log("RESPUESTA NO JSON:", text);
+      throw new Error("Respuesta no es JSON válido");
+    }
 
     if(offset === 0){
       photos = data;
@@ -234,16 +250,20 @@ async function loadPhotos(offset = 0){
       photos = photos.concat(data);
     }
 
-    createFilters();
+    console.log("PHOTOS LOADED:", photos.length);
 
+    createFilters();
     renderGallery(currentCategory, false);
 
     document.getElementById("loader").style.display = "none";
 
   }catch(e){
-    console.error("Error cargando datos", e);
+    console.error("❌ Error cargando datos:", e);
+
+    document.getElementById("loader").innerHTML =
+      "<p style='color:red'>Error cargando datos del servidor</p>";
   }
-}  
+}
 
 
 async function loadSearchData(){
