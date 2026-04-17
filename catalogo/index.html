@@ -448,7 +448,7 @@ if (filtered.length === 0) {
 
   filtered.forEach(p => {
 
-    const fullPhoto = photos.find(x => x.ID === p.ID);
+    const fullPhoto = p;
       if(!fullPhoto) return;
     const link = (fullPhoto.LINK || "").trim();
     const match = link.match(/id=([^&]+)/);
