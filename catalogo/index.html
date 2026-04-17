@@ -221,40 +221,28 @@ searchBox.addEventListener("input", (e) => {
 const priorityOrder = ["Kitchen","Bathroom","Laundry","Closets & Shelves","Outdoor","BBQ Area","Office","Powder Room","Fireplace","Wall TV","Front desk"];
 
 
-async function loadPhotos(){
+async function loadPhotos(offset = 0){
 
   try{
-    const res = await fetch(API);
+    const res = await fetch(`${API}?offset=${offset}&limit=${PAGE_SIZE}`);
     const data = await res.json();
 
-    console.log("DATA BACKEND:", data); // 👈 DEBUG
-
-    photos = data
-      .filter(item => !item.PARENTCHILD || item.PARENTCHILD === "")
-      .filter(item => item.ESTADO !== 'ELIMINADO');
-
-    console.log("PHOTOS FILTRADAS:", photos); // 👈 DEBUG
-
-    localStorage.setItem('photos', JSON.stringify(photos));
+    if(offset === 0){
+      photos = data;
+    } else {
+      photos = photos.concat(data);
+    }
 
     createFilters();
 
-        setTimeout(() => {
-        renderGallery();
-        document.getElementById("loader").style.display = "none";
-        }, 50);
+    renderGallery(currentCategory, false);
+
+    document.getElementById("loader").style.display = "none";
 
   }catch(e){
     console.error("Error cargando datos", e);
-
-    // fallback cache
-    const cached = localStorage.getItem('photos');
-    if(cached){
-      photos = JSON.parse(cached);
-      renderGallery();
-    }
   }
-}
+}  
   
 function createFilters(){
   const tipos = [...new Set(photos.map(p => p.TIPO).filter(Boolean))];
@@ -763,17 +751,18 @@ document.addEventListener("mouseleave", () => {
 
 let isLoadingMore = false;
 
-  
 window.addEventListener('scroll', () => {
 
-  if(isLoading || isSearching) return; // 🔥 AQUÍ LA CLAVE
+  if(isLoading || isSearching) return;
 
   if(window.innerHeight + window.scrollY >= document.body.offsetHeight - 500){
-    renderGallery(currentCategory, false);
+
+    loadPhotos(photos.length); // 🔥 trae siguiente página REAL
+
   }
 
 });
-
+  
   
 // 👇 AQUÍ MISMO PEGAS ESTO
 window.addEventListener("DOMContentLoaded", () => {
