@@ -217,6 +217,9 @@ searchBox.addEventListener("input", (e) => {
     renderSearch(value);
   }, 300);
 });
+
+
+  
   
 const priorityOrder = ["Kitchen","Bathroom","Laundry","Closets & Shelves","Outdoor","BBQ Area","Office","Powder Room","Fireplace","Wall TV","Front desk"];
 
@@ -401,7 +404,12 @@ function renderGallery(category='all', reset=true){
 
 function renderSearch(query){
 
-  gallery.innerHTML = '';
+  if(!photos || photos.length === 0){
+    console.warn("⏳ Esperando carga de fotos...");
+    return;
+  }
+
+  gallery.innerHTML = "";
   currentIndex = 0;
 
   if(!query || query.trim() === ""){
@@ -412,39 +420,28 @@ function renderSearch(query){
 
   isSearching = true;
 
-  const words = query
-    .toLowerCase()
-    .split(" ")
-    .filter(w => w.trim() !== "");
+  const words = query.toLowerCase().split(" ").filter(w => w);
 
   const filtered = photos.filter(p => {
 
-    const text = [
-      p.STONE,
-      p.PROYECTOID,
-      p.MEMO,
-      p.COLOURS,
-      p.MATERIALES,
-      p.LOOKINGFOR,
-      p.TIPO,
-      p.SUBTIPO
-    ]
-    .map(v =>
-      (v || "")
-        .toString()
-        .normalize("NFD")
-        .replace(/[\u0300-\u036f]/g, "")
-        .toLowerCase()
-    )
-    .join(" ");
-
-    return words.every(word => text.includes(word));
-  });
-
-  if(filtered.length === 0){
-    gallery.innerHTML = "<p style='text-align:center;'>No results</p>";
-    return;
-  }
+  const text =
+    (p.STONE + " " +
+     p.PROYECTOID + " " +
+     p.MEMO + " " +
+     p.COLOURS + " " +
+     p.MATERIALES + " " +
+     p.LOOKINGFOR + " " +
+     p.TIPO + " " +
+     p.SUBTIPO)
+    .toLowerCase();
+  
+      return words.every(word => text.includes(word));
+    });
+  
+    if(filtered.length === 0){
+      gallery.innerHTML = "<p style='text-align:center;'>No results</p>";
+      return;
+    }
 
   const fragment = document.createDocumentFragment();
 
@@ -462,34 +459,18 @@ function renderSearch(query){
     const item = document.createElement('div');
     item.className = 'grid-item';
 
-    let adminButtons = '';
-
-    if(isAdmin){
-      adminButtons = `
-        <button style="position:absolute;top:8px;right:8px;background:#f15a24;color:white;border:none;border-radius:6px;padding:5px 7px;cursor:pointer;z-index:10;"
-        onclick="event.stopPropagation(); editPhoto('${p.ID}')">✏️</button>
-
-        <button style="position:absolute;top:8px;right:40px;background:#d11a2a;color:white;border:none;border-radius:6px;padding:5px 7px;cursor:pointer;z-index:10;"
-        onclick="event.stopPropagation(); deletePhoto('${p.ID}')">🗑️</button>
-      `;
-    }
-
     item.innerHTML = `
       <a data-fancybox="gallery" href="${full}">
         <img src="${thumb}" loading="lazy">
       </a>
-      ${adminButtons}
     `;
 
     fragment.appendChild(item);
-    resizeGridItem(item);
   });
 
   gallery.appendChild(fragment);
 
-  Fancybox.bind("[data-fancybox='gallery']", {
-    animated: true
-  });
+  Fancybox.bind("[data-fancybox='gallery']", { animated: true });
 }
 
   
