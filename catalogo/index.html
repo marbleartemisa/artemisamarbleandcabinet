@@ -234,28 +234,26 @@ searchBox.addEventListener("input", (e) => {
   
 const priorityOrder = ["Kitchen","Bathroom","Laundry","Closets & Shelves","Outdoor","BBQ Area","Office","Powder Room","Fireplace","Wall TV","Front desk"];
 
-async function loadPhotos(offset = 0){
+async function loadAllPhotos(){
 
-  try{
+  let offset = photos.length;
+
+  while(true){
 
     const res = await fetch(`${API}?offset=${offset}&limit=${PAGE_SIZE}`);
 
-    // 🔥 VALIDACIÓN CRÍTICA
-    if(!res.ok){
-      throw new Error("HTTP Error " + res.status);
-    }
-
-    const text = await res.text();
+    const text = await res.text();   // 🔥 IGUAL QUE loadPhotos
 
     let data;
     try {
       data = JSON.parse(text);
     } catch(err){
-      console.log("RESPUESTA NO JSON:", text);
-      throw new Error("Respuesta no es JSON válido");
+      console.log("❌ JSON ERROR:", text);
+      break;
     }
 
-    // 🔥 PREPROCESAR SEARCH (AQUÍ VA)
+    if(!data || data.length === 0) break;
+
     const processed = data.map(p => ({
       ...p,
       _searchText: [
@@ -269,27 +267,12 @@ async function loadPhotos(offset = 0){
         p.SUBTIPO
       ].filter(Boolean).join(" ").toLowerCase()
     }));
-    
-    if(offset === 0){
-      photos = processed;
-    } else {
-      photos = photos.concat(processed);
-    }
 
-    console.log("PHOTOS LOADED:", photos.length);
-
-    createFilters();
-    renderGallery(currentCategory, false);
-
-    const loader = document.getElementById("loader");
-    if(loader) loader.style.display = "none";
-
-  }catch(e){
-    console.error("❌ Error cargando datos:", e);
-
-    document.getElementById("loader").innerHTML =
-      "<p style='color:red'>Error cargando datos del servidor</p>";
+    photos = photos.concat(processed);
+    offset += PAGE_SIZE;
   }
+
+  console.log("✅ TODAS LAS FOTOS CARGADAS:", photos.length);
 }
 
   
@@ -481,11 +464,10 @@ function renderSearch(query){
 
   const filtered = photos.filter(p => {
 
-    if(p.ESTADO === 'ELIMINADO') return false;
+  if(p.ESTADO === 'ELIMINADO') return false;
 
-    // 🔥 usamos el índice preprocesado
-    return words.every(word => p._searchText.includes(word));
-  });
+  return words.every(word => (p._searchText || "").includes(word));
+});
 
   if(filtered.length === 0){
     gallery.innerHTML = "<p style='text-align:center;'>No results</p>";
