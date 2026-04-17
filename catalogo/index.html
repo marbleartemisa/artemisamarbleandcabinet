@@ -245,14 +245,20 @@ async function loadPhotos(offset = 0){
   }
 }  
 
+
 async function loadSearchData(){
   try{
     const res = await fetch(`${API}?mode=search`);
     searchData = await res.json();
+
+    console.log("SEARCH DATA LENGTH:", searchData.length);
+    console.log("SEARCH DATA SAMPLE:", searchData[0]);
+
   }catch(e){
     console.error("Error cargando searchData", e);
   }
 }
+
   
 function createFilters(){
   const tipos = [...new Set(photos.map(p => p.TIPO).filter(Boolean))];
