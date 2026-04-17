@@ -182,7 +182,6 @@ header nav a:hover { text-decoration:underline; }
 const API = "https://script.google.com/macros/s/AKfycbyy4H8o3wD8oXRdFMAv5oZHuWrbJ4gY_jNoR9MSBKLqQZbIuBiXJH8Dq4S-jAz6ZlZo/exec";
 
 let photos = [];
-let searchData = []; // 🔥 dataset completo solo para búsqueda
 const PAGE_SIZE = 40;
 let currentIndex = 0;
 let currentCategory = 'all';
@@ -263,26 +262,6 @@ async function loadPhotos(offset = 0){
 
     document.getElementById("loader").innerHTML =
       "<p style='color:red'>Error cargando datos del servidor</p>";
-  }
-}
-
-async function loadSearchData(){
-  try{
-    const res = await fetch(`${API}?mode=search`);
-
-    if(!res.ok){
-      throw new Error("HTTP error " + res.status);
-    }
-
-    searchData = await res.json();
-
-    console.log("SEARCH DATA OK:", searchData.length);
-
-  }catch(e){
-    console.error("Error cargando searchData", e);
-
-    // 🔥 FALLBACK CRÍTICO (NO ROMPE UI)
-    searchData = photos; 
   }
 }
 
@@ -422,63 +401,56 @@ function renderGallery(category='all', reset=true){
 
 function renderSearch(query){
 
-  // 🔥 limpiar galería siempre
   gallery.innerHTML = '';
   currentIndex = 0;
 
-  // 🔥 si no hay búsqueda → volver a modo normal
   if(!query || query.trim() === ""){
     isSearching = false;
     renderGallery(currentCategory, true);
     return;
   }
 
-  // 🔥 activar modo búsqueda
   isSearching = true;
 
-  const source = searchData.length ? searchData : photos;
-
-  const filtered = source.filter(p => {
-  const text = [
-    p.STONE,
-    p.PROYECTOID,       // 🔥 CORREGIDO (antes PROYECTOID)
-    p.MEMO,
-    p.COLOURS,
-    p.MATERIALES,
-    p.LOOKINGFOR,
-    p.TIPO,
-    p.SUBTIPO
-  ]
-  .map(v =>
-    (v || "")
-      .toString()
-      .normalize("NFD")
-      .replace(/[\u0300-\u036f]/g, "")
-      .toLowerCase()
-  )
-  .join(" ");
-
-  // 🔥 búsqueda multi-palabra segura
-  return query
+  const words = query
     .toLowerCase()
     .split(" ")
-    .filter(w => w.trim() !== "")
-    .every(word => text.includes(word));
-});
+    .filter(w => w.trim() !== "");
 
-// 🔥 si no hay resultados
-if (filtered.length === 0) {
-  gallery.innerHTML = "<p style='text-align:center;'>No se encontraron resultados</p>";
-  return;
-}
+  const filtered = photos.filter(p => {
+
+    const text = [
+      p.STONE,
+      p.PROYECTOID,
+      p.MEMO,
+      p.COLOURS,
+      p.MATERIALES,
+      p.LOOKINGFOR,
+      p.TIPO,
+      p.SUBTIPO
+    ]
+    .map(v =>
+      (v || "")
+        .toString()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .toLowerCase()
+    )
+    .join(" ");
+
+    return words.every(word => text.includes(word));
+  });
+
+  if(filtered.length === 0){
+    gallery.innerHTML = "<p style='text-align:center;'>No results</p>";
+    return;
+  }
 
   const fragment = document.createDocumentFragment();
 
   filtered.forEach(p => {
 
-    const fullPhoto = p;
-      if(!fullPhoto) return;
-    const link = (fullPhoto.LINK || "").trim();
+    const link = (p.LINK || "").trim();
     const match = link.match(/id=([^&]+)/);
     if(!match) return;
 
@@ -494,26 +466,17 @@ if (filtered.length === 0) {
 
     if(isAdmin){
       adminButtons = `
-        <button style="
-          position:absolute; top:8px; right:8px;
-          background:#f15a24; color:white;
-          border:none; border-radius:6px;
-          padding:5px 7px; cursor:pointer; z-index:10;
-        " onclick="event.stopPropagation(); editPhoto('${p.ID}')">✏️</button>
+        <button style="position:absolute;top:8px;right:8px;background:#f15a24;color:white;border:none;border-radius:6px;padding:5px 7px;cursor:pointer;z-index:10;"
+        onclick="event.stopPropagation(); editPhoto('${p.ID}')">✏️</button>
 
-        <button style="
-          position:absolute; top:8px; right:40px;
-          background:#d11a2a; color:white;
-          border:none; border-radius:6px;
-          padding:5px 7px; cursor:pointer; z-index:10;
-        " onclick="event.stopPropagation(); deletePhoto('${p.ID}')">🗑️</button>
+        <button style="position:absolute;top:8px;right:40px;background:#d11a2a;color:white;border:none;border-radius:6px;padding:5px 7px;cursor:pointer;z-index:10;"
+        onclick="event.stopPropagation(); deletePhoto('${p.ID}')">🗑️</button>
       `;
     }
 
     item.innerHTML = `
       <a data-fancybox="gallery" href="${full}">
-        <img src="${thumb}" loading="lazy"
-          onerror="this.closest('.grid-item').remove()">
+        <img src="${thumb}" loading="lazy">
       </a>
       ${adminButtons}
     `;
@@ -528,6 +491,8 @@ if (filtered.length === 0) {
     animated: true
   });
 }
+
+  
   
 // =========================
 // Editar foto (modal)
@@ -813,7 +778,6 @@ window.addEventListener('scroll', () => {
 // 👇 AQUÍ MISMO PEGAS ESTO
 window.addEventListener("DOMContentLoaded", () => {
   loadPhotos();        // galería paginada
-  loadSearchData();    // 🔥 búsqueda completa
 });
 
   
