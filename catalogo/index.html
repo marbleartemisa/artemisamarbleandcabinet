@@ -207,15 +207,25 @@ document.getElementById('adminLoginBtn').addEventListener('click', () => {
 
 let searchTimeout;
 
-searchBox.addEventListener("input", (e) => {
-
+searchBox.addEventListener("input", async (e) => {
   clearTimeout(searchTimeout);
 
   const value = e.target.value.toLowerCase();
 
-  searchTimeout = setTimeout(() => {
+  searchTimeout = setTimeout(async () => {
 
     isSearching = value.length > 0;
+
+    if (value.length > 0 && !allLoaded) {
+      document.getElementById("loader").style.display = "block";
+
+      await loadAllPhotos();   // 🔥 aquí se cargan TODAS
+
+      allLoaded = true;
+
+      document.getElementById("loader").style.display = "none";
+    }
+
     renderSearch(value);
 
   }, 300);
@@ -268,7 +278,42 @@ async function loadPhotos(offset = 0){
 }
 
   
+async function loadAllPhotos() {
+  let offset = photos.length;
 
+  while (true) {
+    const res = await fetch(`${API}?offset=${offset}&limit=${PAGE_SIZE}`);
+    const text = await res.text();
+
+    let data;
+    try {
+      data = JSON.parse(text);
+    } catch (e) {
+      break;
+    }
+
+    if (!data || data.length === 0) break;
+
+    const processed = data.map(p => ({
+      ...p,
+      _searchText: [
+        p.STONE,
+        p.PROYECTOID,
+        p.MEMO,
+        p.COLOURS,
+        p.MATERIALES,
+        p.LOOKINGFOR,
+        p.TIPO,
+        p.SUBTIPO
+      ].filter(Boolean).join(" ").toLowerCase()
+    }));
+
+    photos = photos.concat(processed);
+    offset += PAGE_SIZE;
+  }
+
+  console.log("✅ TOTAL CARGADAS:", photos.length);
+}
   
 function createFilters(){
   const tipos = [...new Set(photos.map(p => p.TIPO).filter(Boolean))];
@@ -427,10 +472,11 @@ function renderSearch(query){
   const words = query.toLowerCase().split(" ").filter(w => w);
 
   const filtered = photos.filter(p => {
+  if (p.ESTADO === 'ELIMINADO') return false;
 
-  if(p.ESTADO === 'ELIMINADO') return false;
-
-  return words.every(word => (p._searchText || "").includes(word));
+  return words.every(word =>
+    (p._searchText || "").includes(word)
+  );
 });
 
   if(filtered.length === 0){
