@@ -182,6 +182,7 @@ header nav a:hover { text-decoration:underline; }
 const API = "https://script.google.com/macros/s/AKfycbyy4H8o3wD8oXRdFMAv5oZHuWrbJ4gY_jNoR9MSBKLqQZbIuBiXJH8Dq4S-jAz6ZlZo/exec";
 
 let photos = [];
+let searchData = []; // 🔥 dataset completo solo para búsqueda
 const PAGE_SIZE = 40;
 let currentIndex = 0;
 let currentCategory = 'all';
@@ -243,6 +244,15 @@ async function loadPhotos(offset = 0){
     console.error("Error cargando datos", e);
   }
 }  
+
+async function loadSearchData(){
+  try{
+    const res = await fetch(`${API}?mode=search`);
+    searchData = await res.json();
+  }catch(e){
+    console.error("Error cargando searchData", e);
+  }
+}
   
 function createFilters(){
   const tipos = [...new Set(photos.map(p => p.TIPO).filter(Boolean))];
@@ -393,7 +403,7 @@ function renderSearch(query){
   // 🔥 activar modo búsqueda
   isSearching = true;
 
- const filtered = photos.filter(p => {
+ const filtered = searchData.filter(p => {
 
   const text = [
     p.STONE,
@@ -432,7 +442,9 @@ if (filtered.length === 0) {
 
   filtered.forEach(p => {
 
-    const link = (p.LINK || "").trim();
+    const fullPhoto = photos.find(x => x.ID === p.ID);
+      if(!fullPhoto) return;
+    const link = (fullPhoto.LINK || "").trim();
     const match = link.match(/id=([^&]+)/);
     if(!match) return;
 
@@ -766,7 +778,8 @@ window.addEventListener('scroll', () => {
   
 // 👇 AQUÍ MISMO PEGAS ESTO
 window.addEventListener("DOMContentLoaded", () => {
-  loadPhotos();
+  loadPhotos();        // galería paginada
+  loadSearchData();    // 🔥 búsqueda completa
 });
 
   
