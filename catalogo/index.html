@@ -210,38 +210,22 @@ let searchTimeout;
 searchBox.addEventListener("input", (e) => {
   clearTimeout(searchTimeout);
 
-  searchTimeout = setTimeout(async () => {
+  searchTimeout = setTimeout(() => {
 
     const value = e.target.value.toLowerCase().trim();
 
-    // 🔥 si está vacío, reset limpio
-    if(!value){
+    if (!value) {
       isSearching = false;
       renderGallery(currentCategory, true);
       return;
     }
 
     isSearching = true;
+    renderSearch(value);
 
-    // 🔥 SOLO cargar todo una vez
-      searchBox.addEventListener("input", (e) => {
-        clearTimeout(searchTimeout);
-      
-        searchTimeout = setTimeout(() => {
-      
-          const value = e.target.value.toLowerCase().trim();
-      
-          if(!value){
-            isSearching = false;
-            renderGallery(currentCategory, true);
-            return;
-          }
-      
-          isSearching = true;
-          renderSearch(value);
-      
-        }, 300);
-      });
+  }, 300);
+});
+
   
 const priorityOrder = ["Kitchen","Bathroom","Laundry","Closets & Shelves","Outdoor","BBQ Area","Office","Powder Room","Fireplace","Wall TV","Front desk"];
 
@@ -833,21 +817,19 @@ window.addEventListener('scroll', async () => {
       isLoading = false;
     });
     
-  window.addEventListener("DOMContentLoaded", () => {
-  
-    const cache = localStorage.getItem('photos');
-  
-    if(cache){
-      photos = JSON.parse(cache);
-      searchIndexReady = false;
-      createFilters();
-      renderGallery('all', true);
-      document.getElementById("loader").style.display = "none";
-    } else {
-      loadPhotos(0);
-    }
-  
-  });
+
+      window.addEventListener("DOMContentLoaded", () => {
+        const cache = localStorage.getItem('photos');
+      
+        if (cache) {
+          photos = JSON.parse(cache);
+          createFilters();
+          renderGallery('all', true);
+          document.getElementById("loader").style.display = "none";
+        } else {
+          loadPhotos(0);
+        }
+      });
   
 </script>
 
