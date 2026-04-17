@@ -265,17 +265,23 @@ async function loadPhotos(offset = 0){
   }
 }
 
-
 async function loadSearchData(){
   try{
     const res = await fetch(`${API}?mode=search`);
+
+    if(!res.ok){
+      throw new Error("HTTP error " + res.status);
+    }
+
     searchData = await res.json();
 
-    console.log("SEARCH DATA LENGTH:", searchData.length);
-    console.log("SEARCH DATA SAMPLE:", searchData[0]);
+    console.log("SEARCH DATA OK:", searchData.length);
 
   }catch(e){
     console.error("Error cargando searchData", e);
+
+    // 🔥 FALLBACK CRÍTICO (NO ROMPE UI)
+    searchData = photos; 
   }
 }
 
