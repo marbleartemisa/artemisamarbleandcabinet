@@ -124,6 +124,92 @@ header nav a:hover { text-decoration:underline; }
   opacity: 1;
 }
 
+/* HAMBURGER */
+.hamburger {
+  display: none;
+  flex-direction: column;
+  cursor: pointer;
+}
+
+.hamburger span {
+  width: 25px;
+  height: 3px;
+  background: white;
+  margin: 4px 0;
+}
+
+/* MOBILE MENU */
+@media (max-width: 900px){
+
+  header {
+    flex-wrap: wrap;
+  }
+
+  .hamburger {
+    display: flex;
+  }
+
+  nav {
+    position: fixed;
+    top: 0;
+    right: -100%;
+    width: 260px;
+    height: 100vh;
+    background: #000;
+    display: flex;
+    flex-direction: column;
+    padding: 80px 20px;
+    transition: 0.3s;
+    z-index: 9999;
+  }
+
+  nav.active {
+    right: 0;
+  }
+
+  nav a {
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+  }
+
+}
+
+@media (max-width: 900px){
+
+  .filters {
+    display: flex;
+    overflow-x: auto;
+    gap: 10px;
+    padding: 10px;
+    justify-content: flex-start;
+  }
+
+  .filters button {
+    flex: 0 0 auto;
+    padding: 8px 14px;
+    font-size: 13px;
+    white-space: nowrap;
+  }
+
+}
+
+@media (max-width: 900px){
+
+  #searchBox {
+    width: 90% !important;
+    font-size: 16px;
+  }
+
+}
+
+@media (max-width: 900px){
+
+  header nav {
+    display: none;
+  }
+
+}
+  
 @keyframes spin {
   0% { transform: rotate(0deg);}
   100% { transform: rotate(360deg);}
@@ -134,9 +220,18 @@ header nav a:hover { text-decoration:underline; }
 
 <body>
 
-<header>
-  <div class="logo"><img src="/artemisamarbleandcabinet/logo.png" height="100"></div>
-  <nav>
+  <header>
+  <div class="logo">
+    <img src="/artemisamarbleandcabinet/logo.png" height="80">
+  </div>
+
+  <div class="hamburger" onclick="toggleMenu()">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+
+  <nav id="mobileMenu">
     <a href="https://marbleartemisa.github.io/artemisa/index.html">Home</a>
     <a href="/artemisamarbleandcabinet/aboutus/">About Us</a>
     <a href="/artemisamarbleandcabinet/kitchen/">Kitchen</a>
@@ -147,6 +242,7 @@ header nav a:hover { text-decoration:underline; }
     <a class="portal-btn" href="https://marbleartemisa.github.io/sop-site/">Portal-SOP</a>
   </nav>
 </header>
+
 <div style="text-align:center;margin:10px;">
   <button id="adminLoginBtn" style="padding:8px 16px;background:#f15a24;color:white;border:none;border-radius:5px;cursor:pointer;">
     Ingresar clave Admin
@@ -693,7 +789,10 @@ function resizeGridItem(item){
     img.classList.add("loaded");
   };
 }
-  
+
+function toggleMenu(){
+  document.getElementById("mobileMenu").classList.toggle("active");
+}
 
 // 🔥 EFECTO 3D (AQUÍ VA EXACTAMENTE)
 document.addEventListener("mousemove", (e) => {
