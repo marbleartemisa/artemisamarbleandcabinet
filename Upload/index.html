@@ -68,15 +68,72 @@ input:focus, textarea:focus {
   box-shadow:0 0 0 2px rgba(241,90,36,0.1);
 }  
 
+/* HAMBURGER */
+.hamburger {
+  display: none;
+  flex-direction: column;
+  cursor: pointer;
+}
+
+.hamburger span {
+  width: 25px;
+  height: 3px;
+  background: white;
+  margin: 4px 0;
+}
+
+/* MOBILE MENU */
+@media (max-width: 900px){
+
+  .hamburger {
+    display: flex;
+  }
+
+  nav {
+    position: fixed;
+    top: 0;
+    right: -100%;
+    width: 260px;
+    height: 100vh;
+    background: #000;
+    display: flex;
+    flex-direction: column;
+    padding: 80px 20px;
+    transition: 0.3s;
+    z-index: 9999;
+  }
+
+  nav.active {
+    right: 0;
+  }
+
+  nav a {
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+  }
+
+}
   
   
 </style>
+  
 </head>
 
 <body>
 
 <header>
+
   <div class="logo"><img src="/artemisamarbleandcabinet/logo.png" height="100"></div>
+
+  <!-- 🔥 HAMBURGER -->
+  <div class="hamburger" onclick="toggleMenu()">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+
+  <nav id="mobileMenu">
+    
   <nav>
     <a href="https://marbleartemisa.github.io/artemisa/index.html">Home</a>
     <a href="/artemisamarbleandcabinet/aboutus/">About Us</a>
@@ -620,6 +677,10 @@ function openBatchUpload(){
 }
 
 
+function toggleMenu(){
+  document.getElementById("mobileMenu").classList.toggle("active");
+}
+
 
   
 
@@ -720,7 +781,11 @@ async function uploadBatch(){
 }
 
 
-
+document.querySelectorAll("#mobileMenu a").forEach(link => {
+  link.addEventListener("click", () => {
+    document.getElementById("mobileMenu").classList.remove("active");
+  });
+});
 </script>
 
 </body>
