@@ -205,9 +205,26 @@ header nav a:hover { text-decoration:underline; }
 @media (max-width: 900px){
 
   header nav {
-    display: none;
+    display: flex; /* 👈 NO ocultar con display */
   }
 
+  nav {
+    position: fixed;
+    top: 0;
+    right: -100%;
+    width: 260px;
+    height: 100vh;
+    background: #000;
+    display: flex;
+    flex-direction: column;
+    padding: 80px 20px;
+    transition: 0.3s;
+    z-index: 9999;
+  }
+
+  nav.active {
+    right: 0;
+  }
 }
   
 @keyframes spin {
