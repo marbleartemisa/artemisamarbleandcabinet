@@ -738,7 +738,7 @@ function editPhoto(photoID){
         </div>
 
         <div style="display:flex;gap:10px;margin-top:20px;">
-          <button id="saveBtn" onclick="savePhoto('${photoID}')" style="
+          <button id="saveBtn" onclick="to('${photoID}')" style="
             flex:1;
             background:#f15a24;
             color:white;
@@ -831,7 +831,7 @@ async function savePhoto(photoID){
       TIPO: tipo,
       SUBTIPO: subtipo
     });
-
+    console.log("👉 PARAMS STRING:", params.toString());
     const res = await fetch(`${API}?${params.toString()}`);
     const resp = await res.json();
     await loadPhotos(); // 👈 recarga desde el Sheet real
