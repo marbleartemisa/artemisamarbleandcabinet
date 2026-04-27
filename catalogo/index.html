@@ -831,32 +831,33 @@ async function savePhoto(photoID){
 
   // 4️⃣ Guardar en servidor en segundo plano
   try {
-    const params = new URLSearchParams({
-      action: 'update',
-      ID: photoID,
-      STONE: stone,
-      PROYECTOID: proyectoid,
-      MEMO: memo,
-      COLOURS: colours,
-      MATERIALES: materiales,
-      LOOKINGFOR: lookingfor,
-      TIPO: tipo,
-      SUBTIPO: subtipo
-    });
+  const params = new URLSearchParams({
+    action: 'update',
+    ID: photoID,
+    STONE: stone,
+    PROYECTOID: proyectoid,
+    MEMO: memo,
+    COLOURS: colours,
+    MATERIALES: materiales,
+    LOOKINGFOR: lookingfor,
+    TIPO: tipo,
+    SUBTIPO: subtipo
+  });
 
-    const res = await fetch(`${API}?${params.toString()}`);
-    const resp = await res.json();
+  const res = await fetch(`${API}?${params.toString()}`);
+  const resp = await res.json();
 
-      if(resp.success){
-        document.getElementById('editModal').remove();
-        renderGallery(currentCategory, true);
-      } else {
-        alert("Error guardando en el servidor");
-      }
-
-  } catch(err) {
-    alert("Error de conexión, cambios locales guardados.");
+  if(resp.success){
+    document.getElementById('editModal').remove();
+    renderGallery(currentCategory, true);
+  } else {
+    alert("Error guardando en el servidor");
   }
+
+} catch(err) {
+  console.error(err);
+  alert("Error de conexión");
+}
 
   btn.disabled = false;
   spinner.style.display = "none";
