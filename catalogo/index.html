@@ -409,27 +409,30 @@ async function loadPhotos(){
     const res = await fetch(API);
     const data = await res.json();
 
-    console.log("DATA BACKEND:", data); // 👈 DEBUG
+    console.log("DATA BACKEND:", data);
 
     photos = data
+      .map(p => ({
+        ...p,
+        PROYECTOID: p.PROYECTOID ?? p.PROYECTO ?? ""
+      }))
       .filter(item => !item.PARENTCHILD || item.PARENTCHILD === "")
       .filter(item => item.ESTADO !== 'ELIMINADO');
 
-    console.log("PHOTOS FILTRADAS:", photos); // 👈 DEBUG
+    console.log("PHOTOS FILTRADAS:", photos);
 
     localStorage.setItem('photos', JSON.stringify(photos));
 
     createFilters();
 
-        setTimeout(() => {
-        renderGallery();
-        document.getElementById("loader").style.display = "none";
-        }, 50);
+    setTimeout(() => {
+      renderGallery();
+      document.getElementById("loader").style.display = "none";
+    }, 50);
 
-  }catch(e){
+  } catch(e){
     console.error("Error cargando datos", e);
 
-    // fallback cache
     const cached = localStorage.getItem('photos');
     if(cached){
       photos = JSON.parse(cached);
