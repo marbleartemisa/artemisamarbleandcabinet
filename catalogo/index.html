@@ -412,12 +412,13 @@ async function loadPhotos(){
     console.log("DATA BACKEND:", data);
 
     photos = data
+      .filter(item => !item.PARENTCHILD || item.PARENTCHILD === "")
+      .filter(item => item.ESTADO !== 'ELIMINADO')
       .map(p => ({
         ...p,
-        PROYECTOID: p.PROYECTOID ?? p.PROYECTO ?? ""
-      }))
-      .filter(item => !item.PARENTCHILD || item.PARENTCHILD === "")
-      .filter(item => item.ESTADO !== 'ELIMINADO');
+        PROYECTOID: (p.PROYECTOID || p.PROYECTO || "").trim()
+      }));
+    
 
     console.log("PHOTOS FILTRADAS:", photos);
 
@@ -715,7 +716,7 @@ function editPhoto(photoID){
           </div>
           <div class="form-group">
             <label>Proyecto</label>
-            <input id="PROYECTOID" value="${photo.PROYECTOID||''}">
+            <input id="PROYECTOID" value="${photo.PROYECTOID ?? photo.PROYECTO ?? ''}">
           </div>
         </div>
 
