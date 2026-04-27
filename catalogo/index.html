@@ -831,7 +831,6 @@ async function savePhoto(photoID){
       TIPO: tipo,
       SUBTIPO: subtipo
     });
-    console.log("👉 PARAMS STRING:", params.toString());
     const res = await fetch(`${API}?${params.toString()}`);
     const resp = await res.json();
     await loadPhotos(); // 👈 recarga desde el Sheet real
