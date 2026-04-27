@@ -402,7 +402,6 @@ searchBox.addEventListener("input", (e) => {
   
 const priorityOrder = ["Kitchen","Bathroom","Laundry","Closets & Shelves","Outdoor","BBQ Area","Office","Powder Room","Fireplace","Wall TV","Front desk"];
 
-
 async function loadPhotos(){
 
   try{
@@ -411,14 +410,23 @@ async function loadPhotos(){
 
     console.log("DATA BACKEND:", data);
 
-    photos = data
-      .filter(item => !item.PARENTCHILD || item.PARENTCHILD === "")
-      .filter(item => item.ESTADO !== 'ELIMINADO')
-      .map(p => ({
-        ...p,
-        PROYECTOID: (p.PROYECTOID || p.PROYECTO || "").trim()
-      }));
-    
+    photos = data.map(p => {
+      return {
+        ID: p.ID,
+        LINK: p.LINK,
+        STONE: p.STONE,
+        PROYECTOID: (p.PROYECTOID ?? "").toString().trim(),
+        MEMO: p.MEMO,
+        DRIVE: p.DRIVE,
+        PARENTCHILD: p.PARENTCHILD,
+        COLOURS: p.COLOURS,
+        MATERIALES: p.MATERIALES,
+        LOOKINGFOR: p.LOOKINGFOR,
+        TIPO: p.TIPO,
+        SUBTIPO: p.SUBTIPO,
+        ESTADO: p.ESTADO
+      };
+    });
 
     console.log("PHOTOS FILTRADAS:", photos);
 
@@ -441,6 +449,8 @@ async function loadPhotos(){
     }
   }
 }
+
+
   
 function createFilters(){
   const tipos = [...new Set(photos.map(p => p.TIPO).filter(Boolean))];
