@@ -823,7 +823,7 @@ async function savePhoto(photoID){
       action: 'update',
       ID: photoID,
       STONE: stone,
-      PROYECTOID: proyectoid,
+      PROYECTOID: proyectoid || " ",
       MEMO: memo,
       COLOURS: colours,
       MATERIALES: materiales,
@@ -834,7 +834,8 @@ async function savePhoto(photoID){
 
     const res = await fetch(`${API}?${params.toString()}`);
     const resp = await res.json();
-
+    await loadPhotos(); // 👈 recarga desde el Sheet real
+    
     if(!resp.success){
       alert("Error guardando en el servidor, cambios locales conservados.");
     }
