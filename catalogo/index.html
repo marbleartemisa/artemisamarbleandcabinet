@@ -675,6 +675,9 @@ function renderGallery(category='all', reset=true){
 // =========================
 function editPhoto(photoID){
   const photo = photos.find(p => p.ID === photoID);
+  
+  console.log("PHOTO OBJETO:", photo);
+  console.log("PROYECTOID EN OBJ:", photo.PROYECTOID);
   if(!photo) return;
 
   const formHtml = `
