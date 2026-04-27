@@ -700,7 +700,7 @@ function editPhoto(photoID){
             <input id="STONE" value="${photo.STONE||''}">
           </div>
           <div class="form-group">
-            <label>Proyecto</label>
+            <label>Proyectoid</label>
             <input id="PROYECTOID" value="${photo.PROYECTOID||''}">
           </div>
         </div>
@@ -788,6 +788,7 @@ async function savePhoto(photoID){
 
   // 1️⃣ Leer valores
   const stone = document.getElementById('STONE').value;
+  const proyectoid = document.getElementById('PROYECTOID').value;
   const memo = document.getElementById('MEMO').value;
   const colours = document.getElementById('COLOURS').value;
   const materiales = document.getElementById('MATERIALES').value;
@@ -801,6 +802,7 @@ async function savePhoto(photoID){
     photos[index] = {
       ...photos[index],
       STONE: stone,
+      PROYECTOID: proyectoid,
       MEMO: memo,
       COLOURS: colours,
       MATERIALES: materiales,
@@ -821,6 +823,7 @@ async function savePhoto(photoID){
       action: 'update',
       ID: photoID,
       STONE: stone,
+      PROYECTOID: proyectoid,
       MEMO: memo,
       COLOURS: colours,
       MATERIALES: materiales,
