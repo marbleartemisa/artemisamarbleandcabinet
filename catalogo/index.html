@@ -72,6 +72,86 @@ header nav a:hover { text-decoration:underline; }
   opacity: 1;
   transform: scale(1.1);
 }
+
+/* =========================
+   HOVER INFO OVERLAY PRO
+========================= */
+.grid-item .photo-overlay{
+  position:absolute;
+  inset:0;
+  background:linear-gradient(
+    to top,
+    rgba(0,0,0,0.78) 0%,
+    rgba(0,0,0,0.45) 35%,
+    rgba(0,0,0,0.10) 100%
+  );
+  color:#fff;
+  display:flex;
+  flex-direction:column;
+  justify-content:flex-end;
+  padding:18px;
+  opacity:0;
+  transform:translateY(12px);
+  transition:all .35s ease;
+  pointer-events:none;
+}
+
+  /* 👇 AQUÍ */
+.photo-overlay::before{
+  content:'';
+  width:40px;
+  height:3px;
+  background:#f15a24;
+  margin-bottom:10px;
+  display:block;
+}
+
+.grid-item:hover .photo-overlay{
+  opacity:1;
+  transform:translateY(0);
+}
+
+.grid-item:hover img{
+  transform:scale(1.04);
+}
+
+.photo-overlay .stone{
+  font-size:15px;
+  font-weight:700;
+  margin-bottom:4px;
+  letter-spacing:.4px;
+}
+
+.photo-overlay .project{
+  font-size:13px;
+  opacity:.88;
+  margin-bottom:4px;
+}
+
+.photo-overlay .memo{
+  font-size:12px;
+  opacity:.75;
+  line-height:1.4;
+}
+
+/* Mobile fallback */
+@media (max-width:900px){
+  .grid-item .photo-overlay{
+    opacity:1;
+    transform:none;
+    background:linear-gradient(
+      to top,
+      rgba(0,0,0,0.72) 0%,
+      rgba(0,0,0,0.15) 100%
+    );
+    padding:12px;
+  }
+
+  .photo-overlay .memo{
+    display:none; /* opcional para no saturar mobile */
+  }
+}
+  
   
 .form-group {
   display:flex;
@@ -444,12 +524,20 @@ function renderGallery(category='all', reset=true){
     }
 
     item.innerHTML = `
-      <a data-fancybox="gallery" href="${full}">
-        <img src="${thumb}" loading="lazy"
-          onerror="this.closest('.grid-item').remove()">
-      </a>
-      ${adminButtons}
-    `;
+  <a data-fancybox="gallery" href="${full}">
+    <img src="${thumb}" loading="lazy"
+      onerror="this.closest('.grid-item').remove()">
+
+    <div class="photo-overlay">
+      <div class="stone">${p.STONE || 'Unknown Stone'}</div>
+      <div class="project">${p.PROYECTOID || ''}</div>
+      <div class="memo">${p.MEMO || ''}</div>
+    </div>
+  </a>
+
+  ${adminButtons}
+`;
+
 
     fragment.appendChild(item);
 
@@ -556,12 +644,20 @@ function renderGallery(category='all', reset=true){
     }
 
     item.innerHTML = `
-      <a data-fancybox="gallery" href="${full}">
-        <img src="${thumb}" loading="lazy"
-          onerror="this.closest('.grid-item').remove()">
-      </a>
-      ${adminButtons}
-    `;
+  <a data-fancybox="gallery" href="${full}">
+    <img src="${thumb}" loading="lazy"
+      onerror="this.closest('.grid-item').remove()">
+
+    <div class="photo-overlay">
+      <div class="stone">${p.STONE || 'Unknown Stone'}</div>
+      <div class="project">${p.PROYECTOID || ''}</div>
+      <div class="memo">${p.MEMO || ''}</div>
+    </div>
+  </a>
+
+  ${adminButtons}
+`;
+
 
     fragment.appendChild(item);
     resizeGridItem(item);
