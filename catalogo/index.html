@@ -795,14 +795,18 @@ async function savePhoto(photoID){
   text.innerText = "Guardando...";
 
   // 1️⃣ Leer valores
-  const stone = document.getElementById('STONE').value;
-  const proyectoid = document.getElementById('PROYECTOID').value;
-  const memo = document.getElementById('MEMO').value;
-  const colours = document.getElementById('COLOURS').value;
-  const materiales = document.getElementById('MATERIALES').value;
-  const lookingfor = document.getElementById('LOOKINGFOR').value;
-  const tipo = document.getElementById('TIPO').value;
-  const subtipo = document.getElementById('SUBTIPO').value;
+
+  const modal = document.getElementById('editModal');
+
+    const stone = modal.querySelector('#STONE').value;
+    const proyectoid = modal.querySelector('#PROYECTOID').value;
+    const memo = modal.querySelector('#MEMO').value;
+    const colours = modal.querySelector('#COLOURS').value;
+    const materiales = modal.querySelector('#MATERIALES').value;
+    const lookingfor = modal.querySelector('#LOOKINGFOR').value;
+    const tipo = modal.querySelector('#TIPO').value;
+    const subtipo = modal.querySelector('#SUBTIPO').value;
+  
 
   // 2️⃣ Actualizar memoria y cache local INMEDIATAMENTE
   const index = photos.findIndex(p => p.ID === photoID);
@@ -843,9 +847,12 @@ async function savePhoto(photoID){
     const res = await fetch(`${API}?${params.toString()}`);
     const resp = await res.json();
 
-    if(!resp.success){
-      alert("Error guardando en el servidor, cambios locales conservados.");
-    }
+      if(resp.success){
+        document.getElementById('editModal').remove();
+        renderGallery(currentCategory, true);
+      } else {
+        alert("Error guardando en el servidor");
+      }
 
   } catch(err) {
     alert("Error de conexión, cambios locales guardados.");
