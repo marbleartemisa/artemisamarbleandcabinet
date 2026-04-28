@@ -443,7 +443,7 @@ async function loadPhotos(){
     console.error("Error cargando datos", e);
 
     const cached = localStorage.getItem('photos');
-    if(cached){
+    if(cached && !isAdmin){
       photos = JSON.parse(cached);
       renderGallery();
     }
