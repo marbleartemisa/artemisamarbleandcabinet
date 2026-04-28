@@ -122,7 +122,7 @@ header nav a:hover { text-decoration:underline; }
   letter-spacing:.4px;
 }
 
-.photo-overlay .proyectoid{
+.photo-overlay .proyecto{
   font-size:13px;
   opacity:.88;
   margin-bottom:4px;
@@ -417,7 +417,7 @@ async function loadPhotos(){
           STONE: p.STONE || "",
       
           // 🔥 AQUÍ ESTÁ EL FIX REAL
-          PROYECTOID: p.PROYECTOID || p.PROYECTO || "",
+          PROYECTO: p.PROYECTO || "",
       
           MEMO: p.MEMO || "",
           DRIVE: p.DRIVE || "",
@@ -549,7 +549,7 @@ function renderGallery(category='all', reset=true){
 
     <div class="photo-overlay">
       <div class="stone">${p.STONE || 'Unknown Stone'}</div>
-      <div class="proyectoid">${p.PROYECTOID || ''}</div>
+      <div class="proyecto">${p.PROYECTO || ''}</div>
       <div class="memo">${p.MEMO || ''}</div>
     </div>
   </a>
@@ -613,7 +613,7 @@ function renderGallery(category='all', reset=true){
 
     const text = `
       ${p.STONE || ''}
-      ${p.PROYECTOID || ''}
+      ${p.PROYECTO || ''}
       ${p.MEMO || ''}
       ${p.COLOURS || ''}
       ${p.MATERIALES || ''}
@@ -669,7 +669,7 @@ function renderGallery(category='all', reset=true){
 
     <div class="photo-overlay">
       <div class="stone">${p.STONE || 'Unknown Stone'}</div>
-      <div class="proyectoid">${p.PROYECTOID || ''}</div>
+      <div class="proyecto">${p.PROYECTO || ''}</div>
       <div class="memo">${p.MEMO || ''}</div>
     </div>
   </a>
@@ -696,7 +696,7 @@ function editPhoto(photoID){
   const photo = photos.find(p => p.ID === photoID);
   console.log("PHOTO EN MODAL:", photo);
   console.log("PHOTO OBJETO:", photo);
-  console.log("PROYECTOID EN OBJ:", photo.PROYECTOID);
+  console.log("PROYECTO EN OBJ:", photo.PROYECTO);
   if(!photo) return;
 
   const formHtml = `
@@ -730,8 +730,8 @@ function editPhoto(photoID){
             <input id="STONE" value="${photo.STONE||''}">
           </div>
           <div class="form-group">
-            <label>Proyectoid</label>
-            <input id="PROYECTOID" value="${photo.PROYECTOID ?? ''}">
+            <label>Proyecto</label>
+            <input id="PROYECTO" value="${photo.PROYECTO||''}">
             
           </div>
         </div>
@@ -821,10 +821,10 @@ async function savePhoto(photoID){
   // 1️⃣ Leer valores
   const stone = document.getElementById('STONE').value;
 
-  const input = document.getElementById('PROYECTOID');
-  const proyectoid = input ? input.value.trim() : "";
+  const input = document.getElementById('PROYECTO');
+  const PROYECTO = input ? input.value.trim() : "";
   const photo = photos.find(p => p.ID === photoID);
-  const finalProyectoid = proyectoid || photo.PROYECTOID || photo.PROYECTO || "";
+  const finalPROYECTO = PROYECTO || photo.PROYECTO || photo.PROYECTO || "";
   
   const memo = document.getElementById('MEMO').value;
   const colours = document.getElementById('COLOURS').value;
@@ -840,7 +840,7 @@ async function savePhoto(photoID){
     photos[index] = {
       ...photos[index],
       STONE: stone,
-      PROYECTOID: (proyectoid && proyectoid.trim() !== "") ? proyectoid : null,
+      PROYECTO: proyecto,
       MEMO: memo,
       COLOURS: colours,
       MATERIALES: materiales,
@@ -861,7 +861,7 @@ async function savePhoto(photoID){
       action: 'update',
       ID: photoID,
       STONE: stone,
-      PROYECTOID: finalProyectoid,
+      PROYECTO: proyecto,
       MEMO: memo,
       COLOURS: colours,
       MATERIALES: materiales,
