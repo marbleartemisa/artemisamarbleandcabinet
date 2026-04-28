@@ -434,7 +434,7 @@ async function loadPhotos(){
     console.log("DATA BACKEND:", data);
     console.log("PHOTOS FILTRADAS:", photos);
 
-    localStorage.setItem('photos_v2', JSON.stringify(photos));
+   localStorage.setItem('photos', JSON.stringify(photos));
 
     createFilters();
 
@@ -820,11 +820,7 @@ async function savePhoto(photoID){
 
   // 1️⃣ Leer valores
   const stone = document.getElementById('STONE').value;
-
-  const input = document.getElementById('PROYECTO');
-  const PROYECTO = input ? input.value.trim() : "";
-  const photo = photos.find(p => p.ID === photoID);
-  const finalPROYECTO = PROYECTO || photo.PROYECTO || photo.PROYECTO || "";
+  const proyecto = document.getElementById('PROYECTO').value.trim();
   
   const memo = document.getElementById('MEMO').value;
   const colours = document.getElementById('COLOURS').value;
@@ -855,6 +851,8 @@ async function savePhoto(photoID){
   document.getElementById('editModal').remove();
   renderGallery(currentCategory, true);
 
+
+  
   // 4️⃣ Guardar en servidor en segundo plano
   try {
     const params = new URLSearchParams({
