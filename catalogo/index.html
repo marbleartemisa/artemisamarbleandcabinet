@@ -726,7 +726,7 @@ function editPhoto(photoID){
           </div>
           <div class="form-group">
             <label>Proyectoid</label>
-            <input id="PROYECTOID" value="${photo.PROYECTOID ?? photo.PROYECTO ?? ''}">
+            <input id="PROYECTOID" value="${photo.PROYECTOID || ''}">
           </div>
         </div>
 
@@ -814,7 +814,9 @@ async function savePhoto(photoID){
 
   // 1️⃣ Leer valores
   const stone = document.getElementById('STONE').value;
-  const proyectoid = document.getElementById('PROYECTOID').value;
+
+  const proyectoid = document.getElementById('PROYECTOID').value.trim();
+  
   const memo = document.getElementById('MEMO').value;
   const colours = document.getElementById('COLOURS').value;
   const materiales = document.getElementById('MATERIALES').value;
@@ -822,6 +824,7 @@ async function savePhoto(photoID){
   const tipo = document.getElementById('TIPO').value;
   const subtipo = document.getElementById('SUBTIPO').value;
 
+  
   // 2️⃣ Actualizar memoria y cache local INMEDIATAMENTE
   const index = photos.findIndex(p => p.ID === photoID);
   if(index !== -1){
