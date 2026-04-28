@@ -405,32 +405,36 @@ const priorityOrder = ["Kitchen","Bathroom","Laundry","Closets & Shelves","Outdo
 async function loadPhotos(){
 
   try{
-    const res = await fetch(API);
-    const data = await res.json();
+      const res = await fetch(API);
+      const data = await res.json();
+      
+      console.log("DATA BACKEND:", data);
+      
+      photos = data.map(p => {
+        return {
+          ID: p.ID,
+          LINK: p.LINK,
+          STONE: p.STONE || "",
+      
+          // 🔥 AQUÍ ESTÁ EL FIX REAL
+          PROYECTOID: p.PROYECTOID || p.PROYECTO || "",
+      
+          MEMO: p.MEMO || "",
+          DRIVE: p.DRIVE || "",
+          PARENTCHILD: p.PARENTCHILD || "",
+          COLOURS: p.COLOURS || "",
+          MATERIALES: p.MATERIALES || "",
+          LOOKINGFOR: p.LOOKINGFOR || "",
+          TIPO: p.TIPO || "",
+          SUBTIPO: p.SUBTIPO || "",
+          ESTADO: p.ESTADO || "ACTIVO"
+        };
+      });
 
     console.log("DATA BACKEND:", data);
-
-    photos = data.map(p => {
-      return {
-        ID: p.ID,
-        LINK: p.LINK,
-        STONE: p.STONE,
-        PROYECTOID: p.PROYECTOID, 
-        MEMO: p.MEMO,
-        DRIVE: p.DRIVE,
-        PARENTCHILD: p.PARENTCHILD,
-        COLOURS: p.COLOURS,
-        MATERIALES: p.MATERIALES,
-        LOOKINGFOR: p.LOOKINGFOR,
-        TIPO: p.TIPO,
-        SUBTIPO: p.SUBTIPO,
-        ESTADO: p.ESTADO
-      };
-    });
-
     console.log("PHOTOS FILTRADAS:", photos);
 
-    localStorage.setItem('photos', JSON.stringify(photos));
+    localStorage.setItem('photos_v2', JSON.stringify(photos));
 
     createFilters();
 
@@ -441,12 +445,13 @@ async function loadPhotos(){
 
   } catch(e){
     console.error("Error cargando datos", e);
+      const cached = JSON.parse(localStorage.getItem('photos_v2') || "[]");
+      
+      if(cached.length && !isAdmin){
+        photos = cached;
+        console.log("⚡ usando cache válido");
+      }
 
-    const cached = localStorage.getItem('photos');
-    if(cached && !isAdmin){
-      photos = JSON.parse(cached);
-      renderGallery();
-    }
   }
 }
 
@@ -726,7 +731,7 @@ function editPhoto(photoID){
           </div>
           <div class="form-group">
             <label>Proyectoid</label>
-            <input id="PROYECTOID" value="${photo.PROYECTOID || ''}">
+            <input id="PROYECTOID" value="${photo.PROYECTOID ?? photo.PROYECTO ?? ''}">
           </div>
         </div>
 
