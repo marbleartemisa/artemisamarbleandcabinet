@@ -521,6 +521,7 @@ function renderGallery(category='all', reset=true){
     
     const item = document.createElement('div');
     item.className = 'grid-item';
+    item.dataset.id = p.ID;
 
     let adminButtons = '';
 
@@ -847,10 +848,29 @@ async function savePhoto(photoID){
   }
   localStorage.setItem('photos', JSON.stringify(photos));
 
-  // 3️⃣ Cerrar modal y refrescar galería INMEDIATAMENTE
-  document.getElementById('editModal').remove();
-  renderGallery(currentCategory, true);
-
+// 3️⃣ Cerrar modal
+        document.getElementById('editModal').remove();
+        
+        // 🔥 guardar posición del scroll
+        const scrollPos = window.scrollY;
+        
+        // 🔥 refrescar galería
+        renderGallery(currentCategory, true);
+        
+        // 🔥 volver a la misma imagen después del render
+        setTimeout(() => {
+          const el = document.querySelector(`[data-id="${photoID}"]`);
+        
+          if (el) {
+            el.scrollIntoView({
+              behavior: "auto",
+              block: "center"
+            });
+          } else {
+            window.scrollTo(0, scrollPos);
+          }
+        }, 120);
+        
 
   
   // 4️⃣ Guardar en servidor en segundo plano
