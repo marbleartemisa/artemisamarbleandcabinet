@@ -904,13 +904,11 @@ async function savePhoto(photoID){
   text.innerText = "💾 Guardar";
 }
   
-
-  
 function deletePhoto(photoID){
 
   if(!confirm("¿Seguro que deseas eliminar esta foto?")) return;
 
-  const usuario = "admin"; // puedes luego hacerlo dinámico
+  const usuario = "admin";
   const fecha = new Date().toLocaleString();
 
   const index = photos.findIndex(p => p.ID === photoID);
@@ -921,13 +919,41 @@ function deletePhoto(photoID){
       `\n[ELIMINADO por ${usuario} - ${fecha}]`;
   }
 
-  // 🔹 Actualizar cache local inmediato
+  // 🔥 guardar posición scroll antes de refrescar
+  const scrollPos = window.scrollY;
+
+  // 🔹 cache local
   localStorage.setItem('photos', JSON.stringify(photos));
 
-  // 🔹 Refrescar UI inmediato
+  // 🔹 refrescar UI
   renderGallery(currentCategory, true);
 
-  // 🔹 Guardar en backend
+  // 🔥 intentar volver a la misma zona
+  setTimeout(() => {
+
+    // intentar buscar el siguiente elemento visible
+    const allItems = document.querySelectorAll('.grid-item');
+
+    if(allItems.length > 0){
+      // busca uno cercano (misma posición aproximada)
+      const target = allItems[Math.min(index, allItems.length - 1)];
+
+      if(target){
+        target.scrollIntoView({
+          behavior: "auto",
+          block: "center"
+        });
+        return;
+      }
+    }
+
+    // fallback: volver al scroll exacto
+    window.scrollTo(0, scrollPos);
+
+  }, 120);
+
+
+  // 🔹 backend
   fetch(`${API}?${new URLSearchParams({
     action: 'delete',
     ID: photoID,
@@ -944,6 +970,8 @@ function deletePhoto(photoID){
     alert("Sin conexión, eliminado localmente");
   });
 }
+  
+
 
 function resizeGridItem(item){
   const grid = document.querySelector('.grid');
