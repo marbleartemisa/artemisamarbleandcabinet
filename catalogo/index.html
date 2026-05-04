@@ -903,13 +903,17 @@ async function savePhoto(photoID){
   spinner.style.display = "none";
   text.innerText = "💾 Guardar";
 }
-  
+
 function deletePhoto(photoID){
 
   if(!confirm("¿Seguro que deseas eliminar esta foto?")) return;
 
   const usuario = "admin";
   const fecha = new Date().toLocaleString();
+
+  // 🔥 capturar elemento actual y vecino ANTES del render
+  const currentElement = document.querySelector(`[data-id="${photoID}"]`);
+  const nextElement = currentElement?.nextElementSibling || currentElement?.previousElementSibling;
 
   const index = photos.findIndex(p => p.ID === photoID);
 
@@ -919,7 +923,7 @@ function deletePhoto(photoID){
       `\n[ELIMINADO por ${usuario} - ${fecha}]`;
   }
 
-  // 🔥 guardar posición scroll antes de refrescar
+  // 🔥 guardar posición scroll como fallback
   const scrollPos = window.scrollY;
 
   // 🔹 cache local
@@ -928,45 +932,41 @@ function deletePhoto(photoID){
   // 🔹 refrescar UI
   renderGallery(currentCategory, true);
 
-  // 🔥 intentar volver a la misma zona
+  // 🔥 volver a la misma zona correctamente
   setTimeout(() => {
 
-    // intentar buscar el siguiente elemento visible
-    const allItems = document.querySelectorAll('.grid-item');
+    if(nextElement){
+      const id = nextElement.getAttribute("data-id");
+      const newTarget = document.querySelector(`[data-id="${id}"]`);
 
-    if(allItems.length > 0){
-      // busca uno cercano (misma posición aproximada)
-      const target = allItems[Math.min(index, allItems.length - 1)];
-
-      if(target){
-        target.scrollIntoView({
-          behavior: "auto",
+      if(newTarget){
+        newTarget.scrollIntoView({
+          behavior: "auto", // puedes cambiar a "smooth"
           block: "center"
         });
         return;
       }
     }
 
-    // fallback: volver al scroll exacto
+    // fallback si no encuentra elemento
     window.scrollTo(0, scrollPos);
 
   }, 120);
-
 
   // 🔹 backend
   fetch(`${API}?${new URLSearchParams({
     action: 'delete',
     ID: photoID,
     ESTADO: 'ELIMINADO',
-    MEMO: photos[index].MEMO
+    MEMO: photos[index]?.MEMO || ''
   })}`)
-  .then(r=>r.json())
-  .then(resp=>{
+  .then(r => r.json())
+  .then(resp => {
     if(!resp.success){
       alert("Error en servidor, pero eliminado localmente");
     }
   })
-  .catch(()=>{
+  .catch(() => {
     alert("Sin conexión, eliminado localmente");
   });
 }
