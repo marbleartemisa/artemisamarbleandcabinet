@@ -649,26 +649,25 @@ function renderGallery(category='all', reset=true){
   isLoading = false;
 }
 
-
 function renderSearch(query){
 
-  const cleanQuery = (query || "").toLowerCase().trim();
+  isLoading = false;
+  isSearching = true;
 
   gallery.innerHTML = '';
   currentIndex = 0;
 
+  const cleanQuery = (query || "").toLowerCase().trim();
+
   if(!cleanQuery){
     isSearching = false;
-    searchResults = [];
     renderGallery(currentCategory, true);
     return;
   }
 
-  isSearching = true;
-
   const palabras = cleanQuery.split(/\s+/).filter(Boolean);
 
-  searchResults = photos
+  const filtered = photos
     .map(p => {
 
       const text = [
@@ -696,16 +695,17 @@ function renderSearch(query){
     .filter(p => p.score > 0)
     .sort((a,b) => b.score - a.score);
 
-  updateCounter(searchResults, "Search");
-
   const fragment = document.createDocumentFragment();
 
-  searchResults.forEach(p => {
+  filtered.forEach(p => {
 
     const link = (p.LINK || "").trim();
     const match = link.match(/id=([^&]+)/);
-    if(!match) return;
-
+    
+      if(!match){
+        console.log("LINK SIN ID:", p.LINK);
+        return;
+      }
     const fileId = match[1];
 
     const thumb = `https://lh3.googleusercontent.com/d/${fileId}=w800`;
@@ -728,6 +728,7 @@ function renderSearch(query){
 
     fragment.appendChild(item);
 
+    // 🔥 FIX CLAVE: forzar layout correcto
     const img = item.querySelector("img");
     img.onload = () => resizeGridItem(item);
 
@@ -735,10 +736,12 @@ function renderSearch(query){
 
   gallery.appendChild(fragment);
 
+  // 🔥 IMPORTANTE: NO destruir Fancybox si no es necesario
   Fancybox.bind("[data-fancybox='gallery']", {
     animated: true
   });
 }
+
   
 // =========================
 // Editar foto (modal)
@@ -1035,7 +1038,7 @@ function resizeGridItem(item){
   img.onload = () => {
     const rowSpan = Math.ceil((img.getBoundingClientRect().height + rowGap) / (rowHeight + rowGap));
     item.style.gridRowEnd = "span " + rowSpan;
-
+    
     // 🔥 activar animación
     img.classList.add("loaded");
   };
