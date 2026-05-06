@@ -381,6 +381,7 @@ let isLoading = false;
 const gallery = document.getElementById('gallery');
 const filtersContainer = document.querySelector('.filters');
 const searchBox = document.getElementById("searchBox");
+let isSearching = false; // 🔥 NUEVA VARIABLE
 
 let isAdmin = false;
 
@@ -605,10 +606,13 @@ function renderGallery(category='all', reset=true){
   gallery.innerHTML = '';
   currentIndex = 0;
 
-  if(!query){
-    renderGallery(currentCategory, true);
-    return;
-  }
+if(!query){
+  isSearching = false; // 🔥 DESACTIVA búsqueda
+  renderGallery(currentCategory, true);
+  return;
+}
+
+isSearching = true; // 🔥 ACTIVA búsqueda
 
   const filtered = photos.filter(p => {
 
@@ -623,9 +627,13 @@ function renderGallery(category='all', reset=true){
       ${p.SUBTIPO || ''}
     `.toLowerCase();
 
-    return text.includes(query);
+    const palabras = query.split(/\s+/).filter(Boolean);
+    const coincide = palabras.every(p => text.includes(p));
+    return coincide;
   });
 
+
+    
   // 🔥 render directo (sin paginación para búsqueda)
   const fragment = document.createDocumentFragment();
 
@@ -1021,9 +1029,9 @@ document.addEventListener("mouseleave", () => {
 let isLoadingMore = false;
 
 
-  window.addEventListener('scroll', () => {
+window.addEventListener('scroll', () => {
 
-  if(isLoading) return;
+  if(isLoading || isSearching) return; // 🔥 BLOQUEA cuando buscas
 
   if(window.innerHeight + window.scrollY >= document.body.offsetHeight - 500){
     renderGallery(currentCategory, false);
