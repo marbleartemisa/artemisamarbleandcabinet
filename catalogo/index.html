@@ -402,6 +402,7 @@ const gallery = document.getElementById('gallery');
 const filtersContainer = document.querySelector('.filters');
 const searchBox = document.getElementById("searchBox");
 let isSearching = false; // 🔥 NUEVA VARIABLE
+let searchResults = [];
 
 let isAdmin = false;
 
@@ -638,16 +639,14 @@ function renderGallery(category='all', reset=true){
 
 function renderSearch(query){
 
-  // 🔥 SIEMPRE corta carga previa
-  isLoading = false;
+  const cleanQuery = (query || "").toLowerCase().trim();
 
   gallery.innerHTML = '';
   currentIndex = 0;
 
-  const cleanQuery = (query || "").toLowerCase().trim();
-
   if(!cleanQuery){
     isSearching = false;
+    searchResults = [];
     renderGallery(currentCategory, true);
     return;
   }
@@ -656,24 +655,27 @@ function renderSearch(query){
 
   const palabras = cleanQuery.split(/\s+/).filter(Boolean);
 
-  const filtered = photos
+  searchResults = photos
     .map(p => {
 
-      const text = `
-        ${p.STONE || ''}
-        ${p.PROYECTO || ''}
-        ${p.MEMO || ''}
-        ${p.COLOURS || ''}
-        ${p.MATERIALES || ''}
-        ${p.LOOKINGFOR || ''}
-        ${p.TIPO || ''}
-        ${p.SUBTIPO || ''}
-      `.toLowerCase();
+      const text = [
+        p.STONE,
+        p.PROYECTO,
+        p.MEMO,
+        p.COLOURS,
+        p.MATERIALES,
+        p.LOOKINGFOR,
+        p.TIPO,
+        p.SUBTIPO
+      ]
+      .filter(Boolean)
+      .join(" ")
+      .toLowerCase();
 
       let score = 0;
 
       palabras.forEach(w => {
-        if(text.includes(w)) score += 1;
+        if(text.includes(w)) score++;
       });
 
       return { ...p, score };
@@ -681,9 +683,11 @@ function renderSearch(query){
     .filter(p => p.score > 0)
     .sort((a,b) => b.score - a.score);
 
+  updateCounter(searchResults, "Search");
+
   const fragment = document.createDocumentFragment();
 
-  filtered.forEach(p => {
+  searchResults.forEach(p => {
 
     const link = (p.LINK || "").trim();
     const match = link.match(/id=([^&]+)/);
@@ -718,8 +722,6 @@ function renderSearch(query){
 
   gallery.appendChild(fragment);
 
-  // 🔥 IMPORTANTE: reset fancybox limpio
-  Fancybox.destroy();
   Fancybox.bind("[data-fancybox='gallery']", {
     animated: true
   });
@@ -1056,17 +1058,15 @@ document.addEventListener("mouseleave", () => {
 let isLoadingMore = false;
 
 
-window.addEventListener('scroll', () => {
+  window.addEventListener('scroll', () => {
 
-  if(isLoading || isSearching) return; // 🔥 BLOQUEA cuando buscas
+  if(isLoading || isSearching) return;
 
   if(window.innerHeight + window.scrollY >= document.body.offsetHeight - 500){
     renderGallery(currentCategory, false);
   }
 
 });
-
-  
   
 // 👇 AQUÍ MISMO PEGAS ESTO
 window.addEventListener("DOMContentLoaded", () => {
