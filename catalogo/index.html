@@ -417,8 +417,13 @@ document.getElementById('adminLoginBtn').addEventListener('click', () => {
 });
 
 searchBox.addEventListener("input", (e) => {
-  const value = e.target.value.toLowerCase();
-  renderSearch(value);
+  const value = e.target.value;
+
+  clearTimeout(window.__searchTimer);
+
+  window.__searchTimer = setTimeout(() => {
+    renderSearch(value);
+  }, 200);
 });
   
 const priorityOrder = ["Kitchen","Bathroom","Laundry","Closets & Shelves","Outdoor","BBQ Area","Office","Powder Room","Fireplace","Wall TV","Front desk"];
@@ -633,10 +638,12 @@ function renderGallery(category='all', reset=true){
 
 function renderSearch(query){
 
+  // 🔥 SIEMPRE corta carga previa
+  isLoading = false;
+
   gallery.innerHTML = '';
   currentIndex = 0;
 
-  // 🔥 normalizar query
   const cleanQuery = (query || "").toLowerCase().trim();
 
   if(!cleanQuery){
@@ -649,7 +656,6 @@ function renderSearch(query){
 
   const palabras = cleanQuery.split(/\s+/).filter(Boolean);
 
-  // 🔥 filtro + scoring (mejor que simple includes)
   const filtered = photos
     .map(p => {
 
@@ -668,21 +674,12 @@ function renderSearch(query){
 
       palabras.forEach(w => {
         if(text.includes(w)) score += 1;
-
-        if(w === "kitchen" && text.includes("kitchen")) score += 3;
-        if(w === "bathroom" && text.includes("bathroom")) score += 3;
-        if(text.includes("proyecto") && w.includes("project")) score += 2;
       });
 
-      return { ...p, text, score };
+      return { ...p, score };
     })
     .filter(p => p.score > 0)
     .sort((a,b) => b.score - a.score);
-
-  // 🔥 contador (si ya implementaste el UI)
-  if(typeof updateCounter === "function"){
-    updateCounter(filtered, "Search");
-  }
 
   const fragment = document.createDocumentFragment();
 
@@ -700,44 +697,20 @@ function renderSearch(query){
     const item = document.createElement('div');
     item.className = 'grid-item';
 
-    let adminButtons = '';
-
-    if(isAdmin){
-      adminButtons = `
-        <button style="
-          position:absolute; top:8px; right:8px;
-          background:#f15a24; color:white;
-          border:none; border-radius:6px;
-          padding:5px 7px; cursor:pointer; z-index:10;
-        " onclick="event.stopPropagation(); editPhoto('${p.ID}')">✏️</button>
-
-        <button style="
-          position:absolute; top:8px; right:40px;
-          background:#d11a2a; color:white;
-          border:none; border-radius:6px;
-          padding:5px 7px; cursor:pointer; z-index:10;
-        " onclick="event.stopPropagation(); deletePhoto('${p.ID}')">🗑️</button>
-      `;
-    }
-
     item.innerHTML = `
       <a data-fancybox="gallery" href="${full}">
-        <img src="${thumb}" loading="lazy"
-          onerror="this.closest('.grid-item').remove()">
+        <img src="${thumb}" loading="lazy">
 
         <div class="photo-overlay">
-          <div class="stone">${p.STONE || 'Unknown Stone'}</div>
+          <div class="stone">${p.STONE || ''}</div>
           <div class="proyecto">${p.PROYECTO || ''}</div>
           <div class="memo">${p.MEMO || ''}</div>
         </div>
       </a>
-
-      ${adminButtons}
     `;
 
     fragment.appendChild(item);
 
-    // ⚠️ importante: esperar imagen
     const img = item.querySelector("img");
     img.onload = () => resizeGridItem(item);
 
@@ -745,14 +718,11 @@ function renderSearch(query){
 
   gallery.appendChild(fragment);
 
-  // 🔥 evitar rebind infinito de Fancybox
-  if(window.Fancybox){
-    Fancybox.destroy(); // limpia previos
-    Fancybox.bind("[data-fancybox='gallery']", {
-      animated: true,
-      dragToClose: false
-    });
-  }
+  // 🔥 IMPORTANTE: reset fancybox limpio
+  Fancybox.destroy();
+  Fancybox.bind("[data-fancybox='gallery']", {
+    animated: true
+  });
 }
   
 // =========================
@@ -1095,6 +1065,7 @@ window.addEventListener('scroll', () => {
   }
 
 });
+
   
   
 // 👇 AQUÍ MISMO PEGAS ESTO
