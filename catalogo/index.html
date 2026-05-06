@@ -549,10 +549,23 @@ function renderGallery(category='all', reset=true){
   slice.forEach(p => {
 
     const link = (p.LINK || "").trim();
-    const match = link.match(/id=([^&]+)/);
-    if(!match) return;
+    let fileId = null;
 
-    const fileId = match[1];
+      // formato 1: id=
+      let match = link.match(/id=([^&]+)/);
+      if(match) fileId = match[1];
+      
+      // formato 2: /d/FILEID/
+      if(!fileId){
+        match = link.match(/\/d\/([a-zA-Z0-9_-]+)/);
+        if(match) fileId = match[1];
+      }
+      
+      // si no hay id → NO eliminar item silenciosamente
+      if(!fileId){
+        console.warn("LINK inválido:", link);
+        return;
+      }
 
     const thumb = `https://lh3.googleusercontent.com/d/${fileId}=w800`;
     const full  = `https://lh3.googleusercontent.com/d/${fileId}=s0`;
