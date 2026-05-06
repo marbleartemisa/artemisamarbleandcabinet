@@ -311,12 +311,6 @@ header nav a:hover { text-decoration:underline; }
   0% { transform: rotate(0deg);}
   100% { transform: rotate(360deg);}
 }
-
-#photoCount{
-  background: linear-gradient(135deg,#111,#333);
-  box-shadow: 0 6px 18px rgba(0,0,0,0.25);
-  font-weight: 600;
-}
   
 </style>
 </head>
@@ -351,20 +345,6 @@ header nav a:hover { text-decoration:underline; }
     Ingresar clave Admin
   </button>
 </div>
-<div style="text-align:center; margin-top:10px;">
-  <div id="photoCount" style="
-    display:inline-block;
-    background:#111;
-    color:#fff;
-    padding:6px 14px;
-    border-radius:20px;
-    font-size:13px;
-    margin-bottom:10px;
-  ">
-    Loading...
-  </div>
-</div>
-
 <div class="filters"></div>
 
 <!-- 🔎 SEARCH BAR (AQUÍ) -->
@@ -402,7 +382,6 @@ const gallery = document.getElementById('gallery');
 const filtersContainer = document.querySelector('.filters');
 const searchBox = document.getElementById("searchBox");
 let isSearching = false; // 🔥 NUEVA VARIABLE
-let searchResults = [];
 
 let isAdmin = false;
 
@@ -418,13 +397,8 @@ document.getElementById('adminLoginBtn').addEventListener('click', () => {
 });
 
 searchBox.addEventListener("input", (e) => {
-  const value = e.target.value;
-
-  clearTimeout(window.__searchTimer);
-
-  window.__searchTimer = setTimeout(() => {
-    renderSearch(value);
-  }, 200);
+  const value = e.target.value.toLowerCase();
+  renderSearch(value);
 });
   
 const priorityOrder = ["Kitchen","Bathroom","Laundry","Closets & Shelves","Outdoor","BBQ Area","Office","Powder Room","Fireplace","Wall TV","Front desk"];
@@ -509,17 +483,7 @@ function createFilters(){
   }
 }
 
-function updateCounter(filteredList, category){
 
-  const count = filteredList.length;
-
-  const label = category === 'all' ? 'All' : category;
-
-  document.getElementById("photoCount").innerHTML = `
-    📸 ${label} <b>(${count})</b>
-  `;
-}
-  
 function renderGallery(category='all', reset=true){
 
   if(isLoading) return;
@@ -535,7 +499,6 @@ function renderGallery(category='all', reset=true){
     (!p.ESTADO || p.ESTADO !== 'ELIMINADO') &&
     (category === 'all' || p.TIPO === category)
   );
-  updateCounter(filtered, category);
 
   const slice = filtered.slice(currentIndex, currentIndex + PAGE_SIZE);
 
@@ -549,23 +512,10 @@ function renderGallery(category='all', reset=true){
   slice.forEach(p => {
 
     const link = (p.LINK || "").trim();
-    let fileId = null;
+    const match = link.match(/id=([^&]+)/);
+    if(!match) return;
 
-      // formato 1: id=
-      let match = link.match(/id=([^&]+)/);
-      if(match) fileId = match[1];
-      
-      // formato 2: /d/FILEID/
-      if(!fileId){
-        match = link.match(/\/d\/([a-zA-Z0-9_-]+)/);
-        if(match) fileId = match[1];
-      }
-      
-      // si no hay id → NO eliminar item silenciosamente
-      if(!fileId){
-        console.warn("LINK inválido:", link);
-        return;
-      }
+    const fileId = match[1];
 
     const thumb = `https://lh3.googleusercontent.com/d/${fileId}=w800`;
     const full  = `https://lh3.googleusercontent.com/d/${fileId}=s0`;
@@ -649,63 +599,50 @@ function renderGallery(category='all', reset=true){
   isLoading = false;
 }
 
-function renderSearch(query){
 
-  isLoading = false;
-  isSearching = true;
+  function renderSearch(query){
 
+  // 🔥 reset total
   gallery.innerHTML = '';
   currentIndex = 0;
 
-  const cleanQuery = (query || "").toLowerCase().trim();
+if(!query){
+  isSearching = false; // 🔥 DESACTIVA búsqueda
+  renderGallery(currentCategory, true);
+  return;
+}
 
-  if(!cleanQuery){
-    isSearching = false;
-    renderGallery(currentCategory, true);
-    return;
-  }
+isSearching = true; // 🔥 ACTIVA búsqueda
 
-  const palabras = cleanQuery.split(/\s+/).filter(Boolean);
+  const filtered = photos.filter(p => {
 
-  const filtered = photos
-    .map(p => {
+    const text = `
+      ${p.STONE || ''}
+      ${p.PROYECTO || ''}
+      ${p.MEMO || ''}
+      ${p.COLOURS || ''}
+      ${p.MATERIALES || ''}
+      ${p.LOOKINGFOR || ''}
+      ${p.TIPO || ''}
+      ${p.SUBTIPO || ''}
+    `.toLowerCase();
 
-      const text = [
-        p.STONE,
-        p.PROYECTO,
-        p.MEMO,
-        p.COLOURS,
-        p.MATERIALES,
-        p.LOOKINGFOR,
-        p.TIPO,
-        p.SUBTIPO
-      ]
-      .filter(Boolean)
-      .join(" ")
-      .toLowerCase();
+    const palabras = query.split(/\s+/).filter(Boolean);
+    const coincide = palabras.every(p => text.includes(p));
+    return coincide;
+  });
 
-      let score = 0;
 
-      palabras.forEach(w => {
-        if(text.includes(w)) score++;
-      });
-
-      return { ...p, score };
-    })
-    .filter(p => p.score > 0)
-    .sort((a,b) => b.score - a.score);
-
+    
+  // 🔥 render directo (sin paginación para búsqueda)
   const fragment = document.createDocumentFragment();
 
   filtered.forEach(p => {
 
     const link = (p.LINK || "").trim();
     const match = link.match(/id=([^&]+)/);
-    
-      if(!match){
-        console.log("LINK SIN ID:", p.LINK);
-        return;
-      }
+    if(!match) return;
+
     const fileId = match[1];
 
     const thumb = `https://lh3.googleusercontent.com/d/${fileId}=w800`;
@@ -714,34 +651,52 @@ function renderSearch(query){
     const item = document.createElement('div');
     item.className = 'grid-item';
 
-    item.innerHTML = `
-      <a data-fancybox="gallery" href="${full}">
-        <img src="${thumb}" loading="lazy">
+    let adminButtons = '';
 
-        <div class="photo-overlay">
-          <div class="stone">${p.STONE || ''}</div>
-          <div class="proyecto">${p.PROYECTO || ''}</div>
-          <div class="memo">${p.MEMO || ''}</div>
-        </div>
-      </a>
-    `;
+    if(isAdmin){
+      adminButtons = `
+        <button style="
+          position:absolute; top:8px; right:8px;
+          background:#f15a24; color:white;
+          border:none; border-radius:6px;
+          padding:5px 7px; cursor:pointer; z-index:10;
+        " onclick="event.stopPropagation(); editPhoto('${p.ID}')">✏️</button>
+
+        <button style="
+          position:absolute; top:8px; right:40px;
+          background:#d11a2a; color:white;
+          border:none; border-radius:6px;
+          padding:5px 7px; cursor:pointer; z-index:10;
+        " onclick="event.stopPropagation(); deletePhoto('${p.ID}')">🗑️</button>
+      `;
+    }
+
+    item.innerHTML = `
+  <a data-fancybox="gallery" href="${full}">
+    <img src="${thumb}" loading="lazy"
+      onerror="this.closest('.grid-item').remove()">
+
+    <div class="photo-overlay">
+      <div class="stone">${p.STONE || 'Unknown Stone'}</div>
+      <div class="proyecto">${p.PROYECTO || ''}</div>
+      <div class="memo">${p.MEMO || ''}</div>
+    </div>
+  </a>
+
+  ${adminButtons}
+`;
+
 
     fragment.appendChild(item);
-
-    // 🔥 FIX CLAVE: forzar layout correcto
-    const img = item.querySelector("img");
-    img.onload = () => resizeGridItem(item);
-
+    resizeGridItem(item);
   });
 
   gallery.appendChild(fragment);
 
-  // 🔥 IMPORTANTE: NO destruir Fancybox si no es necesario
   Fancybox.bind("[data-fancybox='gallery']", {
     animated: true
   });
 }
-
   
 // =========================
 // Editar foto (modal)
@@ -1038,7 +993,7 @@ function resizeGridItem(item){
   img.onload = () => {
     const rowSpan = Math.ceil((img.getBoundingClientRect().height + rowGap) / (rowHeight + rowGap));
     item.style.gridRowEnd = "span " + rowSpan;
-    
+
     // 🔥 activar animación
     img.classList.add("loaded");
   };
@@ -1074,15 +1029,16 @@ document.addEventListener("mouseleave", () => {
 let isLoadingMore = false;
 
 
-  window.addEventListener('scroll', () => {
+window.addEventListener('scroll', () => {
 
-  if(isLoading || isSearching) return;
+  if(isLoading || isSearching) return; // 🔥 BLOQUEA cuando buscas
 
   if(window.innerHeight + window.scrollY >= document.body.offsetHeight - 500){
     renderGallery(currentCategory, false);
   }
 
 });
+  
   
 // 👇 AQUÍ MISMO PEGAS ESTO
 window.addEventListener("DOMContentLoaded", () => {
