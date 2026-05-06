@@ -311,6 +311,12 @@ header nav a:hover { text-decoration:underline; }
   0% { transform: rotate(0deg);}
   100% { transform: rotate(360deg);}
 }
+
+#photoCount{
+  background: linear-gradient(135deg,#111,#333);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.25);
+  font-weight: 600;
+}
   
 </style>
 </head>
@@ -345,6 +351,20 @@ header nav a:hover { text-decoration:underline; }
     Ingresar clave Admin
   </button>
 </div>
+<div style="text-align:center; margin-top:10px;">
+  <div id="photoCount" style="
+    display:inline-block;
+    background:#111;
+    color:#fff;
+    padding:6px 14px;
+    border-radius:20px;
+    font-size:13px;
+    margin-bottom:10px;
+  ">
+    Loading...
+  </div>
+</div>
+
 <div class="filters"></div>
 
 <!-- 🔎 SEARCH BAR (AQUÍ) -->
@@ -483,7 +503,17 @@ function createFilters(){
   }
 }
 
+function updateCounter(filteredList, category){
 
+  const count = filteredList.length;
+
+  const label = category === 'all' ? 'All' : category;
+
+  document.getElementById("photoCount").innerHTML = `
+    📸 ${label} <b>(${count})</b>
+  `;
+}
+  
 function renderGallery(category='all', reset=true){
 
   if(isLoading) return;
@@ -499,6 +529,7 @@ function renderGallery(category='all', reset=true){
     (!p.ESTADO || p.ESTADO !== 'ELIMINADO') &&
     (category === 'all' || p.TIPO === category)
   );
+  updateCounter(filtered, category);
 
   const slice = filtered.slice(currentIndex, currentIndex + PAGE_SIZE);
 
@@ -600,41 +631,59 @@ function renderGallery(category='all', reset=true){
 }
 
 
-  function renderSearch(query){
+function renderSearch(query){
 
-  // 🔥 reset total
   gallery.innerHTML = '';
   currentIndex = 0;
 
-if(!query){
-  isSearching = false; // 🔥 DESACTIVA búsqueda
-  renderGallery(currentCategory, true);
-  return;
-}
+  // 🔥 normalizar query
+  const cleanQuery = (query || "").toLowerCase().trim();
 
-isSearching = true; // 🔥 ACTIVA búsqueda
+  if(!cleanQuery){
+    isSearching = false;
+    renderGallery(currentCategory, true);
+    return;
+  }
 
-  const filtered = photos.filter(p => {
+  isSearching = true;
 
-    const text = `
-      ${p.STONE || ''}
-      ${p.PROYECTO || ''}
-      ${p.MEMO || ''}
-      ${p.COLOURS || ''}
-      ${p.MATERIALES || ''}
-      ${p.LOOKINGFOR || ''}
-      ${p.TIPO || ''}
-      ${p.SUBTIPO || ''}
-    `.toLowerCase();
+  const palabras = cleanQuery.split(/\s+/).filter(Boolean);
 
-    const palabras = query.split(/\s+/).filter(Boolean);
-    const coincide = palabras.every(p => text.includes(p));
-    return coincide;
-  });
+  // 🔥 filtro + scoring (mejor que simple includes)
+  const filtered = photos
+    .map(p => {
 
+      const text = `
+        ${p.STONE || ''}
+        ${p.PROYECTO || ''}
+        ${p.MEMO || ''}
+        ${p.COLOURS || ''}
+        ${p.MATERIALES || ''}
+        ${p.LOOKINGFOR || ''}
+        ${p.TIPO || ''}
+        ${p.SUBTIPO || ''}
+      `.toLowerCase();
 
-    
-  // 🔥 render directo (sin paginación para búsqueda)
+      let score = 0;
+
+      palabras.forEach(w => {
+        if(text.includes(w)) score += 1;
+
+        if(w === "kitchen" && text.includes("kitchen")) score += 3;
+        if(w === "bathroom" && text.includes("bathroom")) score += 3;
+        if(text.includes("proyecto") && w.includes("project")) score += 2;
+      });
+
+      return { ...p, text, score };
+    })
+    .filter(p => p.score > 0)
+    .sort((a,b) => b.score - a.score);
+
+  // 🔥 contador (si ya implementaste el UI)
+  if(typeof updateCounter === "function"){
+    updateCounter(filtered, "Search");
+  }
+
   const fragment = document.createDocumentFragment();
 
   filtered.forEach(p => {
@@ -672,30 +721,38 @@ isSearching = true; // 🔥 ACTIVA búsqueda
     }
 
     item.innerHTML = `
-  <a data-fancybox="gallery" href="${full}">
-    <img src="${thumb}" loading="lazy"
-      onerror="this.closest('.grid-item').remove()">
+      <a data-fancybox="gallery" href="${full}">
+        <img src="${thumb}" loading="lazy"
+          onerror="this.closest('.grid-item').remove()">
 
-    <div class="photo-overlay">
-      <div class="stone">${p.STONE || 'Unknown Stone'}</div>
-      <div class="proyecto">${p.PROYECTO || ''}</div>
-      <div class="memo">${p.MEMO || ''}</div>
-    </div>
-  </a>
+        <div class="photo-overlay">
+          <div class="stone">${p.STONE || 'Unknown Stone'}</div>
+          <div class="proyecto">${p.PROYECTO || ''}</div>
+          <div class="memo">${p.MEMO || ''}</div>
+        </div>
+      </a>
 
-  ${adminButtons}
-`;
-
+      ${adminButtons}
+    `;
 
     fragment.appendChild(item);
-    resizeGridItem(item);
+
+    // ⚠️ importante: esperar imagen
+    const img = item.querySelector("img");
+    img.onload = () => resizeGridItem(item);
+
   });
 
   gallery.appendChild(fragment);
 
-  Fancybox.bind("[data-fancybox='gallery']", {
-    animated: true
-  });
+  // 🔥 evitar rebind infinito de Fancybox
+  if(window.Fancybox){
+    Fancybox.destroy(); // limpia previos
+    Fancybox.bind("[data-fancybox='gallery']", {
+      animated: true,
+      dragToClose: false
+    });
+  }
 }
   
 // =========================
