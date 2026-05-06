@@ -312,18 +312,6 @@ header nav a:hover { text-decoration:underline; }
   100% { transform: rotate(360deg);}
 }
 
-<div style="text-align:center; margin-top:10px;">
-    <div id="photoCount" style="
-      display:inline-block;
-      background:#111;
-      color:#fff;
-      padding:6px 14px;
-      border-radius:20px;
-      font-size:13px;
-    ">
-      Loading...
-    </div>
-  </div>
   
 </style>
 </head>
@@ -358,6 +346,20 @@ header nav a:hover { text-decoration:underline; }
     Ingresar clave Admin
   </button>
 </div>
+<div style="text-align:center; margin-top:10px;">
+  <div id="photoCount" style="
+    display:inline-block;
+    background:#111;
+    color:#fff;
+    padding:6px 14px;
+    border-radius:20px;
+    font-size:13px;
+    margin-bottom:10px;
+  ">
+    Loading...
+  </div>
+</div>
+
 <div class="filters"></div>
 
 <!-- 🔎 SEARCH BAR (AQUÍ) -->
@@ -612,13 +614,17 @@ function renderGallery(category='all', reset=true){
   isLoading = false;
 }
 
-function updateCounter(list, label){
-  const el = document.getElementById("photoCount");
-  if(!el) return;
 
-  el.innerHTML = `📸 ${label}: <b>${list.length}</b>`;
+function updateCounter(filteredList, category){
+
+  const count = filteredList.length;
+
+  const label = category === 'all' ? 'All' : category;
+
+  document.getElementById("photoCount").innerHTML = `
+    📸 ${label} <b>(${count})</b>
+  `;
 }
-
   
   function renderSearch(query){
 
