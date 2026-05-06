@@ -311,6 +311,19 @@ header nav a:hover { text-decoration:underline; }
   0% { transform: rotate(0deg);}
   100% { transform: rotate(360deg);}
 }
+
+div style="text-align:center; margin-top:10px;">
+    <div id="photoCount" style="
+      display:inline-block;
+      background:#111;
+      color:#fff;
+      padding:6px 14px;
+      border-radius:20px;
+      font-size:13px;
+    ">
+      Loading...
+    </div>
+  </div>
   
 </style>
 </head>
@@ -499,7 +512,7 @@ function renderGallery(category='all', reset=true){
     (!p.ESTADO || p.ESTADO !== 'ELIMINADO') &&
     (category === 'all' || p.TIPO === category)
   );
-
+  updateCounter(filtered, category);
   const slice = filtered.slice(currentIndex, currentIndex + PAGE_SIZE);
 
   if(slice.length === 0){
@@ -599,7 +612,14 @@ function renderGallery(category='all', reset=true){
   isLoading = false;
 }
 
+function updateCounter(list, label){
+  const el = document.getElementById("photoCount");
+  if(!el) return;
 
+  el.innerHTML = `📸 ${label}: <b>${list.length}</b>`;
+}
+
+  
   function renderSearch(query){
 
   // 🔥 reset total
@@ -632,7 +652,7 @@ isSearching = true; // 🔥 ACTIVA búsqueda
     return coincide;
   });
 
-
+  updateCounter(filtered, "Search");
     
   // 🔥 render directo (sin paginación para búsqueda)
   const fragment = document.createDocumentFragment();
