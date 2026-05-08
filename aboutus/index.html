@@ -90,43 +90,59 @@ html{
 /* =========================
    HERO FIX (VIDEO VISIBILITY)
 ========================= */
+
 .hero{
-    position:relative;
     height:100vh;
     width:100%;
-    overflow:hidden;
     display:flex;
-    align-items:center;
-    justify-content:center;
-}
-
-.video-frame{
-    position:absolute;
-    inset:0;
     overflow:hidden;
-    z-index:0;
 }
 
-
-.video-frame video{
-    object-fit: cover;
-    object-position: center 35%;
-}
-
-.hero-overlay{
-    position:absolute;
-    inset:0;
-    background: radial-gradient(circle at center, rgba(0,0,0,.05), rgba(0,0,0,.75));
-    z-index:1;
-}
-
-.hero-content{
-    position:relative;
+/* 🔵 LADO IZQUIERDO TEXTO */
+.hero-text{
+    width:50%;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    padding:120px 10%;
     z-index:2;
-    text-align:center;
-    max-width:900px;
+    background:linear-gradient(to right, #0b0b0b 80%, transparent);
 }
 
+    
+.hero-text h1{
+    font-family:'Playfair Display', serif;
+    font-size:70px;
+    line-height:1.1;
+}
+
+.hero-text p{
+    margin-top:20px;
+    font-size:18px;
+    color:#e0e0e0;
+    line-height:1.8;
+}
+
+/* 🎥 LADO DERECHO VIDEO */
+.hero-media{
+    width:50%;
+    position:relative;
+    overflow:hidden;
+}
+
+.hero-media video{
+    position:absolute;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    object-fit:cover;
+
+    /* 👇 IMPORTANTE: ajusta encuadre de cocina */
+    object-position:center 40%;
+}
+
+    
 /* =========================
    SCENES FIX (LIGHTER + MORE VISIBLE)
 ========================= */
@@ -309,21 +325,21 @@ p{
 
 </header>
 
+
 <section class="hero">
-  <div class="video-frame">
+
+  <div class="hero-text">
+    <h1>50 Years of Stone & Precision</h1>
+    <p>From workshop to luxury manufacturing ecosystem.</p>
+  </div>
+
+  <div class="hero-media">
     <video autoplay muted loop playsinline>
       <source src="hero-video.mp4" type="video/mp4">
     </video>
   </div>
 
-  <div class="hero-overlay"></div>
-
-  <div class="hero-content">
-    <h1>50 Years of Stone & Precision</h1>
-    <p>From workshop to luxury manufacturing ecosystem.</p>
-  </div>
 </section>
-    
 <section id="origin" class="section origin">
 <div class="content fade show">
 <div class="kicker">Chapter I</div>
