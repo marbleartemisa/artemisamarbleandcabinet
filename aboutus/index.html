@@ -15,911 +15,322 @@
     box-sizing:border-box;
 }
 
+body{
+    font-family:'Inter', sans-serif;
+    background:#0b0b0b;
+    color:#fff;
+    overflow-x:hidden;
+}
+
 html{
     scroll-behavior:smooth;
 }
 
-body{
-    background:#0b0b0b;
-    color:white;
-    font-family:'Inter', sans-serif;
-    overflow-x:hidden;
-}
-
 /* =========================
-   NAVBAR
+   NAV
 ========================= */
-
-.navbar{
+.nav{
     position:fixed;
     top:0;
     left:0;
     width:100%;
-    z-index:1000;
-    padding:25px 7%;
+    padding:18px 8%;
     display:flex;
     justify-content:space-between;
     align-items:center;
-    background:rgba(0,0,0,.25);
-    backdrop-filter:blur(10px);
-    border-bottom:1px solid rgba(255,255,255,.06);
+    background:rgba(0,0,0,.45);
+    backdrop-filter:blur(12px);
+    z-index:1000;
 }
 
-.logo{
-    font-size:24px;
-    font-weight:700;
-    letter-spacing:1px;
-}
-
-.nav-links{
-    display:flex;
-    gap:30px;
-}
-
-.nav-links a{
-    color:white;
+.nav a{
+    color:#fff;
     text-decoration:none;
-    font-size:14px;
-    letter-spacing:1px;
-    opacity:.8;
+    margin-left:25px;
+    font-size:13px;
+    letter-spacing:2px;
+    opacity:.7;
     transition:.3s;
 }
 
-.nav-links a:hover{
-    opacity:1;
-}
+.nav a:hover{opacity:1;}
 
-    .main-nav{
-    display:flex;
-    justify-content:flex-end;
-    align-items:center;
-}
+.logo{font-weight:700; letter-spacing:2px;}
 
 /* =========================
    HERO
 ========================= */
-
 .hero{
-    position:relative;
     height:100vh;
-    overflow:hidden;
     display:flex;
     align-items:center;
     justify-content:center;
     text-align:center;
+    position:relative;
 }
 
 .hero video{
     position:absolute;
-    width:100%;
-    height:100%;
-    object-fit:cover;
+    width:100%; height:100%; object-fit:cover;
     opacity:.35;
 }
 
 .hero-overlay{
     position:absolute;
     inset:0;
-    background:linear-gradient(to bottom,
-    rgba(0,0,0,.2),
-    rgba(0,0,0,.75),
-    rgba(0,0,0,.95));
+    background:linear-gradient(to bottom, rgba(0,0,0,.3), rgba(0,0,0,.92));
 }
 
 .hero-content{
     position:relative;
     z-index:2;
-    max-width:1000px;
+    max-width:900px;
     padding:20px;
-}
-
-.hero-subtitle{
-    text-transform:uppercase;
-    letter-spacing:4px;
-    font-size:14px;
-    margin-bottom:25px;
-    opacity:.75;
 }
 
 .hero h1{
     font-family:'Playfair Display', serif;
-    font-size:84px;
+    font-size:76px;
     line-height:1.05;
-    margin-bottom:35px;
 }
 
 .hero p{
-    font-size:21px;
+    margin-top:20px;
+    font-size:20px;
+    color:#d0d0d0;
     line-height:1.9;
-    color:#d3d3d3;
-    max-width:850px;
-    margin:auto;
-}
-
-.hero-btn{
-    margin-top:50px;
-    display:inline-flex;
-    align-items:center;
-    gap:12px;
-    padding:18px 40px;
-    border-radius:100px;
-    border:none;
-    cursor:pointer;
-    background:white;
-    color:black;
-    font-weight:600;
-    transition:.35s;
-}
-
-.hero-btn:hover{
-    transform:translateY(-3px);
 }
 
 /* =========================
-   SECTION GENERIC
+   BOOK SECTIONS
 ========================= */
-
-.section{
+.book-section{
     min-height:100vh;
     display:flex;
     align-items:center;
-    padding:120px 8%;
+    justify-content:center;
+    padding:160px 10%;
     position:relative;
 }
 
-.section.dark{
-    background:#111;
+.scene::before{
+    content:'';
+    position:absolute;
+    inset:0;
+    background-size:cover;
+    background-position:center;
+    opacity:.28;
+    filter:grayscale(20%);
+    z-index:0;
 }
 
-.section-content{
-    max-width:1400px;
-    width:100%;
-    margin:auto;
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:90px;
-    align-items:center;
+.scene::after{
+    content:'';
+    position:absolute;
+    inset:0;
+    background:radial-gradient(circle at center, rgba(0,0,0,.2), rgba(0,0,0,.92));
+    z-index:1;
 }
 
-.section-text small{
-    text-transform:uppercase;
+.book-content{
+    max-width:900px;
+    text-align:center;
+    z-index:2;
+}
+
+.book-kicker{
     letter-spacing:4px;
-    opacity:.65;
-    display:block;
+    text-transform:uppercase;
+    font-size:12px;
+    opacity:.6;
     margin-bottom:20px;
 }
 
-.section-text h2{
+.book-title{
     font-family:'Playfair Display', serif;
-    font-size:68px;
-    line-height:1.1;
-    margin-bottom:35px;
+    font-size:64px;
+    margin-bottom:30px;
 }
 
-.section-text p{
-    color:#d0d0d0;
-    font-size:19px;
+.book-text{
+    font-size:18px;
     line-height:2;
+    color:#d0d0d0;
+    max-width:750px;
+    margin:0 auto;
 }
 
-.section-image{
-    position:relative;
-    height:760px;
-    overflow:hidden;
-    border-radius:34px;
-}
-
-.section-image img{
-    width:100%;
-    height:100%;
-    object-fit:cover;
-    transition:transform 1s ease;
-}
-
-.section-image:hover img{
-    transform:scale(1.04);
-}
+/* BACKGROUNDS */
+.origin::before{background-image:url('old-workshop.jpg');}
+.evolution::before{background-image:url('timeline.jpg');}
+.tech::before{background-image:url('cnc-breton.jpg');}
+.future::before{background-image:url('future.jpg');}
 
 /* =========================
    TIMELINE
 ========================= */
-
-.timeline-section{
-    padding:150px 8%;
-    background:#050505;
-}
-
-.timeline-header{
-    text-align:center;
-    margin-bottom:120px;
-}
-
-.timeline-header h2{
-    font-family:'Playfair Display', serif;
-    font-size:72px;
-}
-
 .timeline{
-    position:relative;
-    display:grid;
-    grid-template-columns:repeat(4,1fr);
-    gap:40px;
-}
-
-.timeline::before{
-    content:'';
-    position:absolute;
-    top:40px;
-    left:0;
-    width:100%;
-    height:2px;
-    background:#444;
-}
-
-.timeline-card{
-    position:relative;
-    z-index:2;
-}
-
-.timeline-dot{
-    width:24px;
-    height:24px;
-    border-radius:50%;
-    background:white;
-    margin-bottom:35px;
-}
-
-.timeline-card h3{
-    font-size:42px;
-    margin-bottom:20px;
-}
-
-.timeline-card p{
-    line-height:1.9;
-    color:#d0d0d0;
-}
-
-/* =========================
-   TECHNOLOGY CARDS
-========================= */
-
-.tech-section{
-    padding:150px 8%;
-    background:#0f0f0f;
-}
-
-.tech-header{
-    text-align:center;
-    margin-bottom:90px;
-}
-
-.tech-header h2{
-    font-size:72px;
-    font-family:'Playfair Display', serif;
-}
-
-.tech-grid{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
-    gap:40px;
-}
-
-.tech-card{
-    background:rgba(255,255,255,.04);
-    border:1px solid rgba(255,255,255,.08);
-    border-radius:32px;
-    overflow:hidden;
-    transition:.4s;
-    backdrop-filter:blur(10px);
-}
-
-.tech-card:hover{
-    transform:translateY(-12px);
-    border-color:rgba(255,255,255,.3);
-}
-
-.tech-image{
-    height:260px;
-    overflow:hidden;
-}
-
-.tech-image img{
-    width:100%;
-    height:100%;
-    object-fit:cover;
-}
-
-.tech-content{
-    padding:40px;
-}
-
-.tech-content h3{
-    font-size:34px;
-    margin-bottom:20px;
-}
-
-.tech-content p{
-    color:#d0d0d0;
-    line-height:1.9;
-}
-
-/* =========================
-   STATS
-========================= */
-
-.stats{
-    padding:140px 8%;
-    background:black;
-}
-
-.stats-grid{
-    max-width:1400px;
-    margin:auto;
-    display:grid;
-    grid-template-columns:repeat(4,1fr);
-    gap:30px;
-}
-
-.stat-box{
-    padding:50px;
-    border:1px solid rgba(255,255,255,.08);
-    border-radius:28px;
+    padding:160px 10%;
+    background:#050505;
     text-align:center;
 }
 
-.stat-box h2{
-    font-size:72px;
-    font-family:'Playfair Display', serif;
-    margin-bottom:15px;
+.timeline-item{
+    margin:60px auto;
+    max-width:700px;
 }
 
-.stat-box p{
+.timeline-year{
+    font-family:'Playfair Display', serif;
+    font-size:44px;
+    margin-bottom:10px;
+}
+
+.timeline-text{
     color:#cfcfcf;
-    letter-spacing:1px;
+    line-height:1.8;
 }
 
 /* =========================
-   FUTURE SECTION
+   FUTURE
 ========================= */
-
 .future{
-    position:relative;
-    padding:180px 8%;
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
     text-align:center;
-    overflow:hidden;
-}
-
-.future::before{
-    content:'';
-    position:absolute;
-    inset:0;
-    background:radial-gradient(circle at center,
-    rgba(255,255,255,.08),
-    transparent 60%);
-}
-
-.future-content{
-    position:relative;
-    z-index:2;
-    max-width:1000px;
-    margin:auto;
+    padding:160px 10%;
+    background:#0a0a0a;
 }
 
 .future h2{
-    font-size:82px;
+    font-size:70px;
     font-family:'Playfair Display', serif;
-    margin-bottom:35px;
+    margin-bottom:20px;
 }
 
 .future p{
-    font-size:22px;
-    line-height:2;
+    max-width:800px;
+    margin:auto;
+    font-size:20px;
     color:#d0d0d0;
+    line-height:2;
 }
 
-/* =========================
-   FOOTER
-========================= */
+/* ANIMATION */
+.fade{opacity:0; transform:translateY(30px); transition:1s;}
+.fade.show{opacity:1; transform:translateY(0);}
 
-.footer{
-    padding:60px 8%;
-    border-top:1px solid rgba(255,255,255,.08);
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    flex-wrap:wrap;
-    gap:20px;
-}
-
-.footer p{
-    color:#9f9f9f;
-}
-
-/* =========================
-   SCROLL ANIMATION
-========================= */
-
-.fade-up{
-    opacity:0;
-    transform:translateY(40px);
-    transition:all .8s ease;
-}
-
-.fade-up.show{
-    opacity:1;
-    transform:translateY(0);
-}
-
-/* =========================
-   RESPONSIVE
-========================= */
-
-@media(max-width:1100px){
-
-    .section-content{
-        grid-template-columns:1fr;
-    }
-
-    .timeline{
-        grid-template-columns:1fr 1fr;
-    }
-
-    .stats-grid{
-        grid-template-columns:1fr 1fr;
-    }
-
-}
-
-@media(max-width:768px){
-
-    .hero h1{
-        font-size:52px;
-    }
-
-    .hero p{
-        font-size:18px;
-    }
-
-    .section-text h2,
-    .timeline-header h2,
-    .tech-header h2,
-    .future h2{
-        font-size:46px;
-    }
-
-    .timeline{
-        grid-template-columns:1fr;
-    }
-
-    .stats-grid{
-        grid-template-columns:1fr;
-    }
-
-    .nav-links{
-        display:none;
-    }
-
-    .section-image{
-        height:500px;
-    }
-
-}
-body{
-    padding-top:140px;
-}
-
-.hero{
-    height: calc(100vh - 140px);
-}
-
-    .about-subnav{
-    display:flex;
-    justify-content:center;
-    gap:30px;
-
-    padding:18px 0;
-
-    background:rgba(255,255,255,0.03);
-    backdrop-filter:blur(10px);
-
-    border-bottom:1px solid rgba(255,255,255,0.06);
-}
-
-.about-subnav a{
-    color:white;
-    text-decoration:none;
-    font-size:13px;
-    letter-spacing:2px;
-    opacity:0.7;
-    transition:0.3s;
-}
-
-.about-subnav a:hover{
-    opacity:1;
-}
- .logo-center img{
-    height:70px;
-    width:auto;
-    object-fit:contain;
-    display:block;
-}
-
-    .topbar-main{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    padding:15px 7%;
-}
 </style>
 </head>
 
 <body>
 
-<!-- =========================
-UNIFIED HEADER (HOME STYLE)
-========================= -->
-
-<header class="topbar">
-    <!-- ABOUT US INTERNAL NAV -->
-    <div class="about-subnav">
-    
-        <a href="#story">Story</a>
-        <a href="#timeline">Evolution</a>
-        <a href="#technology">Technology</a>
-        <a href="#future">Future</a>
-    
-    </div>
-    
-
-  <!-- TOP INFO -->
-  <div class="topbar-info desktop-only">
-    <div>
-      830 W 19th ST, Hialeah Florida 33010 • (305) 884-1223
-    </div>
-  </div>
-
-  <!-- MAIN HEADER -->
-  <div class="topbar-main">
-
-    <!-- LOGO -->
-    <div class="logo-center">
-      <a href="../index.html">
-        <img src="../logo.png" alt="Artemisa Marble & Cabinet">
-      </a>
-    </div>
-
-    <!-- NAV MENU (GLOBAL SITE MENU) -->
-  <div class="main-nav">
-
-      <nav id="navMenu">
-
-            <a href="/artemisamarbleandcabinet/">Home</a>
-            <a href="/artemisamarbleandcabinet/aboutus/">About Us</a>
-            <a href="/artemisamarbleandcabinet/kitchen/">Kitchen</a>
-            <a href="/artemisamarbleandcabinet/bathroom/">Bathroom</a>
-            <a href="/artemisamarbleandcabinet/cabinets/">Cabinets</a>
-            <a href="/artemisamarbleandcabinet/closets/">Closets</a>
-            <a href="/artemisamarbleandcabinet/contact/">Contact</a>
-
-        <a class="portal-btn"
-           href="https://marbleartemisa.github.io/sop-site/">
-           Portal-SOP
-        </a>
-
-      </nav>
-
-    </div>
-
-
- 
-
-    <!-- HAMBURGER (OPTIONAL FUTURE MOBILE) -->
-    <div class="hamburger mobile-only" id="hamburger">
-      <span></span>
-      <span></span>
-      <span></span>
-    </div>
-
-  </div>
-
-</header>
+<div class="nav">
+<div class="logo">ARTEMISA</div>
+<div>
+<a href="#origin">Origin</a>
+<a href="#evolution">Evolution</a>
+<a href="#tech">Technology</a>
+<a href="#future">Future</a>
+</div>
+</div>
 
 <!-- HERO -->
-
 <section class="hero">
-
-    <!-- REPLACE WITH YOUR FACTORY VIDEO -->
-    <video autoplay muted loop playsinline>
-        <source src="hero-video.mp4" type="video/mp4">
-    </video>
-
-    <div class="hero-overlay"></div>
-
-    <div class="hero-content fade-up">
-
-        <div class="hero-subtitle">
-            Since 1975 • South Florida
-        </div>
-
-        <h1>
-            50 Years Transforming
-            Stone Into Art
-        </h1>
-
-        <p>
-            From a small family workshop in Hialeah to a high-precision
-            manufacturing operation powered by European CNC technology,
-            Artemisa Marble & Cabinet has redefined custom luxury production
-            in South Florida.
-        </p>
-
-        <button class="hero-btn" onclick="goToStory()">
-            Begin the Journey
-        </button>
-
-    </div>
-
+<video autoplay muted loop playsinline>
+<source src="hero-video.mp4" type="video/mp4">
+</video>
+<div class="hero-overlay"></div>
+<div class="hero-content fade show">
+<h1>50 Years of Stone, Craft & Precision</h1>
+<p>From a family workshop in Hialeah to a modern luxury manufacturing ecosystem.</p>
+</div>
 </section>
 
-<!-- STORY -->
-
-<section class="section" id="story">
-
-    <div class="section-content">
-
-        <div class="section-text fade-up">
-
-            <small>Origins</small>
-
-            <h2>
-                The Beginning
-            </h2>
-
-            <p>
-                Founded in 1975, Artemisa Marble & Cabinet was born from a vision
-                rooted in craftsmanship, family values, and dedication to quality.
-                Named after Artemisa, Cuba — hometown of its founder — the company
-                began as a modest cultured marble vanity top workshop in Hialeah,
-                Florida.
-                <br><br>
-                Under the leadership of Damian Molina—who serves as president and 
-                possesses decades of personal experience in the sector—the company 
-                took its most significant step by breaking down the barrier between 
-                carpentry and stonework, trades that were historically distinct, 
-                by unifying them into a synchronized production process, Artemisa 
-                evolved from a reliance on manual cutting tools and artisanal techniques 
-                to become one of the most respected custom manufacturing operations in 
-                South Florida, utilizing state-of-the-art technology.
-            </p>
-
-        </div>
-
-        <div class="section-image fade-up">
-            <img src="old-workshop.jpg">
-        </div>
-
-    </div>
-
+<!-- ORIGIN -->
+<section id="origin" class="book-section scene origin">
+<div class="book-content fade show">
+<div class="book-kicker">Chapter 01</div>
+<div class="book-title">The Beginning</div>
+<div class="book-text">
+Founded in 1975, Artemisa Marble & Cabinet was born from a vision rooted in craftsmanship, family values, and dedication to quality. Named after Artemisa, Cuba—the hometown of its founder—the company began as a modest cultured marble vanity top workshop in Hialeah, Florida.
+<br><br>
+Under the leadership of Damian Molina, who serves as president and brings decades of personal experience in the industry, the company made its most significant transformation by breaking the traditional barrier between carpentry and stonework. Historically separated trades were unified into a synchronized production system, allowing Artemisa to evolve from manual cutting and artisanal methods into a highly structured, precision-driven manufacturing operation.
+</div>
+</div>
 </section>
 
-<!-- TIMELINE -->
-
-<section class="timeline-section" id="timeline">
-
-    <div class="timeline-header fade-up">
-        <h2>The Evolution</h2>
-    </div>
-
-    <div class="timeline">
-
-        <div class="timeline-card fade-up">
-            <div class="timeline-dot"></div>
-            <h3>1975</h3>
-            <p>
-                Family workshop founded in Hialeah focused on cultured marble vanity tops.
-            </p>
-        </div>
-
-        <div class="timeline-card fade-up">
-            <div class="timeline-dot"></div>
-            <h3>1990s</h3>
-            <p>
-                Expansion into natural stone fabrication and custom cabinetry production.
-            </p>
-        </div>
-
-        <div class="timeline-card fade-up">
-            <div class="timeline-dot"></div>
-            <h3>2015</h3>
-            <p>
-                Digital transformation with CAD systems and CNC automation.
-            </p>
-        </div>
-
-        <div class="timeline-card fade-up">
-            <div class="timeline-dot"></div>
-            <h3>Today</h3>
-            <p>
-                Integrated luxury manufacturing powered by Breton & SCM technologies.
-            </p>
-        </div>
-
-    </div>
-
+<!-- EVOLUTION -->
+<section id="evolution" class="book-section scene evolution">
+<div class="book-content fade show">
+<div class="book-kicker">Chapter 02</div>
+<div class="book-title">Evolution</div>
+<div class="book-text">
+From the 1990s onward, Artemisa expanded into natural stone fabrication and custom cabinetry production. The company transitioned from traditional craftsmanship into digital workflows, introducing CAD design systems and later CNC automation.
+<br><br>
+This evolution allowed unprecedented precision, scalability, and consistency while preserving the handcrafted quality that defines the brand.
+</div>
+</div>
 </section>
 
 <!-- TECHNOLOGY -->
-
-<section class="tech-section" id="technology">
-
-    <div class="tech-header fade-up">
-        <h2>Technology Meets Craftsmanship</h2>
-    </div>
-
-    <div class="tech-grid">
-
-        <div class="tech-card fade-up">
-
-            <div class="tech-image">
-                <img src="cnc-breton.jpg">
-            </div>
-
-            <div class="tech-content">
-
-                <h3>Breton CNC</h3>
-
-                <p>
-                    Precision stone fabrication capable of processing Dekton,
-                    quartz, natural stone, and ultra-compact surfaces with
-                    millimeter-level accuracy.
-                </p>
-
-            </div>
-
-        </div>
-
-        <div class="tech-card fade-up">
-
-            <div class="tech-image">
-                <img src="pratix.jpg">
-            </div>
-
-            <div class="tech-content">
-
-                <h3>SCM Pratix C12</h3>
-
-                <p>
-                    Automated nesting CNC technology for high-precision cabinet
-                    manufacturing with optimized material efficiency and perfect
-                    assembly alignment.
-                </p>
-
-            </div>
-
-        </div>
-
-        <div class="tech-card fade-up">
-
-            <div class="tech-image">
-                <img src="olimpic.jpg">
-            </div>
-
-            <div class="tech-content">
-
-                <h3>Olimpic K560</h3>
-
-                <p>
-                    Zero-joint edgebanding technology delivering seamless luxury
-                    finishes with superior moisture resistance and durability.
-                </p>
-
-            </div>
-
-        </div>
-
-    </div>
-
+<section id="tech" class="book-section scene tech">
+<div class="book-content fade show">
+<div class="book-kicker">Chapter 03</div>
+<div class="book-title">Technology & Craft</div>
+<div class="book-text">
+Today, Artemisa integrates European-grade industrial systems such as Breton CNC machinery, SCM Pratix C12 nesting technology, and Olimpic K560 edge banding systems.
+<br><br>
+This combination of engineering precision and artisanal oversight defines a hybrid production model where technology enhances, rather than replaces, craftsmanship.
+</div>
+</div>
 </section>
 
-<!-- STATS -->
+<!-- TIMELINE -->
+<section class="timeline">
+<div class="fade show">
+<div class="book-kicker">Legacy Timeline</div>
 
-<section class="stats">
+<div class="timeline-item">
+<div class="timeline-year">1975</div>
+<div class="timeline-text">Family workshop founded in Hialeah focused on cultured marble vanity tops.</div>
+</div>
 
-    <div class="stats-grid">
+<div class="timeline-item">
+<div class="timeline-year">1990s</div>
+<div class="timeline-text">Expansion into natural stone fabrication and custom cabinetry.</div>
+</div>
 
-        <div class="stat-box fade-up">
-            <h2>50+</h2>
-            <p>Years of Experience</p>
-        </div>
+<div class="timeline-item">
+<div class="timeline-year">2015</div>
+<div class="timeline-text">Digital transformation with CAD systems and CNC automation.</div>
+</div>
 
-        <div class="stat-box fade-up">
-            <h2>100%</h2>
-            <p>Custom Production</p>
-        </div>
-
-        <div class="stat-box fade-up">
-            <h2>CNC</h2>
-            <p>Digital Manufacturing</p>
-        </div>
-
-        <div class="stat-box fade-up">
-            <h2>1</h2>
-            <p>Integrated Workflow</p>
-        </div>
-
-    </div>
-
+<div class="timeline-item">
+<div class="timeline-year">Today</div>
+<div class="timeline-text">Integrated luxury manufacturing powered by advanced European technology.</div>
+</div>
+</div>
 </section>
 
 <!-- FUTURE -->
-
-<section class="future" id="future">
-
-    <div class="future-content fade-up">
-
-        <h2>The Future of Tradition</h2>
-
-        <p>
-            Today, Artemisa Marble & Cabinet represents the fusion of
-            generational craftsmanship and advanced industrial automation.
-            Through continuous improvement, SOP standardization, digital workflows,
-            and Kaizen philosophy, the company continues building the foundation
-            for the next era of precision manufacturing and luxury design in
-            South Florida.
-        </p>
-
-    </div>
-
+<section id="future" class="future">
+<div class="fade show">
+<h2>The Future of Tradition</h2>
+<p>
+Artemisa Marble & Cabinet represents the fusion of generational craftsmanship and advanced industrial automation. Through continuous improvement, SOP standardization, and digital transformation, the company continues shaping the future of luxury fabrication in South Florida.
+</p>
+</div>
 </section>
 
-<!-- FOOTER -->
-
-<footer class="footer">
-
-    <p>
-        Artemisa Marble & Cabinet Inc. © 2026
-    </p>
-
-    <p>
-        Crafted with precision in South Florida.
-    </p>
-
-</footer>
-
 <script>
-
-function goToStory(){
-
-    document.getElementById('story').scrollIntoView({
-        behavior:'smooth'
-    });
-
-}
-
-/* =========================
-   SCROLL ANIMATION
-========================= */
-
-const observer = new IntersectionObserver((entries)=>{
-
-    entries.forEach(entry=>{
-
-        if(entry.isIntersecting){
-            entry.target.classList.add('show');
-        }
-
-    });
-
-},{
-    threshold:0.15
-});
-
-const fadeElements = document.querySelectorAll('.fade-up');
-
-fadeElements.forEach(el=>{
-    observer.observe(el);
-});
-
+const els=document.querySelectorAll('.fade');
+const obs=new IntersectionObserver(e=>{
+e.forEach(x=>{if(x.isIntersecting)x.target.classList.add('show')});
+},{threshold:0.2});
+els.forEach(e=>obs.observe(e));
 </script>
 
 </body>
