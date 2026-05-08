@@ -101,6 +101,7 @@ html{
     padding-top:120px;
 }
 
+
 .hero video{
     position:absolute;
     top:0;
@@ -108,28 +109,25 @@ html{
     width:100%;
     height:100%;
 
-    /* CAMBIO IMPORTANTE */
-    object-fit:contain;
+    /* CAMBIO CLAVE */
+    object-fit:cover;
 
-    /* centra el video */
     object-position:center center;
 
     background:#000;
-
     opacity:.95;
-
-    /* menos filtros = más nitidez */
     filter:none;
-
     z-index:0;
 }
 
+    .hero video{
+    transform: scale(1.02);
 
-
+    
 .hero-overlay{
     position:absolute;
     inset:0;
-    background:radial-gradient(circle at center, rgba(0,0,0,.10), rgba(0,0,0,.65));
+    background: radial-gradient(circle at center, rgba(0,0,0,.05), rgba(0,0,0,.75));
 }
 
 .hero-content{
