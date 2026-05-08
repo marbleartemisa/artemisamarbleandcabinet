@@ -498,26 +498,110 @@ body{
     }
 
 }
+body{
+    padding-top:140px;
+}
 
+.hero{
+    height: calc(100vh - 140px);
+}
+
+    .about-subnav{
+    display:flex;
+    justify-content:center;
+    gap:30px;
+
+    padding:18px 0;
+
+    background:rgba(255,255,255,0.03);
+    backdrop-filter:blur(10px);
+
+    border-bottom:1px solid rgba(255,255,255,0.06);
+}
+
+.about-subnav a{
+    color:white;
+    text-decoration:none;
+    font-size:13px;
+    letter-spacing:2px;
+    opacity:0.7;
+    transition:0.3s;
+}
+
+.about-subnav a:hover{
+    opacity:1;
+}
 </style>
 </head>
 
 <body>
 
-<!-- NAVBAR -->
+<!-- =========================
+UNIFIED HEADER (HOME STYLE)
+========================= -->
 
-<nav class="navbar">
-
-    <div class="logo">ARTEMISA</div>
-
-    <div class="nav-links">
+<header class="topbar">
+    <!-- ABOUT US INTERNAL NAV -->
+    <div class="about-subnav">
+    
         <a href="#story">Story</a>
         <a href="#timeline">Evolution</a>
         <a href="#technology">Technology</a>
         <a href="#future">Future</a>
+    
+    </div>
+    
+
+  <!-- TOP INFO -->
+  <div class="topbar-info desktop-only">
+    <div>
+      830 W 19th ST, Hialeah Florida 33010 • (305) 884-1223
+    </div>
+  </div>
+
+  <!-- MAIN HEADER -->
+  <div class="topbar-main">
+
+    <!-- LOGO -->
+    <div class="logo-center">
+      <a href="../index.html">
+        <img src="../logo.png" alt="Artemisa Marble & Cabinet">
+      </a>
     </div>
 
-</nav>
+    <!-- NAV MENU (GLOBAL SITE MENU) -->
+    <div class="navbar">
+
+      <nav id="navMenu">
+
+        <a href="../index.html">Home</a>
+        <a href="./">About Us</a>
+        <a href="../kitchen/">Kitchen</a>
+        <a href="../bathroom/">Bathroom</a>
+        <a href="../cabinets/">Cabinets</a>
+        <a href="../closets/">Closets</a>
+        <a href="../Upload/">Upload</a>
+        <a href="../contact/">Contact</a>
+
+        <a class="portal-btn"
+           href="https://marbleartemisa.github.io/sop-site/">
+           Portal-SOP
+        </a>
+
+      </nav>
+
+    </div>
+
+    <!-- HAMBURGER (OPTIONAL FUTURE MOBILE) -->
+    <div class="hamburger mobile-only" id="hamburger">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+
+  </div>
+
+</header>
 
 <!-- HERO -->
 
