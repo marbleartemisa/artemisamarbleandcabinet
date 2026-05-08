@@ -91,17 +91,56 @@ html{
    HERO FIX (VIDEO VISIBILITY)
 ========================= */
 
+
 .hero{
     position:relative;
     height:100vh;
-    width:100vw;
+    width:100%;
     overflow:hidden;
     display:flex;
     align-items:center;
     justify-content:center;
-    text-align:center;
 }
 
+/* 🔥 ESTE ES EL “MARCO” */
+.video-frame{
+    position:absolute;
+    inset:0;
+    overflow:hidden;
+    z-index:0;
+}
+
+    
+
+/* 🎬 VIDEO CONTROLADO */
+.video-frame video{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    object-position:center center;
+    display:block;
+
+    /* opcional: evita artefactos raros */
+    transform: scale(1.05);
+}
+
+/* overlay encima del video */
+.hero-overlay{
+    position:absolute;
+    inset:0;
+    background: radial-gradient(circle at center, rgba(0,0,0,.05), rgba(0,0,0,.75));
+    z-index:1;
+}
+
+/* contenido arriba de todo */
+.hero-content{
+    position:relative;
+    z-index:2;
+    text-align:center;
+    max-width:900px;
+}
+    
+    
 .hero video{
     position:absolute;
     top:50%;
@@ -120,18 +159,7 @@ html{
     inset:0;
     background: radial-gradient(circle at center, rgba(0,0,0,.05), rgba(0,0,0,.75));
 }
-    
-.hero-overlay{
-    position:absolute;
-    inset:0;
-    background: radial-gradient(circle at center, rgba(0,0,0,.05), rgba(0,0,0,.75));
-}
 
-.hero-content{
-    position:relative;
-    z-index:2;
-    max-width:900px;
-}
 
 .hero h1{
     font-family:'Playfair Display', serif;
@@ -327,16 +355,20 @@ p{
 </header>
 
 <section class="hero">
-<video autoplay muted loop playsinline>
-<source src="hero-video.mp4">
-</video>
-<div class="hero-overlay"></div>
-<div class="hero-content fade show">
-<h1>50 Years of Stone & Precision</h1>
-<p>From workshop to luxury manufacturing ecosystem.</p>
-</div>
-</section>
+  <div class="video-frame">
+    <video autoplay muted loop playsinline>
+      <source src="hero-video.mp4" type="video/mp4">
+    </video>
+  </div>
 
+  <div class="hero-overlay"></div>
+
+  <div class="hero-content">
+    <h1>50 Years of Stone & Precision</h1>
+    <p>From workshop to luxury manufacturing ecosystem.</p>
+  </div>
+</section>
+    
 <section id="origin" class="section origin">
 <div class="content fade show">
 <div class="kicker">Chapter I</div>
