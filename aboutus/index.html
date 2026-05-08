@@ -17,13 +17,14 @@
 
 body{
     font-family:'Inter', sans-serif;
-    background:#0b0b0b;
+    background:#070707;
     color:#fff;
     overflow-x:hidden;
 }
 
 html{
     scroll-behavior:smooth;
+    scroll-snap-type:y mandatory;
 }
 
 /* =========================
@@ -38,8 +39,8 @@ html{
     display:flex;
     justify-content:space-between;
     align-items:center;
-    background:rgba(0,0,0,.45);
-    backdrop-filter:blur(12px);
+    background:rgba(0,0,0,.35);
+    backdrop-filter:blur(14px);
     z-index:1000;
 }
 
@@ -47,18 +48,102 @@ html{
     color:#fff;
     text-decoration:none;
     margin-left:25px;
-    font-size:13px;
-    letter-spacing:2px;
-    opacity:.7;
+    font-size:12px;
+    letter-spacing:2.5px;
+    opacity:.65;
     transition:.3s;
 }
 
 .nav a:hover{opacity:1;}
 
-.logo{font-weight:700; letter-spacing:2px;}
+.logo{font-weight:700; letter-spacing:3px;}
 
 /* =========================
-   HERO
+   SCROLL SECTIONS (FLAGSHIP)
+========================= */
+
+.section{
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:160px 10%;
+    position:relative;
+    scroll-snap-align:start;
+    overflow:hidden;
+}
+
+.section::before{
+    content:'';
+    position:absolute;
+    inset:0;
+    background-size:cover;
+    background-position:center;
+    transform:scale(1.1);
+    filter:contrast(110%) brightness(60%) grayscale(20%);
+    transition:transform 6s ease;
+}
+
+.section:hover::before{
+    transform:scale(1);
+}
+
+.section::after{
+    content:'';
+    position:absolute;
+    inset:0;
+    background:radial-gradient(circle at center, rgba(0,0,0,.2), rgba(0,0,0,.92));
+}
+
+.content{
+    position:relative;
+    z-index:2;
+    max-width:900px;
+    text-align:center;
+    opacity:0;
+    transform:translateY(40px);
+    transition:1.2s ease;
+}
+
+.content.show{
+    opacity:1;
+    transform:translateY(0);
+}
+
+.kicker{
+    letter-spacing:4px;
+    text-transform:uppercase;
+    font-size:11px;
+    opacity:.6;
+    margin-bottom:20px;
+}
+
+h1,h2{
+    font-family:'Playfair Display', serif;
+    letter-spacing:-1px;
+}
+
+.title{
+    font-size:68px;
+    margin-bottom:30px;
+}
+
+p{
+    font-size:18px;
+    line-height:2;
+    color:#d0d0d0;
+}
+
+/* =========================
+   SCENES
+========================= */
+.origin::before{background-image:url('old-workshop.jpg');}
+.evolution::before{background-image:url('timeline.jpg');}
+.tech::before{background-image:url('cnc-breton.jpg');}
+.future::before{background-image:url('future.jpg');}
+
+/* =========================
+   HERO CINEMATIC
 ========================= */
 .hero{
     height:100vh;
@@ -67,132 +152,85 @@ html{
     justify-content:center;
     text-align:center;
     position:relative;
+    scroll-snap-align:start;
 }
 
 .hero video{
     position:absolute;
-    width:100%; height:100%; object-fit:cover;
+    width:100%;
+    height:100%;
+    object-fit:cover;
     opacity:.35;
+    filter:contrast(110%);
 }
 
 .hero-overlay{
     position:absolute;
     inset:0;
-    background:linear-gradient(to bottom, rgba(0,0,0,.3), rgba(0,0,0,.92));
+    background:radial-gradient(circle at center, rgba(0,0,0,.3), rgba(0,0,0,.95));
 }
 
 .hero-content{
     position:relative;
     z-index:2;
     max-width:900px;
-    padding:20px;
+    opacity:0;
+    transform:translateY(40px);
+    transition:1.5s ease;
+}
+
+.hero-content.show{
+    opacity:1;
+    transform:translateY(0);
 }
 
 .hero h1{
-    font-family:'Playfair Display', serif;
-    font-size:76px;
+    font-size:78px;
     line-height:1.05;
 }
 
 .hero p{
     margin-top:20px;
     font-size:20px;
-    color:#d0d0d0;
+    color:#cfcfcf;
+}
+
+/* =========================
+   TIMELINE FLAGSHIP
+========================= */
+.timeline{
+    background:#050505;
+    padding:160px 10%;
+    text-align:center;
+    scroll-snap-align:start;
+}
+
+.timeline-item{
+    max-width:700px;
+    margin:70px auto;
+    opacity:0;
+    transform:translateY(30px);
+    transition:1s ease;
+}
+
+.timeline-item.show{
+    opacity:1;
+    transform:translateY(0);
+}
+
+.year{
+    font-size:46px;
+    font-family:'Playfair Display', serif;
+    margin-bottom:10px;
+}
+
+.text{
+    color:#cfcfcf;
     line-height:1.9;
 }
 
 /* =========================
-   BOOK SECTIONS
-========================= */
-.book-section{
-    min-height:100vh;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    padding:160px 10%;
-    position:relative;
-}
-
-.scene::before{
-    content:'';
-    position:absolute;
-    inset:0;
-    background-size:cover;
-    background-position:center;
-    opacity:.28;
-    filter:grayscale(20%);
-    z-index:0;
-}
-
-.scene::after{
-    content:'';
-    position:absolute;
-    inset:0;
-    background:radial-gradient(circle at center, rgba(0,0,0,.2), rgba(0,0,0,.92));
-    z-index:1;
-}
-
-.book-content{
-    max-width:900px;
-    text-align:center;
-    z-index:2;
-}
-
-.book-kicker{
-    letter-spacing:4px;
-    text-transform:uppercase;
-    font-size:12px;
-    opacity:.6;
-    margin-bottom:20px;
-}
-
-.book-title{
-    font-family:'Playfair Display', serif;
-    font-size:64px;
-    margin-bottom:30px;
-}
-
-.book-text{
-    font-size:18px;
-    line-height:2;
-    color:#d0d0d0;
-    max-width:750px;
-    margin:0 auto;
-}
-
-/* BACKGROUNDS */
-.origin::before{background-image:url('old-workshop.jpg');}
-.evolution::before{background-image:url('timeline.jpg');}
-.tech::before{background-image:url('cnc-breton.jpg');}
-.future::before{background-image:url('future.jpg');}
-
-/* =========================
-   TIMELINE
-========================= */
-.timeline{
-    padding:160px 10%;
-    background:#050505;
-    text-align:center;
-}
-
-.timeline-item{
-    margin:60px auto;
-    max-width:700px;
-}
-
-.timeline-year{
-    font-family:'Playfair Display', serif;
-    font-size:44px;
-    margin-bottom:10px;
-}
-
-.timeline-text{
-    color:#cfcfcf;
-    line-height:1.8;
-}
-
-/* =========================
-   FUTURE
+   FUTURE CINEMA
 ========================= */
 .future{
     min-height:100vh;
@@ -202,10 +240,11 @@ html{
     text-align:center;
     padding:160px 10%;
     background:#0a0a0a;
+    scroll-snap-align:start;
 }
 
 .future h2{
-    font-size:70px;
+    font-size:72px;
     font-family:'Playfair Display', serif;
     margin-bottom:20px;
 }
@@ -214,13 +253,23 @@ html{
     max-width:800px;
     margin:auto;
     font-size:20px;
-    color:#d0d0d0;
+    color:#cfcfcf;
     line-height:2;
 }
 
-/* ANIMATION */
-.fade{opacity:0; transform:translateY(30px); transition:1s;}
-.fade.show{opacity:1; transform:translateY(0);}
+/* =========================
+   CURSOR FEEL (subtle luxury)
+========================= */
+body{
+    cursor:default;
+}
+
+/* =========================
+   MOBILE
+========================= */
+@media(max-width:768px){
+    .title,.hero h1{font-size:44px;}
+}
 
 </style>
 </head>
@@ -230,10 +279,10 @@ html{
 <div class="nav">
 <div class="logo">ARTEMISA</div>
 <div>
-<a href="#origin">Origin</a>
-<a href="#evolution">Evolution</a>
-<a href="#tech">Technology</a>
-<a href="#future">Future</a>
+<a href="#origin">ORIGIN</a>
+<a href="#evolution">EVOLUTION</a>
+<a href="#tech">TECH</a>
+<a href="#future">FUTURE</a>
 </div>
 </div>
 
@@ -243,96 +292,78 @@ html{
 <source src="hero-video.mp4" type="video/mp4">
 </video>
 <div class="hero-overlay"></div>
-<div class="hero-content fade show">
-<h1>50 Years of Stone, Craft & Precision</h1>
-<p>From a family workshop in Hialeah to a modern luxury manufacturing ecosystem.</p>
+<div class="hero-content">
+<h1>50 Years of Stone & Precision</h1>
+<p>A legacy built between craftsmanship and industrial excellence.</p>
 </div>
 </section>
 
 <!-- ORIGIN -->
-<section id="origin" class="book-section scene origin">
-<div class="book-content fade show">
-<div class="book-kicker">Chapter 01</div>
-<div class="book-title">The Beginning</div>
-<div class="book-text">
-Founded in 1975, Artemisa Marble & Cabinet was born from a vision rooted in craftsmanship, family values, and dedication to quality. Named after Artemisa, Cuba—the hometown of its founder—the company began as a modest cultured marble vanity top workshop in Hialeah, Florida.
-<br><br>
-Under the leadership of Damian Molina, who serves as president and brings decades of personal experience in the industry, the company made its most significant transformation by breaking the traditional barrier between carpentry and stonework. Historically separated trades were unified into a synchronized production system, allowing Artemisa to evolve from manual cutting and artisanal methods into a highly structured, precision-driven manufacturing operation.
-</div>
+<section id="origin" class="section origin">
+<div class="content">
+<div class="kicker">Chapter I</div>
+<div class="title">The Beginning</div>
+<p>Founded in 1975 in Hialeah, Artemisa Marble & Cabinet began as a small family workshop dedicated to cultured marble craftsmanship and precision detail. Under Damian Molina, the company unified carpentry and stonework into a single production philosophy, transforming traditional artisanal methods into a structured manufacturing system.</p>
 </div>
 </section>
 
 <!-- EVOLUTION -->
-<section id="evolution" class="book-section scene evolution">
-<div class="book-content fade show">
-<div class="book-kicker">Chapter 02</div>
-<div class="book-title">Evolution</div>
-<div class="book-text">
-From the 1990s onward, Artemisa expanded into natural stone fabrication and custom cabinetry production. The company transitioned from traditional craftsmanship into digital workflows, introducing CAD design systems and later CNC automation.
-<br><br>
-This evolution allowed unprecedented precision, scalability, and consistency while preserving the handcrafted quality that defines the brand.
-</div>
+<section id="evolution" class="section evolution">
+<div class="content">
+<div class="kicker">Chapter II</div>
+<div class="title">Evolution</div>
+<p>From manual fabrication to CAD engineering and CNC automation, Artemisa evolved into a hybrid manufacturing ecosystem where precision, scalability, and craftsmanship coexist in perfect balance.</p>
 </div>
 </section>
 
 <!-- TECHNOLOGY -->
-<section id="tech" class="book-section scene tech">
-<div class="book-content fade show">
-<div class="book-kicker">Chapter 03</div>
-<div class="book-title">Technology & Craft</div>
-<div class="book-text">
-Today, Artemisa integrates European-grade industrial systems such as Breton CNC machinery, SCM Pratix C12 nesting technology, and Olimpic K560 edge banding systems.
-<br><br>
-This combination of engineering precision and artisanal oversight defines a hybrid production model where technology enhances, rather than replaces, craftsmanship.
-</div>
+<section id="tech" class="section tech">
+<div class="content">
+<div class="kicker">Chapter III</div>
+<div class="title">Technology & Craft</div>
+<p>Breton CNC, SCM Pratix C12 and Olimpic K560 define a new era of precision manufacturing where technology enhances human craftsmanship instead of replacing it.</p>
 </div>
 </section>
 
 <!-- TIMELINE -->
 <section class="timeline">
-<div class="fade show">
-<div class="book-kicker">Legacy Timeline</div>
-
 <div class="timeline-item">
-<div class="timeline-year">1975</div>
-<div class="timeline-text">Family workshop founded in Hialeah focused on cultured marble vanity tops.</div>
+<div class="year">1975</div>
+<div class="text">Family workshop founded in Hialeah.</div>
 </div>
-
 <div class="timeline-item">
-<div class="timeline-year">1990s</div>
-<div class="timeline-text">Expansion into natural stone fabrication and custom cabinetry.</div>
+<div class="year">1990s</div>
+<div class="text">Expansion into stone fabrication and cabinetry.</div>
 </div>
-
 <div class="timeline-item">
-<div class="timeline-year">2015</div>
-<div class="timeline-text">Digital transformation with CAD systems and CNC automation.</div>
+<div class="year">2015</div>
+<div class="text">Digital transformation with CAD & CNC systems.</div>
 </div>
-
 <div class="timeline-item">
-<div class="timeline-year">Today</div>
-<div class="timeline-text">Integrated luxury manufacturing powered by advanced European technology.</div>
-</div>
+<div class="year">Today</div>
+<div class="text">Fully integrated luxury manufacturing ecosystem.</div>
 </div>
 </section>
 
 <!-- FUTURE -->
 <section id="future" class="future">
-<div class="fade show">
+<div>
 <h2>The Future of Tradition</h2>
-<p>
-Artemisa Marble & Cabinet represents the fusion of generational craftsmanship and advanced industrial automation. Through continuous improvement, SOP standardization, and digital transformation, the company continues shaping the future of luxury fabrication in South Florida.
-</p>
+<p>A continuous evolution of craftsmanship, engineering, and design excellence shaping the future of luxury fabrication in South Florida.</p>
 </div>
 </section>
 
 <script>
-const els=document.querySelectorAll('.fade');
-const obs=new IntersectionObserver(e=>{
-e.forEach(x=>{if(x.isIntersecting)x.target.classList.add('show')});
+
+const elements=document.querySelectorAll('.content, .hero-content, .timeline-item');
+const obs=new IntersectionObserver(entries=>{
+entries.forEach(e=>{
+if(e.isIntersecting)e.target.classList.add('show');
+});
 },{threshold:0.2});
-els.forEach(e=>obs.observe(e));
+elements.forEach(el=>obs.observe(el));
+
 </script>
 
 </body>
 </html>
-
