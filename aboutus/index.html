@@ -305,8 +305,13 @@ p{
 
 .origin-image{
     width:52%;
-    height:100vh;
+    height:82vh;
+
     overflow:hidden;
+
+    padding-left:60px;
+    position:relative;
+    background:#0a0a0a;
 }
 
 .origin-image img{
@@ -315,12 +320,38 @@ p{
 
     object-fit:cover;
 
+    border-radius:2px;
+
+    box-shadow:
+    0 0 0 1px rgba(255,255,255,.04),
+    0 30px 60px rgba(0,0,0,.45);
+
     filter:
     sepia(.18)
     brightness(.82)
     contrast(1.05);
 
     transition:transform 8s ease;
+}
+
+    .origin-image::before{
+    content:'';
+
+    position:absolute;
+
+    top:0;
+    left:0;
+
+    width:60px;
+    height:100%;
+
+    background:linear-gradient(
+        to right,
+        #0a0a0a,
+        transparent
+    );
+
+    z-index:2;
 }
 
 .origin-split:hover .origin-image img{
