@@ -284,7 +284,101 @@ p{
     color:#e0e0e0;
 }
 
-.origin::before{background-image:url('old-workshop.jpg');}
+/* .origin::before{background-image:url('old-workshop.jpg');}  */
+
+/* =========================
+   ORIGIN SPLIT LAYOUT
+========================= */
+
+.origin-split{
+    min-height:100vh;
+
+    display:flex;
+    align-items:center;
+
+    background:#0a0a0a;
+
+    padding-top:120px;
+}
+
+/* FOTO */
+
+.origin-image{
+    width:52%;
+    height:100vh;
+    overflow:hidden;
+}
+
+.origin-image img{
+    width:100%;
+    height:100%;
+
+    object-fit:cover;
+
+    filter:
+    sepia(.18)
+    brightness(.82)
+    contrast(1.05);
+
+    transition:transform 8s ease;
+}
+
+.origin-split:hover .origin-image img{
+    transform:scale(1.03);
+}
+
+/* TEXTO */
+
+.origin-text{
+    width:48%;
+
+    padding:0 8%;
+
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+}
+
+.origin-text .kicker{
+    margin-bottom:18px;
+
+    letter-spacing:5px;
+
+    color:#c9a66b;
+
+    opacity:.9;
+}
+
+.origin-text h2{
+    font-family:'Playfair Display', serif;
+
+    font-size:78px;
+
+    line-height:1;
+
+    margin-bottom:30px;
+}
+
+.gold-line{
+    width:120px;
+    height:2px;
+
+    background:#c9a66b;
+
+    margin-bottom:40px;
+}
+
+.origin-text p{
+    font-size:19px;
+
+    line-height:2;
+
+    color:#d6d6d6;
+
+    margin-bottom:28px;
+
+    max-width:650px;
+}    
 .evolution::before{background-image:url('timeline.jpg');}
 .tech::before{background-image:url('cnc-breton.jpg');}
 .future::before{background-image:url('future.jpg');}
@@ -425,12 +519,34 @@ p{
   </div>
 
 </section>
-<section id="origin" class="section origin">
-<div class="content fade show">
-<div class="kicker">Chapter I</div>
-<div class="title">The Beginning</div>
-<p>Founded in 1975 in Hialeah, Artemisa began as a small family workshop dedicated to cultured marble craftsmanship and precision detail. Under Damian Molina, carpentry and stonework were unified into a single production system, transforming traditional artisan methods into structured industrial precision.</p>
-</div>
+
+<section id="origin" class="origin-split">
+
+    <div class="origin-image">
+        <img src="old-workshop.jpg" alt="Artemisa Origins">
+    </div>
+
+    <div class="origin-text fade">
+
+        <div class="kicker">Chapter I</div>
+
+        <h2>The Beginning</h2>
+
+        <div class="gold-line"></div>
+
+        <p>
+        Founded in 1975 in Hialeah, Artemisa began as a small family workshop
+        dedicated to cultured marble craftsmanship and precision detail.
+        </p>
+
+        <p>
+        Under Damian Molina, cabinetry and stone fabrication were unified into
+        a single production system—transforming traditional artisan methods
+        into structured industrial precision.
+        </p>
+
+    </div>
+
 </section>
 
 <section id="evolution" class="section evolution">
