@@ -36,28 +36,67 @@ html{
     left:0;
     width:100%;
     z-index:1000;
-    background:rgba(0,0,0,.35);
-    backdrop-filter:blur(16px);
-    border-bottom:1px solid rgba(255,255,255,.08);
-}
 
+    background:linear-gradient(
+        to bottom,
+        rgba(0,0,0,.82),
+        rgba(0,0,0,.55)
+    );
+
+    backdrop-filter:blur(18px);
+
+    border-bottom:1px solid rgba(255,255,255,.06);
+
+    transition:.4s ease;
+}
 .main-nav{
     display:flex;
     justify-content:space-between;
     align-items:center;
-    padding:14px 8%;
+
+    padding:22px 8%;
 }
 
 .main-nav a{
     color:#ffffff;
     text-decoration:none;
-    margin-left:22px;
-    font-size:12px;
-    letter-spacing:2px;
-    opacity:.95;
+
+    margin-left:34px;
+
+    font-size:14px;
+    font-weight:500;
+
+    letter-spacing:2.5px;
+    text-transform:uppercase;
+
+    opacity:.88;
+
+    position:relative;
+    transition:.3s ease;
+}
+.main-nav a::after{
+    content:'';
+    position:absolute;
+    left:0;
+    bottom:-8px;
+
+    width:0%;
+    height:1px;
+
+    background:#d6b98c;
+
+    transition:.35s ease;
 }
 
-.main-nav a:hover{opacity:1;}
+.main-nav a:hover{
+    opacity:1;
+    color:#ffffff;
+}
+
+.main-nav a:hover::after{
+    width:100%;
+}
+
 
 .portal-btn{
     padding:7px 14px;
@@ -74,17 +113,28 @@ html{
 }
 
 .about-subnav a{
-    color:#fff;
+    color:#ffffff;
     text-decoration:none;
-    font-size:11px;
-    letter-spacing:3px;
-    opacity:.65;
+
+    font-size:13px;
+    font-weight:500;
+
+    letter-spacing:4px;
+    text-transform:uppercase;
+
+    opacity:.72;
+
+    transition:.3s ease;
 }
 
-.about-subnav a:hover{opacity:1;}
+.about-subnav a:hover{
+    opacity:1;
+    color:#d6b98c;
+}
+
 
 .logo-center img{
-    height:58px;
+    height:74px;
 }
 
 /* =========================
@@ -104,16 +154,43 @@ html{
     display:flex;
     flex-direction:column;
     justify-content:center;
-    padding:120px 10%;
+
+    padding:140px 9%;
+
     z-index:2;
-    background:linear-gradient(to right, #0b0b0b 80%, transparent);
+
+    background:linear-gradient(
+        to right,
+        rgba(0,0,0,.96) 55%,
+        rgba(0,0,0,.72) 75%,
+        transparent
+    );
 }
 
-    
+
+
 .hero-text h1{
     font-family:'Playfair Display', serif;
-    font-size:70px;
-    line-height:1.1;
+
+    font-size:92px;
+
+    line-height:0.95;
+
+    letter-spacing:-2px;
+
+    max-width:620px;
+}
+
+.hero-text h1::after{
+    content:'';
+    display:block;
+
+    width:120px;
+    height:2px;
+
+    margin-top:28px;
+
+    background:#c9a66b;
 }
 
 .hero-text p{
