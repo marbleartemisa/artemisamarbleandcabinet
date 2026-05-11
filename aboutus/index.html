@@ -66,7 +66,7 @@ html{
     font-size:13px;
     font-weight:500;
 
-    letter-spacing:2.5px;
+    letter-spacing:2px;
     text-transform:uppercase;
 
     opacity:.88;
@@ -119,7 +119,7 @@ html{
     font-size:13px;
     font-weight:500;
 
-    letter-spacing:4px;
+    letter-spacing:2px;
     text-transform:uppercase;
 
     opacity:.72;
@@ -150,7 +150,7 @@ html{
 
 /* 🔵 LADO IZQUIERDO TEXTO */
 .hero-text{
-    width:50%;
+    width:46%;
     display:flex;
     flex-direction:column;
     justify-content:center;
@@ -168,19 +168,20 @@ html{
 }
 
 
-
 .hero-text h1{
     font-family:'Playfair Display', serif;
 
-    font-size:80px;
+    font-size:clamp(52px, 5vw, 72px);
 
-    line-height:0.95;
+    line-height:1.02;
 
-    letter-spacing:-2px;
+    letter-spacing:-1.5px;
 
-    max-width:620px;
+    max-width:560px;
+
+    font-weight:600;
 }
-
+    
 .hero-text h1::after{
     content:'';
     display:block;
@@ -193,16 +194,21 @@ html{
     background:#c9a66b;
 }
 
-.hero-text p{
-    margin-top:20px;
-    font-size:16px;
-    color:#e0e0e0;
-    line-height:1.8;
-}
+  .hero-text p{
+    margin-top:34px;
+
+    font-size:17px;
+
+    line-height:1.95;
+
+    color:#d7d7d7;
+
+    max-width:560px;
+}  
 
 /* 🎥 LADO DERECHO VIDEO */
 .hero-media{
-    width:50%;
+    width:54%;
     position:relative;
     overflow:hidden;
 }
@@ -232,6 +238,10 @@ html{
     position:relative;
     scroll-snap-align:start;
     overflow:hidden;
+}
+
+section{
+    border-top:1px solid rgba(255,255,255,.04);
 }
 
 .section::before{
@@ -265,7 +275,7 @@ html{
 }
 
 .kicker{
-    letter-spacing:4px;
+    letter-spacing:2px;
     text-transform:uppercase;
     font-size:11px;
     opacity:.7;
@@ -390,15 +400,20 @@ p{
     margin-bottom:30px;
 }
 
+
 .gold-line{
-    width:120px;
-    height:2px;
+    width:72px;
+    height:1px;
 
-    background:#c9a66b;
+    background:linear-gradient(
+        to right,
+        #c9a66b,
+        rgba(201,166,107,.15)
+    );
 
-    margin-bottom:40px;
+    margin:22px 0 34px 0;
 }
-
+    
 .origin-text p{
     font-size:19px;
 
@@ -447,7 +462,7 @@ p{
     left:0;
     width:100%;
     height:2px;
-    background:#444;
+    background:rgba(201,166,107,.25);
 }
 
 .timeline-card{
@@ -459,13 +474,17 @@ p{
     width:24px;
     height:24px;
     border-radius:50%;
-    background:white;
+    background:#c9a66b;
     margin-bottom:35px;
+      box-shadow:
+    0 0 0 6px rgba(201,166,107,.08);
 }
 
-.timeline-card h3{
-    font-size:42px;
-    margin-bottom:20px;
+
+    .timeline-card h3{
+    font-size:34px;
+    font-weight:600;
+    font-family:'Inter', sans-serif;
 }
 
 .timeline-card p{
@@ -664,7 +683,7 @@ p{
 <section class="hero">
 
   <div class="hero-text">
-    <h1>The Art of Integrating Stone, Wood & Precision</h1>
+    <h1>Stone. Wood. Precision.</h1>
     <p>    
        From a small family workshop in Hialeah to a manufacturing operation 
        that integrates custom cabinetry and stonework into a single production 
@@ -724,7 +743,6 @@ p{
 
     <div class="timeline-header fade-up">
         <div class="kicker">Chapter II</div>
-        <div class="gold-line"></div>
         <h2>The Evolution</h2>
     </div>
 
@@ -771,9 +789,8 @@ p{
 <section class="tech-section" id="technology">
 
     <div class="tech-header fade-up">
-        <div class="kicker">Chapter II</div>
+        <div class="kicker">Chapter III</div>
         <h2>Technology Meets Craftsmanship</h2>
-         <div class="gold-line"></div>
     </div>
 
     <div class="tech-grid">
@@ -876,8 +893,7 @@ p{
 <section class="future" id="future">
 
     <div class="future-content fade-up">
-        <div class="kicker">Chapter II</div>
-        <h2>The Future of Tradition</h2>
+        <div class="kicker">Chapter IV</div>
         <div class="gold-line"></div>
         <p>
             Today, Artemisa Marble & Cabinet represents the fusion of
