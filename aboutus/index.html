@@ -418,25 +418,123 @@ p{
    TIMELINE
 ========================= */
 
-.timeline{
+.timeline-section{
+    padding:150px 8%;
     background:#050505;
-    padding:140px 10%;
+}
+
+.timeline-header{
     text-align:center;
+    margin-bottom:120px;
 }
 
-.timeline-item{
-    max-width:700px;
-    margin:60px auto;
-}
-
-.year{
-    font-size:46px;
+.timeline-header h2{
     font-family:'Playfair Display', serif;
-    margin-bottom:10px;
+    font-size:72px;
 }
 
-.text{
+.timeline{
+    position:relative;
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:40px;
+}
+
+.timeline::before{
+    content:'';
+    position:absolute;
+    top:40px;
+    left:0;
+    width:100%;
+    height:2px;
+    background:#444;
+}
+
+.timeline-card{
+    position:relative;
+    z-index:2;
+}
+
+.timeline-dot{
+    width:24px;
+    height:24px;
+    border-radius:50%;
+    background:white;
+    margin-bottom:35px;
+}
+
+.timeline-card h3{
+    font-size:42px;
+    margin-bottom:20px;
+}
+
+.timeline-card p{
+    line-height:1.9;
     color:#d0d0d0;
+}
+
+/* =========================
+   TECHNOLOGY CARDS
+========================= */
+
+.tech-section{
+    padding:150px 8%;
+    background:#0f0f0f;
+}
+
+.tech-header{
+    text-align:center;
+    margin-bottom:90px;
+}
+
+.tech-header h2{
+    font-size:72px;
+    font-family:'Playfair Display', serif;
+}
+
+.tech-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
+    gap:40px;
+}
+
+.tech-card{
+    background:rgba(255,255,255,.04);
+    border:1px solid rgba(255,255,255,.08);
+    border-radius:32px;
+    overflow:hidden;
+    transition:.4s;
+    backdrop-filter:blur(10px);
+}
+
+.tech-card:hover{
+    transform:translateY(-12px);
+    border-color:rgba(255,255,255,.3);
+}
+
+.tech-image{
+    height:260px;
+    overflow:hidden;
+}
+
+.tech-image img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+}
+
+.tech-content{
+    padding:40px;
+}
+
+.tech-content h3{
+    font-size:34px;
+    margin-bottom:20px;
+}
+
+.tech-content p{
+    color:#d0d0d0;
+    line-height:1.9;
 }
 
 /* =========================
