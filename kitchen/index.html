@@ -579,6 +579,288 @@ section{
 
 }
 
+/* =====================================================
+MOBILE RESPONSIVE FIX
+AGREGAR AL FINAL
+===================================================== */
+
+.hamburger{
+    display:none;
+}
+
+/* =========================
+TABLET + MOBILE
+========================= */
+
+@media (max-width: 1100px){
+
+/* HEADER */
+
+.main-nav{
+    padding:18px 24px;
+    position:relative;
+}
+
+.logo-center img{
+    height:52px;
+}
+
+/* HAMBURGER */
+
+.hamburger{
+    display:flex;
+    flex-direction:column;
+    gap:5px;
+    cursor:pointer;
+    z-index:10001;
+}
+
+.hamburger span{
+    width:30px;
+    height:2px;
+    background:white;
+    border-radius:10px;
+    transition:.3s;
+}
+
+/* X animation */
+
+.hamburger.active span:nth-child(1){
+    transform:translateY(7px) rotate(45deg);
+}
+
+.hamburger.active span:nth-child(2){
+    opacity:0;
+}
+
+.hamburger.active span:nth-child(3){
+    transform:translateY(-7px) rotate(-45deg);
+}
+
+/* MOBILE MENU */
+
+.main-nav nav{
+    position:fixed;
+
+    top:0;
+    right:-100%;
+
+    width:100%;
+    height:100vh;
+
+    background:#050505;
+
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+
+    gap:28px;
+
+    transition:.4s ease;
+
+    z-index:9999;
+}
+
+.main-nav nav.active{
+    right:0;
+}
+
+.main-nav nav a{
+    margin-left:0;
+    font-size:14px;
+    letter-spacing:3px;
+}
+
+/* SUBNAV */
+
+.about-subnav{
+    overflow-x:auto;
+    justify-content:flex-start;
+
+    padding:14px 20px;
+
+    gap:22px;
+
+    white-space:nowrap;
+
+    scrollbar-width:none;
+}
+
+.about-subnav::-webkit-scrollbar{
+    display:none;
+}
+
+/* HERO */
+
+.hero{
+    flex-direction:column;
+    height:auto;
+    min-height:auto;
+}
+
+.hero-text{
+    width:100%;
+    padding:140px 24px 60px;
+    background:black;
+}
+
+.hero-text h1{
+    font-size:48px;
+    line-height:1;
+}
+
+.hero-text p{
+    font-size:15px;
+    line-height:1.8;
+}
+
+.hero-media{
+    width:100%;
+    height:55vh;
+}
+
+/* ORIGIN SPLIT */
+
+.origin-split{
+    flex-direction:column;
+    padding-top:60px;
+}
+
+.origin-image{
+    width:100%;
+    height:50vh;
+
+    padding-left:0;
+}
+
+.origin-image::before{
+    display:none;
+}
+
+.origin-text{
+    width:100%;
+    padding:50px 24px;
+}
+
+.origin-text h2{
+    font-size:46px;
+}
+
+/* GLOBAL SECTIONS */
+
+.section{
+    padding:100px 24px;
+}
+
+/* TITLES */
+
+.title,
+.timeline-header h2,
+.tech-header h2,
+.future h2{
+    font-size:48px;
+    line-height:1.05;
+}
+
+/* PARAGRAPHS */
+
+p,
+.origin-text p,
+.tech-content p{
+    font-size:15px;
+    line-height:1.9;
+}
+
+/* TIMELINE */
+
+.timeline{
+    grid-template-columns:1fr;
+    gap:50px;
+}
+
+.timeline::before{
+    display:none;
+}
+
+.timeline-card{
+    padding-left:10px;
+}
+
+/* TECH GRID */
+
+.tech-grid{
+    grid-template-columns:1fr;
+}
+
+/* TECH IMAGES */
+
+.tech-image{
+    height:220px;
+}
+
+/* STATS */
+
+.stats-grid{
+    grid-template-columns:1fr 1fr;
+}
+
+.stat-box{
+    padding:35px 20px;
+}
+
+.stat-box h2{
+    font-size:48px;
+}
+
+/* FUTURE */
+
+.future{
+    min-height:auto;
+    padding:120px 24px;
+}
+
+.future p{
+    font-size:16px;
+    line-height:1.9;
+}
+
+}
+
+/* =========================
+SMALL MOBILE
+========================= */
+
+@media (max-width: 768px){
+
+.hero-text h1{
+    font-size:38px;
+}
+
+.origin-text h2,
+.timeline-header h2,
+.tech-header h2{
+    font-size:38px;
+}
+
+.hero-media{
+    height:42vh;
+}
+
+.stats-grid{
+    grid-template-columns:1fr;
+}
+
+.about-subnav a{
+    font-size:11px;
+}
+
+.main-nav nav a{
+    font-size:13px;
+}
+
+}
+   
 </style>
 </head>
 
@@ -590,21 +872,32 @@ section{
 
 <div class="main-nav">
 
-<div class="logo-center">
-<img src="../logo.png" alt="logo">
-</div>
+  <div class="logo-center">
+    <img src="../logo.png" alt="logo">
+  </div>
 
-<nav>
-<a href="/artemisa/">Home</a>
-<a href="/artemisamarbleandcabinet/aboutus/">About Us</a>
-<a href="/artemisamarbleandcabinet/kitchen/">Kitchen</a>
-<a href="/artemisamarbleandcabinet/bathroom/">Bathroom</a>
-<a href="/artemisamarbleandcabinet/cabinets/">Cabinets</a>
-<a href="/artemisamarbleandcabinet/closets/">Closets</a>
-   <a href="/artemisamarbleandcabinet/wallstone/">Wall Stone</a>
-<a href="/artemisa/#contact">Contact</a>
-<a class="portal-btn" href="#">Portal-SOP</a>
-</nav>
+  <nav id="navMenu">
+    <a href="/artemisa/">Home</a>
+    <a href="/artemisamarbleandcabinet/aboutus/">About Us</a>
+    <a href="/artemisamarbleandcabinet/kitchen/">Kitchen</a>
+    <a href="/artemisamarbleandcabinet/bathroom/">Bathroom</a>
+    <a href="/artemisamarbleandcabinet/cabinets/">Cabinets</a>
+    <a href="/artemisamarbleandcabinet/closets/">Closets</a>
+    <a href="/artemisamarbleandcabinet/wallstone/">Wall Stone</a>
+    <a href="/artemisa/#contact">Contact</a>
+
+    <a class="portal-btn"
+       href="https://marbleartemisa.github.io/sop-site/">
+       Portal-SOP
+    </a>
+  </nav>
+
+  <!-- HAMBURGER -->
+  <div class="hamburger" id="hamburger">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
 
 </div>
 
