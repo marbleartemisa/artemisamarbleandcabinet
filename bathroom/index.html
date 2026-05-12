@@ -630,15 +630,29 @@ section{
     font-size:56px;
 }
 
+/* =========================
+   HAMBURGER
+========================= */
+
+.hamburger{
+    display:flex;
+    flex-direction:column;
+    gap:5px;
+    cursor:pointer;
+    z-index:10001;
+}
+
+.hamburger span{
+    width:28px;
+    height:2px;
+    background:white;
+    transition:.3s;
 }
 
 /* =========================
-   MOBILE MENU FIX (KITCHEN)
+   MOBILE NAV
 ========================= */
 
-@media (max-width:1100px){
-
-/* NAV oculto por defecto */
 #navMenu{
     position:fixed;
     top:0;
@@ -658,41 +672,28 @@ section{
     z-index:9999;
 }
 
-/* cuando se abre */
 #navMenu.active{
     right:0;
 }
 
-/* links mobile */
 #navMenu a{
     margin:0;
     font-size:14px;
     letter-spacing:3px;
 }
 
-/* hamburger */
-.hamburger{
-    display:flex;
-    flex-direction:column;
-    gap:5px;
-    cursor:pointer;
-    z-index:10001;
-}
+/* =========================
+   ANIMATION X
+========================= */
 
-.hamburger span{
-    width:28px;
-    height:2px;
-    background:white;
-    transition:.3s;
-}
-
-/* animación X */
 .hamburger.active span:nth-child(1){
     transform:translateY(7px) rotate(45deg);
 }
+
 .hamburger.active span:nth-child(2){
     opacity:0;
 }
+
 .hamburger.active span:nth-child(3){
     transform:translateY(-7px) rotate(-45deg);
 }
