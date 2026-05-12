@@ -1219,15 +1219,17 @@ SMALL MOBILE
 
 
 <script>
-const els=document.querySelectorAll('.fade, .content, .timeline-item, .hero-content');
-const obs=new IntersectionObserver(e=>{
-e.forEach(x=>{
-if(x.isIntersecting)x.target.classList.add('show');
-});
-},{threshold:0.2});
-els.forEach(e=>obs.observe(e));
-</script>
+const els = document.querySelectorAll('.fade, .content, .timeline-item, .hero-content');
 
+const obs = new IntersectionObserver(e => {
+  e.forEach(x => {
+    if(x.isIntersecting){
+      x.target.classList.add('show');
+    }
+  });
+},{ threshold:0.2 });
+
+els.forEach(e => obs.observe(e));
 
 /* MOBILE MENU */
 
@@ -1237,6 +1239,7 @@ const nav = document.getElementById("navMenu");
 hamburger.addEventListener("click", () => {
   nav.classList.toggle("active");
   hamburger.classList.toggle("active");
-});    
+});
+</script>
 </body>
 </html>
