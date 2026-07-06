@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Artemisa Marble & Cabinet</title>
 
-<!-- Estilos compartidos -->
+<!-- Estilos -->
 <link rel="stylesheet" href="styles.css">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
 </head>
@@ -13,86 +13,609 @@
 <body>
 
 <!-- =========================
-TOP BAR
+PREMIUM HEADER
 ========================= -->
-<div class="topbar">
-  <div class="topbar-left desktop-only">
-    830 W 19th ST, Hialeah Florida 33010 • (305) 884-1223
-  </div>
-
-  <div class="logo-center">
-    <img src="logo.png" alt="Artemisa Marble & Cabinet">
-  </div>
-
-  <div class="hamburger mobile-only" id="hamburger">
-    <span></span>
-    <span></span>
-    <span></span>
-  </div>
-</div>
 
 <!-- =========================
-NAVBAR
+PREMIUM HEADER
 ========================= -->
-<header class="navbar">
-  <nav id="navMenu">
-    <a href="/artemisamarbleandcabinet/">Home</a>
-    <a href="/artemisamarbleandcabinet/aboutus/">About Us</a>
-    <a href="/artemisamarbleandcabinet/kitchen/">Kitchen</a>
-    <a href="/artemisamarbleandcabinet/bathroom/">Bathroom</a>
-    <a href="/artemisamarbleandcabinet/cabinets/">Cabinets</a>
-    <a href="/artemisamarbleandcabinet/closets/">Closets</a>
-    <a href="/artemisamarbleandcabinet/contact/">Contact</a>
-    <a class="portal-btn" href="https://marbleartemisa.github.io/sop-site/">Portal-SOP</a>   
-  </nav>
- 
+
+<header class="topbar">
+
+  <!-- TOP INFO -->
+  <div class="topbar-info">
+
+    <div class="topbar-address">
+      830 W 19th ST, Hialeah Florida 33010
+    </div>
+
+    <div class="topbar-phone">
+      (305) 884-1223
+    </div>
+
+  </div>
+
+  <!-- MAIN -->
+  <div class="topbar-main">
+
+    <!-- LOGO -->
+    <div class="logo-center">
+      <img src="logo.png" alt="Artemisa Marble & Cabinet">
+    </div>
+
+    <!-- NAV -->
+    <div class="main-nav">
+
+      <nav id="navMenu">
+
+        <a href="https://marbleartemisa.github.io/artemisa/index.html">Home</a>
+        <a href="/artemisamarbleandcabinet/aboutus/">About Us</a>
+        <a href="/artemisamarbleandcabinet/kitchen/">Kitchen</a>
+        <a href="/artemisamarbleandcabinet/bathroom/">Bathroom</a>
+        <a href="/artemisamarbleandcabinet/cabinets/">Cabinets</a>
+        <a href="/artemisamarbleandcabinet/closets/">Closets</a>
+        <a href="/artemisamarbleandcabinet/wallstone/">Wall Stone</a>
+        <a href="/artemisa/#contact">Contact</a>
+       
+
+        <a class="portal-btn"
+           href="https://marbleartemisa.github.io/sop-site/">
+           Portal-SOP
+        </a>
+
+      </nav>
+
+    </div>
+
+    <!-- MOBILE -->
+    <div class="hamburger mobile-only" id="hamburger">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+
+  </div>
 
 </header>
+
+
 
 <!-- =========================
 HERO
 ========================= -->
-<section class="hero">
+<section class="hero fade">
   <div class="overlay"></div>
+  <div class="hero-gradient"></div>
   <div class="hero-content">
+    <!-- BADGE -->
+    <div class="hero-badge">
+       50+ Years Experience
+    </div>
+    
     <div class="hero-top-row">
       <div class="company-name">Artemisa Marble & Cabinet</div>
-      <div class="hero-tagline">Luxury Stone & Custom Interiors</div>
+      <div class="hero-tagline">Custom Stone. Timeless Design.</div>
     </div>
-
-    <p>
-      Crafting high-end kitchens with precision, elegance, and natural beauty.
-      We specialize in custom-made kitchen cabinets, bathrooms, closets,
-      TV walls, fireplaces, and more, using premium materials like granite,
-      quartz, marble, dekton, gemstone, and semi-precious stones.
-    </p>
+        <p class="desktop-text">
+        Bespoke kitchens, bathrooms, closets and architectural stone installations crafted with marble, quartz, quartzite and premium surfaces.
+        </p>
+        
+        <p class="mobile-text">
+        Luxury kitchens, bathrooms and custom stone surfaces crafted for timeless interiors.
+        </p>
 
     <div class="hero-buttons">
-      <a href="catalogo/index.html" class="primary">Explore Catalog</a>
+      <a href="https://marbleartemisa.github.io/artemisamarbleandcabinet/catalogo/index.html" class="primary">Explore Catalog</a>
       <a href="https://artemisa_marble_cabinets_inc.quotekitchenandbath.com/kitchen#/materials/countertops/countertop" class="secondary" target="_blank">Get Quote</a>
     </div>
   </div>
+    <!-- SCROLL -->
+  <div class="scroll-indicator">
+     Scroll
+  </div>
+
+</section>  <!-- HERO cerrado correctamente -->
+
+<div class="hero-fade-transition"></div>
+<div class="section-divider"></div>
+
+
+<!-- =========================
+ABOUT TRANSITION SECTION
+========================= -->
+  <section class="about-preview fade">
+  <div class="about-container">
+
+    <div class="about-text">
+      <span class="about-label">About Us</span>
+      <h2 class="about-title">
+        The quality of our work is quality for your life
+      </h2>
+      <p>
+        With over 50 years of experience and the loyalty of our clients, we offer 
+        personalized and functional solutions in wood and stone with high-quality 
+        materials, combining technology, safety, and excellence in each residential 
+        or commercial project.
+      </p>
+      <a href="/artemisamarbleandcabinet/aboutus/" class="about-btn">
+        Learn More
+      </a>
+    </div>
+
+    <div class="about-image">
+      <img src="BAR CRISTALO.png" alt="About Artemisa">
+    </div>
+
+  </div>
 </section>
+
+<!-- =========================
+FRAMER CLONE SECTIONS
+========================= -->
+<!-- WHITE INTRO -->
+<section class="white-intro">
+  <div class="white-intro-container">
+
+    <div class="white-left">
+      <small>About us</small>
+      <h2>
+        home<br>
+        improvement<br>
+        specialists
+      </h2>
+    </div>
+
+    <div class="white-right">
+      <p>
+        Our offering of Granite, Quartz, Quartzite, Marble, Porcelain, Dekton, 
+        precious and semiprecious stones, both natural and artificial, is of 
+        the highest quality on the market and the foundation for meeting our 
+        customers' expectations with unique, custom-made designs.
+      </p>
+
+      <p>
+        Kitchens, Bathrooms, stone or wood-clad walls to enhance any room and
+        especially as an integrated part of fireplaces, audio and TV equipment,
+        shelving, social areas, restaurants, meeting rooms, office reception
+        areas, closets, warehouses, healthcare centers, education centers,
+        senior care centers, and other social services are also among our
+        satisfied customers.
+      </p>
+    </div>
+
+  </div>
+</section>
+
+  
+<!-- CARRUSEL / GALERIA -->
+<section class="carousel-section fade">
+  <h2>Our Work</h2>
+ <div class="gallery carousel">
+    <img src="img/selec32.jpg" alt="">
+    <img src="img/selec33.jpg" alt="">
+     <img src="img/selec34.jpg" alt="">
+    <img src="img/selec43.jpg" alt="">
+     <img src="img/selec106.png" alt="">
+    <img src="img/selec37.jpg" alt="">
+     <img src="img/selec38.jpg" alt="">
+    <img src="img/selec45.jpg" alt="">
+     <img src="img/selec29.jpg" alt="">
+    <img src="img/selec21.jpg" alt="">
+    <img src="img/selec22.jpg" alt="">
+    <img src="img/selec27.jpg" alt="">
+    <img src="img/selec24.jpg" alt="">
+    <img src="img/CLOSET PRIMA 3.png" alt="">
+    <img src="img/selec40.jpg" alt="">
+    <img src="img/Island.png" alt="">
+    <img src="img/Barra3.jpeg" alt="">
+    <img src="img/selec2.jpg" alt="">
+    <img src="img/selec3.jpg" alt="">
+    <img src="img/selec6.jpg" alt="">
+    <img src="img/selec8.jpg" alt="">
+    <img src="img/SELEC114.png" alt="">
+    <img src="img/selec44.jpg" alt="">
+    <img src="img/selec106.png" alt="">
+    <img src="img/SELEC110.png" alt="">
+      <img src="img/selec57.jpg" alt="">
+    <img src="img/selec55.jpg" alt="">
+    <img src="img/selec52.jpg" alt="">
+    <img src="img/selec51.jpg" alt="">
+       <img src="img/SELEC115.png" alt="">
+    <img src="hero.jpg" alt="">
+    <img src="img/selec63.jpg" alt="">
+    <img src="img/selec62.jpg" alt="">
+  </div>
+
+
+</section>
+
+<section class="stack-header">
+  <div class="stack-header-inner">
+
+    <div class="stack-label">
+      Dream with us
+    </div>
+
+    <h2 class="stack-title">
+      Get inspired by our work
+    </h2>
+
+    <p class="stack-subtitle">
+      See how the Artemisa team, highly motivated to serve our clients,
+      transforms your home and office.
+    </p>
+
+  </div>
+</section>
+
+
+<section class="stack-gallery">
+
+  <div class="stack-wrapper">
+
+    <div class="stack-item">
+      <video autoplay muted loop playsinline>
+        <source src="img/video1.mp4" type="video/mp4">
+      </video>
+    </div>
+
+   <div class="stack-item">
+      <img src="selec33.png">
+    </div>
+    
+    <div class="stack-item">
+      <video autoplay muted loop playsinline>
+        <source src="img/video 5.MP4" type="video/mp4">
+      </video>
+    </div>
+    
+  </div>
+
+</section>
+
+
+  <section class="faq-section">
+
+  <div class="faq-container">
+
+    <!-- LEFT -->
+    <div class="faq-left">
+      <span class="faq-label">FAQs</span>
+
+      <h2 class="faq-title">
+        Answering your<br>questions
+      </h2>
+
+      <p class="faq-text">
+        Got more questions? Send us your enquiry below
+      </p>
+
+      <a href="#" class="faq-btn">
+        Get in touch
+        <span>→</span>
+      </a>
+    </div>
+
+    <!-- RIGHT -->
+    <div class="faq-right">
+
+      <div class="faq-item">
+        <div class="faq-question">
+          What area are you based in?
+          <span class="faq-icon">+</span>
+        </div>
+        <div class="faq-answer">
+          Our main client base is located in the state of Florida, on both coasts. The majority of our clients 
+          are located in Miami, Napo, Cape Coral, Fort Myers, and Tampa. However, distance is not an obstacle 
+          to offering our services. 
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question">
+          How long does a typical project take?
+          <span class="faq-icon">+</span>
+        </div>
+        <div class="faq-answer">
+          Project timelines vary depending on the scope of the contracted results; however, we consider an average 
+          of 4 to 6 weeks to be a reasonable timeframe. You should keep in mind that a kitchen or bathroom renovation 
+          can take time not only due to the physical dimensions of the area to be remodeled, but also due to the 
+          complexity of the project, the elements involved, and the technologies the client wishes to incorporate. 
+          A kitchen that includes translucent stone walls, columns, hardware to conceal outlets, or more 
+          sophisticated door opening mechanisms will obviously require more time, and in exceptional cases, 
+          availability from the supplier or the import process is required.The success of the project also depends 
+          on taking the required time; rushing through stages is not a good option.
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question">
+          Do you offer free quotes?
+          <span class="faq-icon">+</span>
+        </div>
+        <div class="faq-answer">
+          Yes! We offer free quotes, and we can even evaluate different alternatives without obligation. After the 
+          initial contact, we assign a project manager who will analyze your needs and expectations for the project 
+          with you. We will provide you with a detailed quote. We can discuss, modify, and find the best solution 
+          to achieve a balance between your needs and costs.
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question">
+          Do you provide a guarantee for your work?
+          <span class="faq-icon">+</span>
+        </div>
+        <div class="faq-answer">
+          Absolutely! We guarantee the quality of our work and the materials we use; we always choose the best 
+          manufacturing and installation technologies. We always advise clients on the appropriate course of 
+          action and inform them of the disclaimers that apply in each case. In any case, your peace of mind 
+          is guaranteed by the excellence we demand in every project.
+        </div>
+      </div>
+
+       <div class="faq-item">
+        <div class="faq-question">
+          Can I stay in my home while the work is being done?
+          <span class="faq-icon">+</span>
+        </div>
+        <div class="faq-answer">
+          Our work isn't particularly invasive. Everything is manufactured in our workshops. Many elements are 
+          transported already assembled, and only the installation takes place at your home. However, there 
+          may be minor disturbances due to noise, dust, and other elements inherent in the installation and 
+          handling of the manufactured stones.
+        </div>
+      </div>
+
+     <div class="faq-item">
+        <div class="faq-question">
+          How do I get started with a project?
+          <span class="faq-icon">+</span>
+        </div>
+        <div class="faq-answer">
+          Simply contact us through this website, email info@artemisamarble.com, or call +1 (305) 884-1223. 
+          We will assign you a Sales Executive to discuss all your expectations and needs, prepare the 
+          budget and work schedule, outline your responsibilities as a counterpart, and guide you through 
+          all stages of the project.
+        </div>
+      </div>
+
+      
+    </div>
+
+  </div>
+
+</section>
+
+  <section id="contact" class="contact-section">
+
+  <div class="contact-container">
+
+    <!-- LEFT -->
+    <div class="contact-left">
+      <span class="contact-label">Contact</span>
+
+      <h2 class="contact-title">Get in touch</h2>
+
+      <p class="contact-text">
+        For any inquiries or to explore your vision further, we invite you
+        to contact our professional team using the details provided below.
+      </p>
+
+      <div class="contact-info">
+        <p><strong>Office</strong> 830 W 19th ST Hialeah FL 33010</p>
+        <p><strong>Email</strong> info@artemisamarble.com</p>
+        <p><strong>Telephone</strong> +1 (305) 884-1223</p>
+      </div>
+
+      <div class="socials">
+        <span>Follow us</span>
+        <div class="icons">
+          <i>IG</i>
+          <i>TT</i>
+          <i>X</i>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT FORM -->
+    <div class="contact-form">
+      <form id="contactForm">
+
+        <label>Name*</label>
+        <input type="text" name="user_name" placeholder="Customer" required>
+
+        <label>Email*</label>
+        <input type="email" name="user_email" placeholder="customer@gmail.com" required>
+
+        <label>Phone Number</label>
+        <input type="text" name="user_phone" placeholder="+1 (305) 884-1223">
+
+        <label>Message*</label>
+        <textarea name="message" placeholder="Hello, I'd like to enquire about..." required></textarea>
+
+        <button type="submit">Send message</button>
+
+      </form>
+    </div>
+
+  </div>
+
+</section>
+
 
 <!-- =========================
 FOOTER / MOBILE BOTTOM BAR
 ========================= -->
 <div class="bottombar mobile-only">
-830 W 19th ST, Hialeah Florida 33010 • (305) 884-1223 • info@artemisamarble.com
+830 W 19th ST, Hialeah Florida 33010 • (305) 884-1223
 </div>
 
 <!-- =========================
-HAMBURGER SCRIPT
+SCRIPTS
 ========================= -->
 <script>
+/* HAMBURGER MENU */
 const hamburger = document.getElementById("hamburger");
 const nav = document.getElementById("navMenu");
-
 hamburger.addEventListener("click", () => {
   nav.classList.toggle("active");
   hamburger.classList.toggle("active");
 });
-</script>
 
+
+/* Fade para About Us */
+const aboutText = document.querySelector('.about-text');   // 👈 AQUI
+const aboutImage = document.querySelector('.about-image'); // 👈 AQUI
+
+const aboutObserverOptions = { threshold: 0.3, rootMargin: "0px 0px -50px 0px" };
+
+const aboutObserver = new IntersectionObserver((entries, observer) => {
+  entries.forEach(entry => {
+    if (!entry.isIntersecting) return;
+    entry.target.classList.add('show');
+    observer.unobserve(entry.target);
+  });
+}, aboutObserverOptions);
+
+// 👇 AQUÍ corregido
+if (aboutText && aboutImage) {
+  aboutObserver.observe(aboutText);
+  aboutObserver.observe(aboutImage);
+}
+
+
+  
+// Fade para otras secciones
+const faders = document.querySelectorAll('.fade');
+const fadeObserverOptions = { threshold: 0.1, rootMargin: "0px 0px -50px 0px" };
+const fadeObserver = new IntersectionObserver((entries, observer) => {
+  entries.forEach(entry => {
+    if (!entry.isIntersecting) return;
+    entry.target.classList.add('show');
+    observer.unobserve(entry.target);
+  });
+}, fadeObserverOptions);
+faders.forEach(fader => fadeObserver.observe(fader));
+/* CARRUSEL AUTOMATICO */
+const carousel = document.querySelector('.carousel');
+
+if (carousel) {
+  let speed = 0;
+
+  function autoScroll() {
+    speed += 1;
+
+    const maxScroll = carousel.scrollWidth - carousel.clientWidth;
+
+    if (speed >= maxScroll) {
+      speed = 0;
+    }
+
+    carousel.scrollLeft = speed;
+  }
+
+  setInterval(autoScroll, 16);
+}
+
+  const counters = document.querySelectorAll('.stats h3');
+
+counters.forEach(counter => {
+  const target = +counter.innerText.replace('%','');
+  let count = 0;
+
+  const update = () => {
+    const increment = target / 100;
+
+    if (count < target) {
+      count += increment;
+      counter.innerText = Math.ceil(count) + (counter.innerText.includes('%') ? '%' : '');
+      requestAnimationFrame(update);
+    } else {
+      counter.innerText = target + (counter.innerText.includes('%') ? '%' : '');
+    }
+  };
+
+  update();
+});
+
+  /* FAQ ACCORDION */
+
+const faqItems = document.querySelectorAll('.faq-item');
+
+faqItems.forEach(item => {
+  const question = item.querySelector('.faq-question');
+
+  question.addEventListener('click', () => {
+
+    // cerrar otros (modo elegante tipo Framer)
+    faqItems.forEach(i => {
+      if(i !== item) i.classList.remove('active');
+    });
+
+    // toggle actual
+    item.classList.toggle('active');
+
+  });
+});
+</script>
+<!-- EmailJS -->
+<script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function(){
+
+  emailjs.init("iR8ieJnOkI4_sr8TH");
+
+  const form = document.getElementById("contactForm");
+
+  form.addEventListener("submit", function(e){
+    e.preventDefault();
+
+    const btn = form.querySelector("button");
+    btn.innerText = "Sending...";
+    btn.disabled = true;
+
+    emailjs.sendForm(
+      "service_vkt5xuo",
+      "template_23uzxx9",
+      this
+    )
+    .then(() => {
+      btn.innerText = "Message sent ✅";
+      btn.disabled = false;
+      form.reset();
+    })
+    .catch((error) => {
+      console.error(error);
+      btn.innerText = "Send message";
+      btn.disabled = false;
+      alert("Error sending message ❌");
+    });
+
+  });
+
+});
+const stackItems = document.querySelectorAll(".stack-item");
+
+window.addEventListener("scroll", () => {
+  stackItems.forEach((item, i) => {
+    const rect = item.getBoundingClientRect();
+    const windowHeight = window.innerHeight;
+
+    const progress = 1 - (rect.top / windowHeight);
+    const clamped = Math.max(0, Math.min(progress, 1));
+
+    const scale = 0.9 + (clamped * 0.1);
+    const opacity = 0.6 + (clamped * 0.4);
+
+    const y = (1 - clamped) * 50; // 👈 AQUÍ
+
+    item.style.transform = `scale(${scale}) translateY(${y}px)`; // 👈 AQUÍ
+    item.style.opacity = opacity;
+  });
+});
+</script>
+  
 </body>
 </html>
