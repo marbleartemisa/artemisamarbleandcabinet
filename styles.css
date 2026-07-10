@@ -162,19 +162,32 @@ body {
 }
 .dropbtn{
 
-    display:block;
+    background:none;
 
-    color:white;
+    border:none;
 
-    cursor:pointer;
+    outline:none;
 
-    padding:5px 0;
+    color:#fff;
 
     font-size:15px;
 
     letter-spacing:.5px;
 
+    font-family:inherit;
+
+    cursor:pointer;
+
+    padding:0;
+
     opacity:.85;
+
+    transition:.3s;
+}
+
+.dropbtn:hover{
+
+    opacity:1;
 }
 
 .dropbtn::after{
