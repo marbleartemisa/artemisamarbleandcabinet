@@ -2121,11 +2121,20 @@ FINAL MOBILE MENU FIX
 }
 
 .dropdown-content{
-     display:block !important;
-    position: absolute;
-    top: 100%;
-    left: 0;
-    z-index: 99999999 !important;
+    display:none;
+    position:absolute;
+    top:100%;
+    left:0;
+
+    min-width:240px;
+
+    background:#111;
+    border-radius:8px;
+    overflow:hidden;
+
+    box-shadow:0 15px 35px rgba(0,0,0,.35);
+
+    z-index:99999;
 }
 
 .dropdown:hover .dropdown-content{
