@@ -189,7 +189,7 @@ body {
 
 .dropdown-content{
 
-    display:none;
+    display:block !important;
 
     position:absolute;
 
@@ -2087,4 +2087,23 @@ FINAL MOBILE MENU FIX
     text-transform:uppercase;
   }
 
+}
+.topbar,
+.topbar-main,
+.main-nav,
+.main-nav nav,
+.dropdown{
+    overflow: visible !important;
+}
+
+.dropdown-content{
+     display:block !important;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    z-index: 99999999 !important;
+}
+
+.dropdown:hover .dropdown-content{
+    display: block !important;
 }
