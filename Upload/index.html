@@ -265,7 +265,13 @@ function openBatchWizard(){
                       opacity:0;
                       pointer-events:none;
                     ">
+                    <div id="selectedFilesInfo" style="
+                      margin-top:15px;
+                      font-size:13px;
+                      color:#555;
+                  ">
             </div>
+
           
             <button onclick="goStep2()" style="
               margin-top:20px;
@@ -687,6 +693,7 @@ function initDropZone(){
 
   const drop = document.getElementById("dropZone");
   const input = document.getElementById("wizFiles");
+  const info = document.getElementById("selectedFilesInfo");
 
   if(!drop || !input){
     console.error("DropZone o input no existe");
@@ -696,11 +703,14 @@ function initDropZone(){
   // =========================
   // CLICK (SEGURO)
   // =========================
-  drop.onclick = () => {
-    input.value = "";
-    input.click();
+    drop.onclick = () => {
+  
+      input.value = "";
+  
+      input.click();
+  
   };
-
+  input.addEventListener("change", updateSelectedFiles);
   // =========================
   // DRAG OVER
   // =========================
@@ -746,7 +756,43 @@ function initDropZone(){
     drop.style.background = "#fafafa";
 
     console.log("DROP OK:", input.files.length);
+    updateSelectedFiles();
   });
+
+}
+
+  function updateSelectedFiles(){
+
+    const input = document.getElementById("wizFiles");
+    const info = document.getElementById("selectedFilesInfo");
+
+    if(!info) return;
+
+    if(input.files.length===0){
+
+        info.innerHTML="";
+
+        return;
+
+    }
+
+    let html=`<b>✅ ${input.files.length} archivo(s) seleccionado(s)</b><br><br>`;
+
+    const max=5;
+
+    for(let i=0;i<Math.min(max,input.files.length);i++){
+
+        html+=`📷 ${input.files[i].name}<br>`;
+
+    }
+
+    if(input.files.length>max){
+
+        html+=`<br>... y ${input.files.length-max} archivo(s) más`;
+
+    }
+
+    info.innerHTML=html;
 
 }
 /* =========================
