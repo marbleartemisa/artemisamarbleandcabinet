@@ -445,10 +445,13 @@ async function loadPhotos(){
           LOOKINGFOR: p.LOOKINGFOR || "",
           TIPO: p.TIPO || "",
           SUBTIPO: p.SUBTIPO || "",
+          MIME: p.MIME || "",
           ESTADO: p.ESTADO || "ACTIVO"
         };
       });
 
+
+    
     console.log("DATA BACKEND:", data);
     console.log("PHOTOS FILTRADAS:", photos);
 
@@ -536,6 +539,7 @@ function renderGallery(category='all', reset=true){
 
     const thumb = `https://lh3.googleusercontent.com/d/${fileId}=w800`;
     const full  = `https://lh3.googleusercontent.com/d/${fileId}=s0`;
+    const isVideo = p.MIME && p.MIME.startsWith("video/");
     
     const item = document.createElement('div');
     item.className = 'grid-item';
@@ -562,9 +566,37 @@ function renderGallery(category='all', reset=true){
     }
 
     item.innerHTML = `
-  <a data-fancybox="gallery" href="${full}">
-    <img src="${thumb}" loading="lazy"
-      onerror="this.closest('.grid-item').remove()">
+            ${
+          isVideo
+          ?
+          `
+          <a 
+           data-fancybox="gallery"
+           data-type="video"
+           href="${full}"
+          >
+          <video 
+           muted
+           autoplay
+           loop
+           playsinline
+           loading="lazy"
+           style="width:100%;display:block;">
+          <source src="${full}" type="${p.MIME}">
+          </video>
+          `
+          :
+          `
+          <a 
+           data-fancybox="gallery"
+           href="${full}"
+          >
+          <img 
+          src="${thumb}" 
+          loading="lazy"
+          onerror="this.closest('.grid-item').remove()">
+          `
+          }
 
     <div class="photo-overlay">
       <div class="stone">${p.STONE || 'Unknown Stone'}</div>
@@ -588,12 +620,17 @@ function renderGallery(category='all', reset=true){
   currentIndex += PAGE_SIZE;
 
   Fancybox.bind("[data-fancybox='gallery']", {
+
   animated: true,
   dragToClose: false,
 
-  closeButton: "top",   // 👈 AQUÍ
-  showClass: "fancybox-zoomIn",  // 👈 AQUÍ
-  hideClass: "fancybox-zoomOut",  // 👈 AQUÍ
+  closeButton: "top",
+  showClass: "fancybox-zoomIn",
+  hideClass: "fancybox-zoomOut",
+
+  Video: {
+    autoplay: true
+  },
 
   Images: {
     zoom: true,
@@ -611,6 +648,7 @@ function renderGallery(category='all', reset=true){
       "close"
     ]
   }
+
 });
 
   isLoading = false;
@@ -675,10 +713,12 @@ isSearching = true; // 🔥 ACTIVA búsqueda
 
     const thumb = `https://lh3.googleusercontent.com/d/${fileId}=w800`;
     const full  = `https://lh3.googleusercontent.com/d/${fileId}=s0`;
-
+    const isVideo = p.MIME && p.MIME.startsWith("video/");
+    
     const item = document.createElement('div');
     item.className = 'grid-item';
-
+    item.dataset.id = p.ID;
+    
     let adminButtons = '';
 
     if(isAdmin){
@@ -700,9 +740,37 @@ isSearching = true; // 🔥 ACTIVA búsqueda
     }
 
     item.innerHTML = `
-  <a data-fancybox="gallery" href="${full}">
-    <img src="${thumb}" loading="lazy"
-      onerror="this.closest('.grid-item').remove()">
+          ${
+          isVideo
+          ?
+          `
+          <a 
+           data-fancybox="gallery"
+           data-type="video"
+           href="${full}"
+          >
+          <video 
+           muted
+           autoplay
+           loop
+           playsinline
+           loading="lazy"
+           style="width:100%;display:block;">
+          <source src="${full}" type="${p.MIME}">
+          </video>
+          `
+          :
+          `
+          <a 
+           data-fancybox="gallery"
+           href="${full}"
+          >
+          <img 
+          src="${thumb}" 
+          loading="lazy"
+          onerror="this.closest('.grid-item').remove()">
+          `
+          }
 
     <div class="photo-overlay">
       <div class="stone">${p.STONE || 'Unknown Stone'}</div>
@@ -721,9 +789,37 @@ isSearching = true; // 🔥 ACTIVA búsqueda
 
   gallery.appendChild(fragment);
 
-  Fancybox.bind("[data-fancybox='gallery']", {
-    animated: true
-  });
+Fancybox.bind("[data-fancybox='gallery']", {
+
+  animated: true,
+  dragToClose: false,
+
+  closeButton: "top",
+  showClass: "fancybox-zoomIn",
+  hideClass: "fancybox-zoomOut",
+
+  Video: {
+    autoplay: true
+  },
+
+  Images: {
+    zoom: true,
+    wheel: "zoom",
+    click: "toggleZoom",
+    Panzoom: {
+      maxScale: 6
+    }
+  },
+
+  Toolbar: {
+    display: [
+      "zoom",
+      "fullscreen",
+      "close"
+    ]
+  }
+
+});
 }
   
 // =========================
