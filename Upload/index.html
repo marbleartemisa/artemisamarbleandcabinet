@@ -703,14 +703,14 @@ function initDropZone(){
   // =========================
   // CLICK (SEGURO)
   // =========================
-    drop.onclick = () => {
-  
-      input.value = "";
-  
-      input.click();
-  
-  };
-  input.addEventListener("change", updateSelectedFiles);
+        drop.onclick = () => {
+      
+          input.click();
+      
+      };
+     input.addEventListener("change", () => {
+      updateSelectedFiles();
+      });
   // =========================
   // DRAG OVER
   // =========================
