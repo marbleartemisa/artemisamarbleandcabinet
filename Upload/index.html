@@ -183,7 +183,187 @@ let isSearching = false;
 let isAdmin = false;
 const gallery = document.getElementById("gallery");
 
+  const CATALOG_TYPES = {
 
+Kitchen:[
+"Bookmarching",
+"Cabinet",
+"Cabinets",
+"Columna",
+"Countertop",
+"Crystallo Top",
+"Custom Made",
+"Customizable",
+"Elegance",
+"Fireplace",
+"Full Backsplash",
+"Island",
+"Kitchen",
+"Led Light",
+"Luxury",
+"Special",
+"Top",
+"Translucido"
+],
+
+Bathroom:[
+"Custom",
+"Custom Made",
+"Elegance",
+"Shower",
+"Sink Integrado",
+"Special",
+"Stone-clad walls",
+"Vanity",
+"Vanity Flotante",
+"Wall"
+],
+
+Bar:[
+"Barra",
+"Coffee Bar",
+"Countertop",
+"Furniture",
+"Led",
+"Luxury",
+"Special",
+"Top"
+],
+
+Bedroom:[
+"Furniture",
+"Murphy Bed"
+],
+
+Cabinets:[
+"Wall Cabinets",
+"Base Cabinets",
+"Custom Made",
+"Hardware"
+],
+
+Closet:[
+"Corner",
+"Custom Made",
+"Library",
+"Shelves",
+"TV Stand", 
+"Walking Closet"
+],
+
+Fireplace:[
+"Furniture",
+"Stone"
+],
+
+Furniture:[
+"Custom Made",
+"Drawer",
+"Furniture",
+"Living Room",
+"Office",
+"Special",
+"Table"
+],
+
+Frontdesk:[
+"Countertop",
+"Custom Made",
+"Table"
+],
+
+Laundry:[
+"Cabinet",
+"Panty",
+"Stone"
+],
+
+LivinRoom:[
+"Cabinet",
+"Panty",
+"Furniture",
+"Shelves"
+],  
+
+ Marina:[
+  "Barra",
+  "Cabinet",
+  "Panty",
+  "Top"
+  ], 
+
+  Office:[
+  "Custom Made",
+  "Closet",
+  "Frontdesk",
+  "Conference Room",
+  "Table"
+],
+
+Stair:[
+  "Custom Made",
+  "Wood",
+  "Stone"
+  ],
+
+  Stone_Wall:[
+    "Book Matching",
+    "Columnas",
+    "Custom Made",
+    "Closet",
+    "Fireplace",
+    "Shower",
+    "Translucido",
+    "Wine Wall"   
+  ],
+
+  Table:[
+  "Custom Made",
+  "Dinning",
+  "Wood",
+  "Stone"
+  ],
+
+  TV_Wall:[
+    "Custom Made",
+    "Wood",
+    "Stone"
+  ]
+  
+};
+
+function initTypeSelectors(){
+
+    const tipo = document.getElementById("wTIPO");
+    const subtipo = document.getElementById("wSUBTIPO");
+
+    if(!tipo || !subtipo) return;
+
+
+    Object.keys(CATALOG_TYPES).forEach(t=>{
+
+        tipo.add(new Option(t,t));
+
+    });
+
+
+    tipo.addEventListener("change",()=>{
+
+        subtipo.innerHTML =
+        '<option value="">Seleccione subtipo</option>';
+
+
+        CATALOG_TYPES[tipo.value].forEach(s=>{
+
+            subtipo.add(new Option(s,s));
+
+        });
+
+    });
+
+}
+
+  
 
 
 
@@ -332,14 +512,26 @@ function openBatchWizard(){
             
               <div class="grid-2">
             
+               <div class="form-group">
+                <label style="font-size:12px;color:#777;">
+                  TIPO
+                </label>
+              
+                <select id="wTIPO">
+                    <option value="">Seleccione tipo</option>
+                </select>
+              
+              </div>
                 <div class="form-group">
-                  <label style="font-size:12px;color:#777;">TIPO</label>
-                  <input id="wTIPO" placeholder="Kitchen, Bar...">
-                </div>
-            
-                <div class="form-group">
-                  <label style="font-size:12px;color:#777;">SUBTIPO</label>
-                  <input id="wSUBTIPO" placeholder="Countertop...">
+                
+                  <label style="font-size:12px;color:#777;">
+                    SUBTIPO
+                  </label>
+                
+                  <select id="wSUBTIPO">
+                      <option value="">Seleccione subtipo</option>
+                  </select>
+                
                 </div>
             
               </div>
@@ -389,8 +581,14 @@ function openBatchWizard(){
 
   document.body.insertAdjacentHTML("beforeend", html);
   requestAnimationFrame(() => {
-  setTimeout(initDropZone, 100);
-});
+    setTimeout(()=>{
+  
+        initDropZone();
+        initTypeSelectors();
+  
+    },100);
+  
+  });
 }
 
 let isUploading = false; // 🔴 BLOQUEO GLOBAL
