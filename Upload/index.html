@@ -266,27 +266,27 @@ function openBatchWizard(){
                       pointer-events:none;
                     ">
                     <div id="selectedFilesInfo" style="
-                      margin-top:15px;
-                      font-size:13px;
-                      color:#555;
-                  ">
-            </div>
-
-          
-            <button onclick="goStep2()" style="
-              margin-top:20px;
-              width:100%;
-              padding:12px;
-              background:#000;
-              color:#fff;
-              border:none;
-              border-radius:8px;
-              font-size:14px;
-            ">
-              Continuar →
-            </button>
-          
-          </div>
+                            margin-top:15px;
+                            font-size:13px;
+                            color:#555;
+                      ">
+                      </div>                 
+                      </div>
+    
+                      <button onclick="goStep2()" style="
+                        margin-top:20px;
+                        width:100%;
+                        padding:12px;
+                        background:#000;
+                        color:#fff;
+                        border:none;
+                        border-radius:8px;
+                        font-size:14px;
+                      ">
+                        Continuar →
+                      </button>
+                    
+                    </div>
       
 
       <!-- STEP 2 -->
@@ -703,11 +703,12 @@ function initDropZone(){
   // =========================
   // CLICK (SEGURO)
   // =========================
-        drop.onclick = () => {
+    drop.addEventListener("click", function(e){
+    
+        input.click();
+    
+    });
       
-          input.click();
-      
-      };
      input.addEventListener("change", () => {
       updateSelectedFiles();
       });
