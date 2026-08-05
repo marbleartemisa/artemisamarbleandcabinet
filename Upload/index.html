@@ -28,17 +28,36 @@ header nav a {
 
 
 /* FORM */
+
 .form-group {
   display:flex;
   flex-direction:column;
-  margin-bottom:10px;
+  margin-bottom:16px;
+}
+
+.form-group label {
+  margin-bottom:6px;
+  font-weight:600;
 }
 
 .form-group input,
-.form-group textarea {
-  padding:8px;
+.form-group textarea,
+.form-group select {
+
+  width:100%;
+  padding:11px 12px;
+
   border:1px solid #ddd;
-  border-radius:6px;
+  border-radius:8px;
+
+  background:#fff;
+
+  font-size:14px;
+
+  box-sizing:border-box;
+
+  transition:0.2s;
+
 }
 
 /* MODAL FADE */
@@ -186,35 +205,22 @@ const gallery = document.getElementById("gallery");
   const CATALOG_TYPES = {
 
 Kitchen:[
-"Bookmarching",
-"Cabinet",
-"Cabinets",
+"Base Cabinet",
+"Wall Cabinet",
 "Columna",
 "Countertop",
-"Crystallo Top",
 "Custom Made",
-"Customizable",
-"Elegance",
-"Fireplace",
 "Full Backsplash",
 "Island",
-"Kitchen",
-"Led Light",
-"Luxury",
-"Special",
-"Top",
 "Translucido"
 ],
 
 Bathroom:[
-"Custom",
 "Custom Made",
 "Elegance",
 "Shower",
 "Sink Integrado",
-"Special",
 "Stone-clad walls",
-"Vanity",
 "Vanity Flotante",
 "Wall"
 ],
@@ -223,11 +229,7 @@ Bar:[
 "Barra",
 "Coffee Bar",
 "Countertop",
-"Furniture",
-"Led",
-"Luxury",
-"Special",
-"Top"
+"Furniture"
 ],
 
 Bedroom:[
@@ -396,16 +398,17 @@ function openBatchWizard(){
     z-index:2147483647;
   ">
 
-
-
-    <div style="
-      background:#fff;
-      width:600px;
-      padding:20px;
-      border-radius:12px;
-      position:relative;
-    ">
-
+      <div style="
+            background:#fff;
+            width:620px;
+            max-height:90vh;
+            overflow-y:auto;
+            padding:30px;
+            border-radius:18px;
+            position:relative;
+            box-shadow:0 20px 60px rgba(0,0,0,.25);
+            font-family:Inter,sans-serif;
+      ">
       <!-- BOTON CERRAR -->
       <span onclick="closeWizard()" style="
         position:absolute;
