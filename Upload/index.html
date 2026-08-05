@@ -441,7 +441,7 @@ function openBatchWizard(){
               <div style="font-size:12px;color:#777;">
                 o haz click para seleccionar
               </div>
-                <input type="file" id="wizFiles" multiple accept="image/*" style="
+                <input type="file" id="wizFiles" multiple accept="image/*,video/*" style="    
                       position:absolute;
                       width:1px;
                       height:1px;
@@ -609,6 +609,31 @@ async function uploadWizard(){
 
   const files = document.getElementById("wizFiles").files;
   const preview = document.getElementById("preview");
+
+  // =========================
+// VALIDACION VIDEOS MAX 30MB
+// =========================
+
+for(const file of files){
+
+  if(file.type.startsWith("video/")){
+
+    const maxVideoSize = 30 * 1024 * 1024; // 30 MB
+
+    if(file.size > maxVideoSize){
+
+      alert(
+        `❌ Video demasiado grande:\n\n${file.name}\n\nMáximo permitido: 30 MB`
+      );
+
+      isUploading = false;
+      return;
+
+    }
+
+  }
+
+}
 
   if(!files || files.length === 0){
     alert("Selecciona archivos primero");
@@ -784,9 +809,12 @@ function goStep3(){
   let html = "";
 
   for(let i=0;i<files.length;i++){
+
     const f = files[i];
     const url = URL.createObjectURL(f);
+
     setTimeout(()=> URL.revokeObjectURL(url), 5000);
+
 
     html += `
       <div style="
@@ -797,19 +825,42 @@ function goStep3(){
         padding:6px;
         border-bottom:1px solid #eee;
       ">
-        <img src="${url}" style="
-          width:60px;
-          height:60px;
-          object-fit:cover;
-          border-radius:6px;
-        ">
-        
+
+        ${
+          f.type.startsWith("video/")
+          ?
+          `
+          <video controls style="
+            width:60px;
+            height:60px;
+            object-fit:cover;
+            border-radius:6px;
+          ">
+            <source src="${url}">
+          </video>
+          `
+          :
+          `
+          <img src="${url}" style="
+            width:60px;
+            height:60px;
+            object-fit:cover;
+            border-radius:6px;
+          ">
+          `
+        }
+
+
         <div style="flex:1;">
-          <div style="font-size:14px;">${f.name}</div>
+          <div style="font-size:14px;">
+            ${f.name}
+          </div>
+
           <div style="font-size:12px;color:#666;">
-            ${(f.size/1024).toFixed(1)} KB
+            ${(f.size/1024/1024).toFixed(2)} MB
           </div>
         </div>
+
       </div>
     `;
   }
