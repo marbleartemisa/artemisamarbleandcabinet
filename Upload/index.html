@@ -538,18 +538,18 @@ function openBatchWizard(){
                 </div>
             
               </div>
-            
-              <button onclick="goStep3()" style="
-                width:100%;
-                padding:12px;
-                background:#000;
-                color:#fff;
-                border:none;
-                border-radius:8px;
-                margin-top:15px;
-              ">
-                Continuar →
-              </button>
+
+              <button onclick="validateStep2()" style="
+                  width:100%;
+                  padding:12px;
+                  background:#000;
+                  color:#fff;
+                  border:none;
+                  border-radius:8px;
+                  margin-top:15px;
+                ">
+                  Continuar →
+                </button>
             
             </div>
 
@@ -724,6 +724,58 @@ async function uploadWizard(){
   document.getElementById("step2").style.display = "block";
 }
 
+function validateStep2(){
+
+    const required = [
+
+        {
+            id:"wSTONE",
+            name:"STONE"
+        },
+
+        {
+            id:"wPROYECTOID",
+            name:"PROJECT"
+        },
+
+        {
+            id:"wLOOKINGFOR",
+            name:"LOOKING FOR"
+        },
+
+        {
+            id:"wTIPO",
+            name:"TYPE"
+        },
+
+        {
+            id:"wSUBTIPO",
+            name:"SUBTYPE"
+        }
+
+    ];
+    let missing=[];
+    required.forEach(field=>{
+        const value =
+        document.getElementById(field.id).value.trim();
+        if(!value){
+            missing.push(field.name);
+        }
+    });
+    if(missing.length>0){
+
+        alert(
+`⚠ Please complete the required fields:
+
+${missing.join("\n")}`
+        );
+        return;
+    }
+    // Todo correcto
+    goStep3();
+}
+
+  
 function goStep3(){
   document.getElementById("step2").style.display = "none";
   document.getElementById("step3").style.display = "block";
