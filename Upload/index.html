@@ -675,19 +675,21 @@ for(const file of files){
       bar.style.width = "40%";
 
       const payload = {
-            file: base64,
-            fileName: file.name,
-            STONE: document.getElementById("wSTONE").value,
-            PROYECTO: document.getElementById("wPROYECTOID").value,
-            MEMO: document.getElementById("wMEMO").value,
-            TIPO: document.getElementById("wTIPO").value,
-            SUBTIPO: document.getElementById("wSUBTIPO").value,
-          
-            // 🔥 NUEVOS CAMPOS
-            COLOURS: document.getElementById("wCOLOURS").value,
-            MATERIALES: document.getElementById("wMATERIALES").value,
-            LOOKINGFOR: document.getElementById("wLOOKINGFOR").value
-          };
+          file: base64,
+          fileName: file.name,
+          fileSize: file.size,
+        
+          STONE: document.getElementById("wSTONE").value,
+          PROYECTO: document.getElementById("wPROYECTOID").value,
+          MEMO: document.getElementById("wMEMO").value,
+          TIPO: document.getElementById("wTIPO").value,
+          SUBTIPO: document.getElementById("wSUBTIPO").value,
+        
+          COLOURS: document.getElementById("wCOLOURS").value,
+          MATERIALES: document.getElementById("wMATERIALES").value,
+          LOOKINGFOR: document.getElementById("wLOOKINGFOR").value
+        };
+
 
       // 🔥 IMPORTANTE: BACK TO ORIGINAL (SIN HEADERS)
       const res = await fetch(API, {
@@ -1107,29 +1109,72 @@ async function uploadBatch(){
 
   const files = document.getElementById("batchFiles").files;
 
+  if(!files || files.length===0){
+    alert("Selecciona archivos");
+    return;
+  }
+  for(const file of files){
+    const base64 = await fileToBase64(file);
+    const payload = {
 
-  const base = {
-    STONE: bSTONE.value,
-    PROYECTO: bPROYECTOID.value,
-    MEMO: bMEMO.value
-};
+      file: base64,
 
-  for(const f of files){
+      fileName:file.name,
 
-    const fd = new FormData();
-    fd.append("file", f);
+      STONE: document.getElementById("bSTONE").value,
 
-    Object.keys(base).forEach(k=>{
-      fd.append(k, base[k]);
+      PROYECTO:
+      document.getElementById("bPROYECTOID").value,
+
+      MEMO:
+      document.getElementById("bMEMO").value,
+
+      COLOURS:
+      document.getElementById("bCOLOURS")?.value || "",
+
+      MATERIALES:
+      document.getElementById("bMATERIALES")?.value || "",
+
+      LOOKINGFOR:
+      document.getElementById("bLOOKINGFOR")?.value || "",
+
+      TIPO:"",
+      SUBTIPO:""
+
+    };
+
+
+    const res = await fetch(API,{
+      method:"POST",
+      body:JSON.stringify(payload)
     });
 
-    await fetch(API,{method:"POST",body:fd});
+
+    const result = await res.json();
+
+
+    if(!result.success){
+
+      console.error(result);
+
+      alert(
+        "Error subiendo: "+file.name
+      );
+
+    }
+
   }
 
-  alert("Listo 🚀");
+
+  alert("Upload completo 🚀");
+
   document.getElementById("batchModal").remove();
+
   loadPhotos();
+
 }
+  
+
 
 // ========================================
 // PREVENT DEFAULT DRAG & DROP
