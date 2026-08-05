@@ -510,149 +510,223 @@ function renderGallery(category='all', reset=true){
   if(isLoading) return;
   isLoading = true;
 
+
   if(reset){
     gallery.innerHTML = '';
     currentIndex = 0;
     currentCategory = category;
   }
 
-  const filtered = photos.filter(p => 
+
+  const filtered = photos.filter(p =>
     (!p.ESTADO || p.ESTADO !== 'ELIMINADO') &&
     (category === 'all' || p.TIPO === category)
   );
+
+
   updateCounter(filtered, category);
-  const slice = filtered.slice(currentIndex, currentIndex + PAGE_SIZE);
+
+
+  const slice = filtered.slice(
+    currentIndex,
+    currentIndex + PAGE_SIZE
+  );
+
 
   if(slice.length === 0){
     isLoading = false;
     return;
   }
 
+
   const fragment = document.createDocumentFragment();
+
 
   slice.forEach(p => {
 
+
     const link = (p.LINK || "").trim();
+
     const match = link.match(/id=([^&]+)/);
+
     if(!match) return;
+
 
     const fileId = match[1];
 
-    const thumb = `https://lh3.googleusercontent.com/d/${fileId}=w800`;
-    const full  = `https://lh3.googleusercontent.com/d/${fileId}=s0`;
-    const isVideo = p.MIME && p.MIME.startsWith("video/");
-    
+
+    const isVideo =
+      p.MIME && p.MIME.startsWith("video/");
+
+
+    const thumb = isVideo
+      ? "https://cdn-icons-png.flaticon.com/512/1384/1384060.png"
+      : `https://lh3.googleusercontent.com/d/${fileId}=w800`;
+
+
+    const full = isVideo
+      ? `https://drive.google.com/uc?export=view&id=${fileId}`
+      : `https://lh3.googleusercontent.com/d/${fileId}=s0`;
+
+
+
     const item = document.createElement('div');
+
     item.className = 'grid-item';
+
     item.dataset.id = p.ID;
 
-    let adminButtons = '';
+
+
+    let adminButtons = "";
+
 
     if(isAdmin){
-      adminButtons = `
-        <button style="
-          position:absolute; top:8px; right:8px;
-          background:#f15a24; color:white;
-          border:none; border-radius:6px;
-          padding:5px 7px; cursor:pointer; z-index:10;
-        " onclick="event.stopPropagation(); editPhoto('${p.ID}')">✏️</button>
 
-        <button style="
-          position:absolute; top:8px; right:40px;
-          background:#d11a2a; color:white;
-          border:none; border-radius:6px;
-          padding:5px 7px; cursor:pointer; z-index:10;
-        " onclick="event.stopPropagation(); deletePhoto('${p.ID}')">🗑️</button>
+      adminButtons = `
+
+      <button style="
+      position:absolute;
+      top:8px;
+      right:8px;
+      background:#f15a24;
+      color:white;
+      border:none;
+      border-radius:6px;
+      padding:5px 7px;
+      cursor:pointer;
+      z-index:10;"
+      onclick="event.stopPropagation(); editPhoto('${p.ID}')">
+      ✏️
+      </button>
+
+
+      <button style="
+      position:absolute;
+      top:8px;
+      right:40px;
+      background:#d11a2a;
+      color:white;
+      border:none;
+      border-radius:6px;
+      padding:5px 7px;
+      cursor:pointer;
+      z-index:10;"
+      onclick="event.stopPropagation(); deletePhoto('${p.ID}')">
+      🗑️
+      </button>
+
       `;
     }
 
+
+
     item.innerHTML = `
-            ${
-          isVideo
-          ?
-          `
-          <a 
-           data-fancybox="gallery"
-           data-type="video"
-           href="${full}"
-          >
-          <video 
-           muted
-           autoplay
-           loop
-           playsinline
-           loading="lazy"
-           style="width:100%;display:block;">
-          <source src="${full}" type="${p.MIME}">
-          </video>
-          `
-          :
-          `
-          <a 
-           data-fancybox="gallery"
-           href="${full}"
-          >
-          <img 
-          src="${thumb}" 
-          loading="lazy"
-          onerror="this.closest('.grid-item').remove()">
-          `
-          }
+
+    ${
+      isVideo
+
+      ?
+
+      `
+
+      <a 
+      data-fancybox="gallery"
+      data-type="video"
+      href="${full}">
+
+
+      <video
+
+      muted
+      playsinline
+      preload="metadata"
+      poster="${thumb}"
+      style="width:100%;display:block;">
+
+      <source 
+      src="${full}" 
+      type="${p.MIME}">
+
+      </video>
+
+
+      `
+
+
+      :
+
+      `
+
+      <a
+      data-fancybox="gallery"
+      href="${full}">
+
+
+      <img
+      src="${thumb}"
+      loading="lazy"
+      onerror="this.closest('.grid-item').remove()">
+    `
+
+    }
+
 
     <div class="photo-overlay">
-      <div class="stone">${p.STONE || 'Unknown Stone'}</div>
-      <div class="proyecto">${p.PROYECTO || ''}</div>
-      <div class="memo">${p.MEMO || ''}</div>
+
+      <div class="stone">
+      ${p.STONE || 'Unknown Stone'}
+      </div>
+
+      <div class="proyecto">
+      ${p.PROYECTO || ''}
+      </div>
+
+      <div class="memo">
+      ${p.MEMO || ''}
+      </div>
     </div>
-  </a>
-
-  ${adminButtons}
-`;
-
-
+    </a>
+    ${adminButtons}
+    `;
     fragment.appendChild(item);
-
-    // 🔥 Pinterest resize
     resizeGridItem(item);
   });
-
   gallery.appendChild(fragment);
-
   currentIndex += PAGE_SIZE;
-
   Fancybox.bind("[data-fancybox='gallery']", {
+    animated:true,
+    dragToClose:false,
+    closeButton:"top",
+    showClass:"fancybox-zoomIn",
 
-  animated: true,
-  dragToClose: false,
+    hideClass:"fancybox-zoomOut",
+    Video:{
+      autoplay:true,
+      controls:true
+    },
+    Images:{
 
-  closeButton: "top",
-  showClass: "fancybox-zoomIn",
-  hideClass: "fancybox-zoomOut",
+      zoom:true,
 
-  Video: {
-    autoplay: true
-  },
+      wheel:"zoom",
 
-  Images: {
-    zoom: true,
-    wheel: "zoom",
-    click: "toggleZoom",
-    Panzoom: {
-      maxScale: 6
+      click:"toggleZoom",
+
+      Panzoom:{
+
+        maxScale:6
+      }
+    },
+    Toolbar:{
+      display:[
+        "zoom",
+        "fullscreen",
+        "close"
+      ]
     }
-  },
-
-  Toolbar: {
-    display: [
-      "zoom",
-      "fullscreen",
-      "close"
-    ]
-  }
-
-});
-
-  isLoading = false;
+  });
+  isLoading=false;
 }
 
 
@@ -667,160 +741,298 @@ function updateCounter(filteredList, category){
   `;
 }
   
-  function renderSearch(query){
+function renderSearch(query){
 
-  // 🔥 reset total
-  gallery.innerHTML = '';
-  currentIndex = 0;
 
-if(!query){
-  isSearching = false; // 🔥 DESACTIVA búsqueda
-  renderGallery(currentCategory, true);
-  return;
-}
+  gallery.innerHTML='';
 
-isSearching = true; // 🔥 ACTIVA búsqueda
+  currentIndex=0;
 
-  const filtered = photos.filter(p => {
+
+
+  if(!query){
+
+    isSearching=false;
+
+    renderGallery(currentCategory,true);
+
+    return;
+
+  }
+
+
+
+  isSearching=true;
+
+
+
+  const filtered = photos.filter(p=>{
+
 
     const text = `
-      ${p.STONE || ''}
-      ${p.PROYECTO || ''}
-      ${p.MEMO || ''}
-      ${p.COLOURS || ''}
-      ${p.MATERIALES || ''}
-      ${p.LOOKINGFOR || ''}
-      ${p.TIPO || ''}
-      ${p.SUBTIPO || ''}
+
+    ${p.STONE || ''}
+
+    ${p.PROYECTO || ''}
+
+    ${p.MEMO || ''}
+
+    ${p.COLOURS || ''}
+
+    ${p.MATERIALES || ''}
+
+    ${p.LOOKINGFOR || ''}
+
+    ${p.TIPO || ''}
+
+    ${p.SUBTIPO || ''}
+
     `.toLowerCase();
 
-    const palabras = query.split(/\s+/).filter(Boolean);
-    const coincide = palabras.every(p => text.includes(p));
-    return coincide;
+
+
+    const palabras =
+    query.split(/\s+/).filter(Boolean);
+
+
+
+    return palabras.every(
+      palabra => text.includes(palabra)
+    );
+
+
   });
 
-  updateCounter(filtered, "Search");
-    
-  // 🔥 render directo (sin paginación para búsqueda)
-  const fragment = document.createDocumentFragment();
 
-  filtered.forEach(p => {
 
-    const link = (p.LINK || "").trim();
-    const match = link.match(/id=([^&]+)/);
-    if(!match) return;
+  updateCounter(filtered,"Search");
 
-    const fileId = match[1];
 
-    const thumb = `https://lh3.googleusercontent.com/d/${fileId}=w800`;
-    const full  = `https://lh3.googleusercontent.com/d/${fileId}=s0`;
-    const isVideo = p.MIME && p.MIME.startsWith("video/");
-    
-    const item = document.createElement('div');
-    item.className = 'grid-item';
-    item.dataset.id = p.ID;
-    
-    let adminButtons = '';
 
-    if(isAdmin){
-      adminButtons = `
-        <button style="
-          position:absolute; top:8px; right:8px;
-          background:#f15a24; color:white;
-          border:none; border-radius:6px;
-          padding:5px 7px; cursor:pointer; z-index:10;
-        " onclick="event.stopPropagation(); editPhoto('${p.ID}')">✏️</button>
+  const fragment =
+  document.createDocumentFragment();
 
-        <button style="
-          position:absolute; top:8px; right:40px;
-          background:#d11a2a; color:white;
-          border:none; border-radius:6px;
-          padding:5px 7px; cursor:pointer; z-index:10;
-        " onclick="event.stopPropagation(); deletePhoto('${p.ID}')">🗑️</button>
-      `;
+
+
+  filtered.forEach(p=>{
+
+
+    const link=(p.LINK || "").trim();
+
+
+    const match =
+    link.match(/id=([^&]+)/);
+
+
+    if(!match)return;
+
+
+
+    const fileId=match[1];
+
+
+
+    const isVideo =
+    p.MIME && p.MIME.startsWith("video/");
+
+
+
+    const thumb=isVideo
+
+    ?
+
+    "https://cdn-icons-png.flaticon.com/512/1384/1384060.png"
+
+    :
+
+    `https://lh3.googleusercontent.com/d/${fileId}=w800`;
+
+
+
+    const full=isVideo
+
+    ?
+
+    `https://drive.google.com/uc?export=view&id=${fileId}`
+
+    :
+
+    `https://lh3.googleusercontent.com/d/${fileId}=s0`;
+
+
+
+
+    const item=document.createElement('div');
+
+
+    item.className='grid-item';
+
+
+    item.dataset.id=p.ID;
+
+
+
+
+    item.innerHTML=`
+
+
+    ${
+      isVideo
+
+      ?
+
+      `
+
+      <a
+      data-fancybox="gallery"
+      data-type="video"
+      href="${full}">
+
+
+      <video
+
+      muted
+      playsinline
+      preload="metadata"
+      poster="${thumb}"
+      style="width:100%;display:block;">
+
+
+      <source
+      src="${full}"
+      type="${p.MIME}">
+
+
+      </video>
+
+
+      `
+
+
+      :
+
+
+      `
+
+      <a
+      data-fancybox="gallery"
+      href="${full}">
+
+
+      <img
+
+      src="${thumb}"
+
+      loading="lazy">
+
+
+      `
+
     }
 
-    item.innerHTML = `
-          ${
-          isVideo
-          ?
-          `
-          <a 
-           data-fancybox="gallery"
-           data-type="video"
-           href="${full}"
-          >
-          <video 
-           muted
-           autoplay
-           loop
-           playsinline
-           loading="lazy"
-           style="width:100%;display:block;">
-          <source src="${full}" type="${p.MIME}">
-          </video>
-          `
-          :
-          `
-          <a 
-           data-fancybox="gallery"
-           href="${full}"
-          >
-          <img 
-          src="${thumb}" 
-          loading="lazy"
-          onerror="this.closest('.grid-item').remove()">
-          `
-          }
+
 
     <div class="photo-overlay">
-      <div class="stone">${p.STONE || 'Unknown Stone'}</div>
-      <div class="proyecto">${p.PROYECTO || ''}</div>
-      <div class="memo">${p.MEMO || ''}</div>
-    </div>
-  </a>
 
-  ${adminButtons}
-`;
+
+    <div class="stone">
+    ${p.STONE || 'Unknown Stone'}
+    </div>
+
+
+    <div class="proyecto">
+    ${p.PROYECTO || ''}
+    </div>
+
+
+    <div class="memo">
+    ${p.MEMO || ''}
+    </div>
+
+
+    </div>
+
+
+    </a>
+
+
+
+    `;
+
 
 
     fragment.appendChild(item);
+
+
     resizeGridItem(item);
+
+
   });
+
+
 
   gallery.appendChild(fragment);
 
-Fancybox.bind("[data-fancybox='gallery']", {
 
-  animated: true,
-  dragToClose: false,
 
-  closeButton: "top",
-  showClass: "fancybox-zoomIn",
-  hideClass: "fancybox-zoomOut",
 
-  Video: {
-    autoplay: true
-  },
+  Fancybox.bind("[data-fancybox='gallery']", {
 
-  Images: {
-    zoom: true,
-    wheel: "zoom",
-    click: "toggleZoom",
-    Panzoom: {
-      maxScale: 6
-    }
-  },
 
-  Toolbar: {
-    display: [
+    animated:true,
+
+    dragToClose:false,
+
+
+    closeButton:"top",
+
+
+
+    Video:{
+
+      autoplay:true,
+
+      controls:true
+
+    },
+
+
+
+    Images:{
+
+      zoom:true,
+
+      wheel:"zoom",
+
+      click:"toggleZoom",
+
+      Panzoom:{
+
+        maxScale:6
+
+      }
+
+    },
+
+
+    Toolbar:{
+
+      display:[
+
       "zoom",
-      "fullscreen",
-      "close"
-    ]
-  }
 
-});
+      "fullscreen",
+
+      "close"
+
+      ]
+
+    }
+
+
+  });
+
+
 }
   
 // =========================
