@@ -568,8 +568,6 @@ async function loadPhotos(){
 
   }
 }
-
-
   
 function createFilters(){
   const tipos = [...new Set(photos.map(p => p.TIPO).filter(Boolean))];
@@ -777,7 +775,7 @@ function renderGallery(category='all', reset=true){
     ${adminButtons}
     `;
     fragment.appendChild(item);
- //   resizeGridItem(item);
+ // resizeGridItem(item);
   });
   gallery.appendChild(fragment);
   currentIndex += PAGE_SIZE;
