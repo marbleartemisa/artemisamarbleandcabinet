@@ -653,11 +653,10 @@ function renderGallery(category='all', reset=true){
       p.MIME && p.MIME.startsWith("video/");
 
 
-    const thumb = isVideo
+      const thumb = isVideo
       ? "https://cdn-icons-png.flaticon.com/512/1384/1384060.png"
-      : `https://lh3.googleusercontent.com/d/${fileId}=w800`;
-
-
+      : `https://lh3.googleusercontent.com/d/${fileId}=w400`;
+     
       const full = isVideo
       ? `https://drive.google.com/file/d/${fileId}/preview`
       : `https://lh3.googleusercontent.com/d/${fileId}=s0`;
@@ -917,33 +916,19 @@ function renderSearch(query){
     if(!match)return;
 
 
-
     const fileId=match[1];
-
-
 
     const isVideo =
     p.MIME && p.MIME.startsWith("video/");
 
 
-
-    const thumb=isVideo
-
-    ?
-
-    "https://cdn-icons-png.flaticon.com/512/1384/1384060.png"
-
-    :
-
-    `https://lh3.googleusercontent.com/d/${fileId}=w800`;
-
-
+      const thumb = isVideo
+      ? "https://cdn-icons-png.flaticon.com/512/1384/1384060.png"
+      : `https://lh3.googleusercontent.com/d/${fileId}=w400`;
 
        const full = isVideo
     ? `https://drive.google.com/file/d/${fileId}/preview`
     : `https://lh3.googleusercontent.com/d/${fileId}=s0`;
-
-
 
 
     const item=document.createElement('div');
