@@ -564,8 +564,8 @@ function renderGallery(category='all', reset=true){
       : `https://lh3.googleusercontent.com/d/${fileId}=w800`;
 
 
-    const full = isVideo
-      ? `https://drive.google.com/uc?export=view&id=${fileId}`
+      const full = isVideo
+      ? `https://drive.google.com/file/d/${fileId}/preview`
       : `https://lh3.googleusercontent.com/d/${fileId}=s0`;
 
 
@@ -632,23 +632,20 @@ function renderGallery(category='all', reset=true){
 
       <a 
       data-fancybox="gallery"
-      data-type="video"
+      data-type="iframe"
       href="${full}">
 
 
-      <video
-
-      muted
-      playsinline
-      preload="metadata"
-      poster="${thumb}"
-      style="width:100%;display:block;">
-
-      <source 
-      src="${full}" 
-      type="${p.MIME}">
-
-      </video>
+      <iframe
+      src="${full}"
+      style="
+      width:100%;
+      height:260px;
+      border:none;
+      display:block;
+      "
+      allow="autoplay">
+      </iframe>
 
 
       `
@@ -849,15 +846,9 @@ function renderSearch(query){
 
 
 
-    const full=isVideo
-
-    ?
-
-    `https://drive.google.com/uc?export=view&id=${fileId}`
-
-    :
-
-    `https://lh3.googleusercontent.com/d/${fileId}=s0`;
+       const full = isVideo
+    ? `https://drive.google.com/file/d/${fileId}/preview`
+    : `https://lh3.googleusercontent.com/d/${fileId}=s0`;
 
 
 
@@ -885,25 +876,19 @@ function renderSearch(query){
 
       <a
       data-fancybox="gallery"
-      data-type="video"
+      data-type="iframe"
       href="${full}">
 
-
-      <video
-
-      muted
-      playsinline
-      preload="metadata"
-      poster="${thumb}"
-      style="width:100%;display:block;">
-
-
-      <source
+      <iframe
       src="${full}"
-      type="${p.MIME}">
-
-
-      </video>
+      style="
+      width:100%;
+      height:260px;
+      border:none;
+      display:block;
+      "
+      allow="autoplay">
+      </iframe>
 
 
       `
