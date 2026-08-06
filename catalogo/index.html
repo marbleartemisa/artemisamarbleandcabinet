@@ -24,13 +24,11 @@ header nav a:hover { text-decoration:underline; }
 .grid {
   display:grid;
   grid-template-columns:repeat(auto-fill, minmax(280px, 1fr));
-  grid-auto-rows:8px;
   gap:12px;
   max-width:1200px;
   margin:0 auto;
   padding:10px;
 }
-
 
 /* =========================
    ITEM
@@ -779,7 +777,7 @@ function renderGallery(category='all', reset=true){
     ${adminButtons}
     `;
     fragment.appendChild(item);
-    resizeGridItem(item);
+ //   resizeGridItem(item);
   });
   gallery.appendChild(fragment);
   currentIndex += PAGE_SIZE;
@@ -1026,7 +1024,7 @@ function renderSearch(query){
     fragment.appendChild(item);
 
 
-    resizeGridItem(item);
+   // resizeGridItem(item);
 
 
   });
