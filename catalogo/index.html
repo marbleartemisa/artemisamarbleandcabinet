@@ -17,83 +17,165 @@ header nav a:hover { text-decoration:underline; }
 .filters { text-align:center; margin:20px 0; }
 .filters button { padding:10px 20px; margin:5px; border:none; background:#222; color:#fff; cursor:pointer; border-radius:4px; transition:0.3s;}
 .filters button.active, .filters button:hover { background:#f15a24; }
+/* =========================
+   GALERÍA MASONRY
+========================= */
 
 .grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  grid-auto-rows: 8px; /* 🔥 base masonry */
-  gap: 12px;
+  display:grid;
+  grid-template-columns:repeat(auto-fill, minmax(280px, 1fr));
+  grid-auto-rows:8px;
+  gap:12px;
   max-width:1200px;
   margin:0 auto;
   padding:10px;
 }
-  .grid-item {
-  position: relative;
-  overflow: hidden;
+
+
+/* =========================
+   ITEM
+========================= */
+
+.grid-item {
+  position:relative;
+  overflow:hidden;
   border-radius:10px;
+  cursor:pointer;
 }
 
-/* 🔥 EFECTO BLUR LOADING */
+
+/* =========================
+   IMÁGENES
+========================= */
+
 .grid-item img {
+
   width:100%;
   height:auto;
   display:block;
-  filter: blur(12px);
-  transform: scale(1.05);
-  transition: 
-    filter 0.4s ease,
-    transform 0.4s ease,
-    opacity 0.4s ease;
-  opacity: 0;
+
+  opacity:1;
+  filter:none;
+
+  transform:scale(1);
+  transition:
+    transform .35s ease,
+    filter .35s ease;
 }
 
-/* cuando carga */
-.grid-item img.loaded {
-  filter: blur(0);
-  transform: scale(1);
-  opacity: 1;
-}
-
-.grid-item {
-  cursor:pointer;
-  position: relative; /* 👈 ESTA ES LA CLAVE */
-}
-
-
-
-.grid-item img:hover {
-  transform: scale(1.03);
-}
-
-.grid-item button {
-  opacity: 0.9;
-}
-.grid-item button:hover {
-  opacity: 1;
-  transform: scale(1.1);
-}
 
 /* =========================
-   HOVER INFO OVERLAY PRO
+   VIDEOS
 ========================= */
-.grid-item .photo-overlay{
+
+.grid-item video {
+
+  width:100%;
+  height:auto;
+  display:block;
+
+  border-radius:10px;
+
+  object-fit:cover;
+
+  transition:
+    transform .35s ease;
+}
+
+
+/* =========================
+   HOVER IMAGEN / VIDEO
+========================= */
+
+.grid-item:hover img,
+.grid-item:hover video {
+
+  transform:scale(1.04);
+
+}
+
+
+/* =========================
+   BOTONES ADMIN
+========================= */
+
+.grid-item button {
+
+  opacity:.9;
+  transition:.25s ease;
+
+}
+
+
+.grid-item button:hover {
+
+  opacity:1;
+  transform:scale(1.1);
+
+}
+
+
+/* =========================
+   OVERLAY INFORMACIÓN
+========================= */
+
+.grid-item .photo-overlay {
+
   position:absolute;
   inset:0;
+
   background:linear-gradient(
     to top,
-    rgba(0,0,0,0.78) 0%,
-    rgba(0,0,0,0.45) 35%,
-    rgba(0,0,0,0.10) 100%
+    rgba(0,0,0,.80) 0%,
+    rgba(0,0,0,.45) 35%,
+    rgba(0,0,0,.10) 100%
   );
-  color:#fff;
+
+  color:white;
+
   display:flex;
   flex-direction:column;
   justify-content:flex-end;
+
   padding:18px;
+
   opacity:0;
+
   transform:translateY(12px);
-  transition:all .35s ease;
+
+  transition:
+    opacity .35s ease,
+    transform .35s ease;
+
   pointer-events:none;
+
+}
+
+
+/* línea naranja superior */
+
+.photo-overlay::before {
+
+  content:"";
+
+  width:40px;
+  height:3px;
+
+  background:#f15a24;
+
+  margin-bottom:10px;
+
+}
+
+
+/* mostrar información */
+
+.grid-item:hover .photo-overlay {
+
+  opacity:1;
+
+  transform:translateY(0);
+
 }
 
   /* 👇 AQUÍ */
