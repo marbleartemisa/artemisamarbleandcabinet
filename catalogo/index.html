@@ -48,7 +48,6 @@ header nav a:hover { text-decoration:underline; }
 
 }
 
-
 /* =========================
    IMAGEN
 ========================= */
@@ -100,6 +99,15 @@ header nav a:hover { text-decoration:underline; }
 
 }
 
+.grid-item img,
+.grid-item video {
+
+  width:100%;
+  height:100%;
+
+  object-fit:cover;
+
+}
 
 /* =========================
    BOTONES ADMIN
@@ -527,7 +535,6 @@ async function loadPhotos(){
       const res = await fetch(API);
       const data = await res.json();
       
-      console.log("DATA BACKEND:", data);
       
       photos = data.map(p => {
         return {
@@ -551,10 +558,6 @@ async function loadPhotos(){
         };
       });
 
-
-    
-    console.log("DATA BACKEND:", data);
-    console.log("PHOTOS FILTRADAS:", photos);
 
    localStorage.setItem('photos', JSON.stringify(photos));
 
@@ -1101,9 +1104,7 @@ function renderSearch(query){
 // =========================
 function editPhoto(photoID){
   const photo = photos.find(p => p.ID === photoID);
-  console.log("PHOTO EN MODAL:", photo);
-  console.log("PHOTO OBJETO:", photo);
-  console.log("PROYECTO EN OBJ:", photo.PROYECTO);
+
   if(!photo) return;
 
   const formHtml = `
