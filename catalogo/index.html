@@ -35,60 +35,68 @@ header nav a:hover { text-decoration:underline; }
 ========================= */
 
 .grid-item {
+
   position:relative;
   overflow:hidden;
   border-radius:10px;
+
   cursor:pointer;
+
+  background:#eee;
+
+  aspect-ratio: 4 / 3;
+
 }
 
 
 /* =========================
-   IMÁGENES
+   IMAGEN
 ========================= */
 
 .grid-item img {
 
   width:100%;
-  height:auto;
+  height:100%;
+
+  object-fit:cover;
+
   display:block;
 
-  opacity:1;
-  filter:none;
-
-  transform:scale(1);
   transition:
-    transform .35s ease,
-    filter .35s ease;
+  transform .35s ease,
+  filter .35s ease;
+
 }
 
 
 /* =========================
-   VIDEOS
+   VIDEO
 ========================= */
 
 .grid-item video {
 
   width:100%;
-  height:auto;
+  height:100%;
+
+  object-fit:cover;
+
   display:block;
 
   border-radius:10px;
 
-  object-fit:cover;
-
-  transition:
-    transform .35s ease;
 }
 
 
+
 /* =========================
-   HOVER IMAGEN / VIDEO
+   HOVER
 ========================= */
+
 
 .grid-item:hover img,
 .grid-item:hover video {
 
-  transform:scale(1.04);
+ transform:scale(1.04);
 
 }
 
