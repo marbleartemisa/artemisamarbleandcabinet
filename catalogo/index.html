@@ -897,7 +897,15 @@ function renderSearch(query){
 
 
   filtered.forEach(p=>{
-
+   
+     console.log(
+       "SEARCH ADMIN:",
+       isAdmin,
+       "PHOTO:",
+       p.ID,
+       p.PROYECTO,
+       p.STONE
+     );
 
     const link = (p.LINK || "").trim();
 
