@@ -1047,7 +1047,6 @@ function renderSearch(query){
   gallery.innerHTML = '';
   currentIndex = 0;
 
-
   // =========================
   // LIMPIAR BUSQUEDA
   // =========================
@@ -1055,14 +1054,12 @@ function renderSearch(query){
   if(!query){
 
     isSearching = false;
-    renderGallery(currentCategory,true);
+    renderGallery(currentCategory, true);
     return;
 
   }
 
-
   isSearching = true;
-
 
   // =========================
   // FILTRO
@@ -1073,11 +1070,9 @@ function renderSearch(query){
     .split(/\s+/)
     .filter(Boolean);
 
-
-  const filtered = photos.filter(p=>{
+  const filtered = photos.filter(p => {
 
     const text = `
-
       ${p.STONE || ''}
       ${p.PROYECTO || ''}
       ${p.MEMO || ''}
@@ -1086,9 +1081,7 @@ function renderSearch(query){
       ${p.LOOKINGFOR || ''}
       ${p.TIPO || ''}
       ${p.SUBTIPO || ''}
-
     `.toLowerCase();
-
 
     return palabras.every(word =>
       text.includes(word)
@@ -1097,17 +1090,14 @@ function renderSearch(query){
   });
 
 
-
-  updateCounter(filtered,"Search");
-
+  updateCounter(filtered, "Search");
 
 
   const fragment =
     document.createDocumentFragment();
 
 
-
-  filtered.forEach(p=>{
+  filtered.forEach(p => {
 
     const link = (p.LINK || "").trim();
 
@@ -1119,27 +1109,27 @@ function renderSearch(query){
     const fileId = match[1];
 
 
+    // =========================
+    // VIDEO / FOTO
+    // =========================
+
     const isVideo =
       p.MIME &&
       p.MIME.startsWith("video/");
 
 
-
     const thumb = isVideo
-
       ? "https://cdn-icons-png.flaticon.com/512/1384/1384060.png"
-
       : `https://lh3.googleusercontent.com/d/${fileId}=w400`;
 
 
+    // 🔥 IMPORTANTE:
+    // Para VIDEO usamos exactamente
+    // el mismo preview que renderGallery()
 
     const full = isVideo
-
-      ? `https://drive.google.com/uc?export=view&id=${fileId}`
-
+      ? `https://drive.google.com/file/d/${fileId}/preview`
       : `https://lh3.googleusercontent.com/d/${fileId}=s0`;
-
-
 
 
     // =========================
@@ -1153,48 +1143,47 @@ function renderSearch(query){
 
       adminButtons = `
 
-
-      <button style="
-        position:absolute;
-        top:8px;
-        right:8px;
-        background:#f15a24;
-        color:white;
-        border:none;
-        border-radius:6px;
-        padding:5px 7px;
-        cursor:pointer;
-        z-index:10;
-      "
-      onclick="event.stopPropagation(); editPhoto('${p.ID}')">
-      ✏️
-      </button>
-
+        <button style="
+          position:absolute;
+          top:8px;
+          right:8px;
+          background:#f15a24;
+          color:white;
+          border:none;
+          border-radius:6px;
+          padding:5px 7px;
+          cursor:pointer;
+          z-index:10;
+        "
+        onclick="event.stopPropagation(); editPhoto('${p.ID}')">
+          ✏️
+        </button>
 
 
-      <button style="
-        position:absolute;
-        top:8px;
-        right:40px;
-        background:#d11a2a;
-        color:white;
-        border:none;
-        border-radius:6px;
-        padding:5px 7px;
-        cursor:pointer;
-        z-index:10;
-      "
-      onclick="event.stopPropagation(); deletePhoto('${p.ID}')">
-      🗑️
-      </button>
-
+        <button style="
+          position:absolute;
+          top:8px;
+          right:40px;
+          background:#d11a2a;
+          color:white;
+          border:none;
+          border-radius:6px;
+          padding:5px 7px;
+          cursor:pointer;
+          z-index:10;
+        "
+        onclick="event.stopPropagation(); deletePhoto('${p.ID}')">
+          🗑️
+        </button>
 
       `;
 
     }
 
 
-
+    // =========================
+    // CREAR ITEM
+    // =========================
 
     const item =
       document.createElement("div");
@@ -1205,181 +1194,132 @@ function renderSearch(query){
     item.dataset.id = p.ID;
 
 
-
     item.innerHTML = `
 
+      ${
+        isVideo
 
-    ${
-      isVideo
+        ?
 
-      ?
+        `
 
-      `
+          <a
+            data-fancybox="gallery"
+            data-type="iframe"
+            href="${full}"
+          >
 
-      <a
-      data-fancybox="gallery"
-      data-type="video"
-      href="${full}">
+            <div class="video-container">
 
+              <iframe
+                src="${full}"
+                allow="autoplay; fullscreen"
+                allowfullscreen>
+              </iframe>
 
-      <video
+            </div>
 
-      muted
-      autoplay
-      loop
-      playsinline
+        `
 
-      style="
-      width:100%;
-      display:block;
-      border-radius:10px;
-      "
+        :
 
-      >
+        `
 
-      <source src="${full}" type="${p.MIME}">
+          <a
+            data-fancybox="gallery"
+            href="${full}"
+          >
 
-      </video>
+            <img
+              src="${thumb}"
+              loading="lazy"
+              onerror="this.closest('.grid-item').remove()"
+            >
 
-
-      `
-
-
-      :
-
-
-      `
-
-
-      <a
-      data-fancybox="gallery"
-      href="${full}">
+        `
+      }
 
 
-      <img
+      <div class="photo-overlay">
 
-      src="${thumb}"
+        <div class="stone">
+          ${p.STONE || "Unknown Stone"}
+        </div>
 
-      loading="lazy"
+        <div class="proyecto">
+          ${p.PROYECTO || ""}
+        </div>
 
-      >
-
-
-      `
-
-    }
-
-
-
-
-    <div class="photo-overlay">
-
-
-      <div class="stone">
-
-      ${p.STONE || "Unknown Stone"}
+        <div class="memo">
+          ${p.MEMO || ""}
+        </div>
 
       </div>
 
+      </a>
 
-
-      <div class="proyecto">
-
-      ${p.PROYECTO || ""}
-
-      </div>
-
-
-
-      <div class="memo">
-
-      ${p.MEMO || ""}
-
-      </div>
-
-
-    </div>
-
-
-
-    </a>
-
-
-    ${adminButtons}
-
+      ${adminButtons}
 
     `;
 
 
-
     fragment.appendChild(item);
-
 
   });
 
 
-
   gallery.appendChild(fragment);
-
 
 
   // =========================
   // FANCYBOX
   // =========================
 
+  Fancybox.bind(
+    "[data-fancybox='gallery']",
+    {
 
-  Fancybox.bind("[data-fancybox='gallery']",{
+      animated:true,
 
+      dragToClose:false,
 
-    animated:true,
+      closeButton:"top",
 
-    dragToClose:false,
+      showClass:"fancybox-zoomIn",
 
+      hideClass:"fancybox-zoomOut",
 
-    closeButton:"top",
+      Video:{
+        autoplay:true,
+        controls:true
+      },
 
+      Images:{
 
-    Video:{
+        zoom:true,
 
-      autoplay:true,
-      controls:true
+        wheel:"zoom",
 
-    },
+        click:"toggleZoom",
 
+        Panzoom:{
+          maxScale:6
+        }
 
-    Images:{
+      },
 
-      zoom:true,
+      Toolbar:{
 
-      wheel:"zoom",
-
-      click:"toggleZoom",
-
-      Panzoom:{
-
-        maxScale:6
+        display:[
+          "zoom",
+          "fullscreen",
+          "close"
+        ]
 
       }
 
-    },
-
-
-    Toolbar:{
-
-      display:[
-
-        "zoom",
-        "fullscreen",
-        "close"
-
-      ]
-
     }
-
-
-  });
-
-
+  );
 
 }
   
