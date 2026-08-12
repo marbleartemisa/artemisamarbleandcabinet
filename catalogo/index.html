@@ -34,7 +34,6 @@ header nav a:hover { text-decoration:underline; }
 ========================= */
 
 .grid-item {
-
   position:relative;
   overflow:hidden;
   border-radius:10px;
@@ -42,6 +41,7 @@ header nav a:hover { text-decoration:underline; }
   background:#eee;
   aspect-ratio: 4 / 3;
 }
+
 
 /* =========================
    IMAGEN
@@ -400,61 +400,7 @@ header nav a:hover { text-decoration:underline; }
   100% { transform: rotate(360deg);}
 }
 
-.video-container{
-    width:100%;
-    aspect-ratio:16 / 9;
-    overflow:hidden;
-    position:relative;
-    border-radius:12px;
-}
 
-
-.video-container iframe{
-    width:100%;
-    height:100%;
-    border:0;
-    display:block;
-}
-
-.video-container {
-    position: relative;
-    width: 100%;
-    aspect-ratio: 16 / 9;
-    overflow: hidden;
-    background: #eee;
-}
-
-.video-thumbnail {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: center;
-    display: block;
-}
-
-.video-play {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-
-    width: 64px;
-    height: 64px;
-
-    border-radius: 14px;
-
-    background: rgba(0, 0, 0, 0.88);
-    color: white;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    font-size: 28px;
-    line-height: 1;
-
-    pointer-events: none;
-}
 
 /* =========================================
    GALLERY OVERLAY
@@ -465,53 +411,7 @@ header nav a:hover { text-decoration:underline; }
     overflow: hidden;
 }
 
-.grid-item > a {
-    display: block;
-    position: relative;
-}
 
-.photo-overlay {
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 0;
-
-    z-index: 5;
-
-    opacity: 0;
-    visibility: hidden;
-
-    transition:
-        opacity 0.25s ease,
-        visibility 0.25s ease;
-
-    pointer-events: none;
-}
-
-.grid-item:hover .photo-overlay {
-    opacity: 1;
-    visibility: visible;
-}
-.video-container {
-    position: relative;
-    width: 100%;
-    aspect-ratio: 16 / 9;
-    overflow: hidden;
-    background: #eee;
-}
-
-.video-thumbnail {
-    display: block;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: center;
-}
-
-.grid-item > a > img {
-    display: block;
-    width: 100%;
-}  
    
 </style>
 </head>
@@ -1122,9 +1022,9 @@ function renderGallery(category='all', reset=true){
     const isVideo =
       p.MIME && p.MIME.startsWith("video/");
 
-     const thumb = isVideo
-        ? `https://drive.google.com/thumbnail?id=${fileId}&sz=w640`
-        : `https://lh3.googleusercontent.com/d/${fileId}=w400`;
+   const thumb = isVideo
+       ? `https://drive.google.com/thumbnail?id=${fileId}&sz=w1200`
+       : `https://lh3.googleusercontent.com/d/${fileId}=w400`;
      
       const full = isVideo
       ? `https://drive.google.com/file/d/${fileId}/preview`
@@ -1193,25 +1093,14 @@ ${
   `
 
   <a
-    data-fancybox="gallery"
-    data-type="iframe"
     href="${full}"
-    class="video-thumb-link">
+    data-fancybox="gallery"
+    data-type="iframe">
 
-    <div class="video-container">
-
-      <img
-        src="${thumb}"
-        loading="lazy"
-        class="video-thumbnail"
-        onerror="this.src='https://cdn-icons-png.flaticon.com/512/1384/1384060.png'"
-      >
-
-      <div class="video-play">
-        ▶
-      </div>
-
-    </div>
+    <img
+      src="${thumb}"
+      loading="lazy"
+    >
 
 
       `
@@ -1258,36 +1147,34 @@ ${
   gallery.appendChild(fragment);
   currentIndex += PAGE_SIZE;
 
-  Fancybox.bind("[data-fancybox='gallery']", {
-    animated: true,
+Fancybox.destroy();
 
-    dragToClose: false,
+Fancybox.bind(
+    "[data-fancybox='gallery']",
+    {
 
-    showClass: "fancybox-zoomIn",
-    hideClass: "fancybox-zoomOut",
+        Thumbs: false,
 
-    Video: {
-        autoplay: true,
-        controls: true
-    },
+        Toolbar: {
 
-    Images: {
-        zoom: true,
-        wheel: "zoom",
-        click: "toggleZoom",
+            display: [
+                "zoom",
+                "fullscreen",
+                "close"
+            ]
 
-        Panzoom: {
-            maxScale: 6
+        },
+
+        Iframe: {
+            preload: true
+        },
+
+        Video: {
+            autoplay: true
         }
-    },
 
-    Toolbar: {
-        display: [
-            "close",
-            "fullscreen"
-        ]
     }
-}); 
+);
    isLoading=false;
 }
 
@@ -1380,8 +1267,8 @@ function renderSearch(query){
 
 
      const thumb = isVideo
-        ? `https://drive.google.com/thumbnail?id=${fileId}&sz=w640`
-        : `https://lh3.googleusercontent.com/d/${fileId}=w400`;
+       ? `https://drive.google.com/thumbnail?id=${fileId}&sz=w1200`
+       : `https://lh3.googleusercontent.com/d/${fileId}=w400`;
 
 
     // 🔥 IMPORTANTE:
@@ -1465,25 +1352,14 @@ ${
   `
 
   <a
-    data-fancybox="gallery"
-    data-type="iframe"
     href="${full}"
-    class="video-thumb-link">
+    data-fancybox="gallery"
+    data-type="iframe">
 
-    <div class="video-container">
-
-      <img
-        src="${thumb}"
-        loading="lazy"
-        class="video-thumbnail"
-        onerror="this.src='https://cdn-icons-png.flaticon.com/512/1384/1384060.png'"
-      >
-
-      <div class="video-play">
-        ▶
-      </div>
-
-    </div>
+    <img
+      src="${thumb}"
+      loading="lazy"
+    >
 
         `
 
@@ -1540,36 +1416,34 @@ ${
   // =========================
   // FANCYBOX
   // =========================
-Fancybox.bind("[data-fancybox='gallery']", {
-    animated: true,
-
-    dragToClose: false,
-
-    showClass: "fancybox-zoomIn",
-    hideClass: "fancybox-zoomOut",
-
-    Video: {
-        autoplay: true,
-        controls: true
-    },
-
-    Images: {
-        zoom: true,
-        wheel: "zoom",
-        click: "toggleZoom",
-
-        Panzoom: {
-            maxScale: 6
-        }
-    },
-
-    Toolbar: {
-        display: [
-            "close",
-            "fullscreen"
-        ]
-    }
-});
+   Fancybox.destroy();
+   
+   Fancybox.bind(
+       "[data-fancybox='gallery']",
+       {
+   
+           Thumbs: false,
+   
+           Toolbar: {
+   
+               display: [
+                   "zoom",
+                   "fullscreen",
+                   "close"
+               ]
+   
+           },
+   
+           Iframe: {
+               preload: true
+           },
+   
+           Video: {
+               autoplay: true
+           }
+   
+       }
+   );
 
 }
   
