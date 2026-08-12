@@ -658,7 +658,8 @@ async function loadPhotos() {
 
   const loader = document.getElementById("loader");
 
-  // Timeout de seguridad: 12 segundos
+  const startTime = performance.now();
+
   const controller = new AbortController();
 
   const timeout = setTimeout(() => {
@@ -669,21 +670,49 @@ async function loadPhotos() {
 
     console.log("📡 Cargando catálogo desde API...");
 
+    // =========================
+    // 1. FETCH
+    // =========================
+
+    const fetchStart = performance.now();
+
     const res = await fetch(API, {
       method: "GET",
       cache: "no-store",
       signal: controller.signal
     });
 
+    const fetchTime =
+      ((performance.now() - fetchStart) / 1000).toFixed(2);
+
+    console.log(`🌐 API respondió en ${fetchTime} segundos`);
+
     if (!res.ok) {
       throw new Error(`API respondió HTTP ${res.status}`);
     }
 
+    // =========================
+    // 2. JSON
+    // =========================
+
+    const jsonStart = performance.now();
+
     const data = await res.json();
+
+    const jsonTime =
+      ((performance.now() - jsonStart) / 1000).toFixed(2);
+
+    console.log(`📦 JSON procesado en ${jsonTime} segundos`);
 
     if (!Array.isArray(data)) {
       throw new Error("La API no devolvió un array JSON válido");
     }
+
+    // =========================
+    // 3. MAP
+    // =========================
+
+    const mapStart = performance.now();
 
     photos = data.map(p => {
       return {
@@ -704,39 +733,78 @@ async function loadPhotos() {
       };
     });
 
-    // Guardar cache actualizado
+    const mapTime =
+      ((performance.now() - mapStart) / 1000).toFixed(2);
+
+    console.log(`🔄 Procesamiento de registros: ${mapTime} segundos`);
+
+    // =========================
+    // 4. CACHE
+    // =========================
+
     localStorage.setItem(
       "photos_v2",
       JSON.stringify(photos)
     );
 
-    console.log(
-      `✅ API cargada correctamente: ${photos.length} registros`
-    );
+    // =========================
+    // 5. FILTROS
+    // =========================
+
+    const filterStart = performance.now();
 
     createFilters();
 
+    const filterTime =
+      ((performance.now() - filterStart) / 1000).toFixed(2);
+
+    console.log(`🔎 Filtros creados en ${filterTime} segundos`);
+
+    // =========================
+    // 6. GALERÍA
+    // =========================
+
+    const galleryStart = performance.now();
+
     renderGallery();
 
+    const galleryTime =
+      ((performance.now() - galleryStart) / 1000).toFixed(2);
+
+    console.log(`🖼️ Galería renderizada en ${galleryTime} segundos`);
+
+    // =========================
+    // TOTAL
+    // =========================
+
+    const totalTime =
+      ((performance.now() - startTime) / 1000).toFixed(2);
+
+    console.log(
+      `✅ CARGA TOTAL: ${totalTime} segundos — ${photos.length} registros`
+    );
+
   } catch (e) {
+
+    const errorTime =
+      ((performance.now() - startTime) / 1000).toFixed(2);
 
     if (e.name === "AbortError") {
 
       console.warn(
-        "⏱️ La API tardó más de 12 segundos. Usando cache."
+        `⏱️ API superó los 12 segundos (${errorTime}s). Usando cache.`
       );
 
     } else {
 
       console.error(
-        "❌ Error cargando datos desde API:",
+        `❌ Error después de ${errorTime}s:`,
         e
       );
-
     }
 
     // =========================
-    // CACHE FALLBACK
+    // CACHE
     // =========================
 
     try {
@@ -756,11 +824,16 @@ async function loadPhotos() {
         createFilters();
         renderGallery();
 
+        const totalCacheTime =
+          ((performance.now() - startTime) / 1000).toFixed(2);
+
+        console.log(
+          `🏁 CARGA CON CACHE COMPLETADA EN ${totalCacheTime} segundos`
+        );
+
       } else {
 
-        console.warn(
-          "⚠️ No hay cache disponible"
-        );
+        console.warn("⚠️ No hay cache disponible");
 
       }
 
@@ -770,21 +843,18 @@ async function loadPhotos() {
         "❌ Error leyendo cache:",
         cacheError
       );
-
     }
 
   } finally {
 
     clearTimeout(timeout);
 
-    // 🔥 EL SPINNER SE APAGA SIEMPRE
     if (loader) {
       loader.style.display = "none";
     }
 
   }
 }
-
    
   
 function createFilters(){
