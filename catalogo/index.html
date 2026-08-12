@@ -654,53 +654,98 @@ searchBox.addEventListener("input", (e) => {
   
 const priorityOrder = ["Kitchen","Bathroom","Laundry","Closets & Shelves","Outdoor","BBQ Area","Office","Powder Room","Fireplace","Wall TV","Front desk"];
 
-async function loadPhotos(){
+async function loadPhotos() {
 
-  try{
-      const res = await fetch(API);
-      const data = await res.json();
-      
-      
-      photos = data.map(p => {
-        return {
-          ID: p.ID,
-          LINK: p.LINK,
-          STONE: p.STONE || "",
-      
-          // 🔥 AQUÍ ESTÁ EL FIX REAL
-          PROYECTO: p.PROYECTO || "",
-      
-          MEMO: p.MEMO || "",
-          DRIVE: p.DRIVE || "",
-          PARENTCHILD: p.PARENTCHILD || "",
-          COLOURS: p.COLOURS || "",
-          MATERIALES: p.MATERIALES || "",
-          LOOKINGFOR: p.LOOKINGFOR || "",
-          TIPO: p.TIPO || "",
-          SUBTIPO: p.SUBTIPO || "",
-          MIME: p.MIME || "",
-          ESTADO: p.ESTADO || "ACTIVO"
-        };
-      });
+  const loader = document.getElementById("loader");
 
+  try {
 
-   localStorage.setItem('photos', JSON.stringify(photos));
+    console.log("📡 Cargando catálogo desde API...");
+
+    const res = await fetch(API, {
+      cache: "no-store"
+    });
+
+    if (!res.ok) {
+      throw new Error(`API respondió HTTP ${res.status}`);
+    }
+
+    const data = await res.json();
+
+    if (!Array.isArray(data)) {
+      throw new Error("La API no devolvió un array JSON válido");
+    }
+
+    photos = data.map(p => {
+      return {
+        ID: p.ID,
+        LINK: p.LINK,
+        STONE: p.STONE || "",
+        PROYECTO: p.PROYECTO || "",
+        MEMO: p.MEMO || "",
+        DRIVE: p.DRIVE || "",
+        PARENTCHILD: p.PARENTCHILD || "",
+        COLOURS: p.COLOURS || "",
+        MATERIALES: p.MATERIALES || "",
+        LOOKINGFOR: p.LOOKINGFOR || "",
+        TIPO: p.TIPO || "",
+        SUBTIPO: p.SUBTIPO || "",
+        MIME: p.MIME || "",
+        ESTADO: p.ESTADO || "ACTIVO"
+      };
+    });
+
+    // Guardar usando la misma clave que usaremos para recuperar
+    localStorage.setItem("photos_v2", JSON.stringify(photos));
+
+    console.log(`✅ API cargada correctamente: ${photos.length} proyectos`);
 
     createFilters();
 
-    setTimeout(() => {
-      renderGallery();
-      document.getElementById("loader").style.display = "none";
-    }, 50);
+    renderGallery();
 
-  } catch(e){
-    console.error("Error cargando datos", e);
-      const cached = JSON.parse(localStorage.getItem('photos_v2') || "[]");
-      
-      if(cached.length && !isAdmin){
+  } catch (e) {
+
+    console.error("❌ Error cargando datos desde API:", e);
+
+    // Intentar recuperar el mismo cache que guardamos arriba
+    try {
+
+      const cached = JSON.parse(
+        localStorage.getItem("photos_v2") || "[]"
+      );
+
+      if (cached.length && !isAdmin) {
+
         photos = cached;
-        console.log("⚡ usando cache válido");
+
+        console.log(
+          `⚡ usando cache válido: ${photos.length} proyectos`
+        );
+
+        createFilters();
+        renderGallery();
+
+      } else {
+
+        console.warn("⚠️ No hay cache disponible");
+
       }
+
+    } catch (cacheError) {
+
+      console.error("❌ Error leyendo cache:", cacheError);
+
+    }
+
+  } finally {
+
+    // 🔥 MUY IMPORTANTE:
+    // El spinner se apaga SIEMPRE,
+    // tanto si API funciona como si falla.
+    if (loader) {
+      loader.style.display = "none";
+    }
 
   }
 }
