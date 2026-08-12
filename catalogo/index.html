@@ -749,6 +749,8 @@ async function loadPhotos() {
 
   }
 }
+
+   
   
 function createFilters(){
   const tipos = [...new Set(photos.map(p => p.TIPO).filter(Boolean))];
@@ -1668,7 +1670,7 @@ async function savePhoto(photoID){
       SUBTIPO: subtipo
     };
   }
-  localStorage.setItem('photos', JSON.stringify(photos));
+  localStorage.setItem('photos_v2', JSON.stringify(photos));
 
 // 3️⃣ Cerrar modal
         document.getElementById('editModal').remove();
@@ -1749,8 +1751,7 @@ function deletePhoto(photoID){
   const scrollPos = window.scrollY;
 
   // 🔹 cache local
-  localStorage.setItem('photos', JSON.stringify(photos));
-
+   localStorage.setItem('photos_v2', JSON.stringify(photos));
   // 🔹 refrescar UI
   renderGallery(currentCategory, true);
 
