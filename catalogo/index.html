@@ -176,6 +176,7 @@ header nav a:hover { text-decoration:underline; }
 
 /* mostrar información */
 
+
 .grid-item:hover .photo-overlay {
 
   opacity:1;
@@ -454,7 +455,64 @@ header nav a:hover { text-decoration:underline; }
 
     pointer-events: none;
 }
-  
+
+/* =========================================
+   GALLERY OVERLAY
+   ========================================= */
+
+.grid-item {
+    position: relative;
+    overflow: hidden;
+}
+
+.grid-item > a {
+    display: block;
+    position: relative;
+}
+
+.photo-overlay {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    z-index: 5;
+
+    opacity: 0;
+    visibility: hidden;
+
+    transition:
+        opacity 0.25s ease,
+        visibility 0.25s ease;
+
+    pointer-events: none;
+}
+
+.grid-item:hover .photo-overlay {
+    opacity: 1;
+    visibility: visible;
+}
+.video-container {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    background: #eee;
+}
+
+.video-thumbnail {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+}
+
+.grid-item > a > img {
+    display: block;
+    width: 100%;
+}  
+   
 </style>
 </head>
 
@@ -1199,39 +1257,38 @@ ${
   });
   gallery.appendChild(fragment);
   currentIndex += PAGE_SIZE;
+
   Fancybox.bind("[data-fancybox='gallery']", {
-    animated:true,
-    dragToClose:false,
-    closeButton:"top",
-    showClass:"fancybox-zoomIn",
+    animated: true,
 
-    hideClass:"fancybox-zoomOut",
-    Video:{
-      autoplay:true,
-      controls:true
+    dragToClose: false,
+
+    showClass: "fancybox-zoomIn",
+    hideClass: "fancybox-zoomOut",
+
+    Video: {
+        autoplay: true,
+        controls: true
     },
-    Images:{
 
-      zoom:true,
+    Images: {
+        zoom: true,
+        wheel: "zoom",
+        click: "toggleZoom",
 
-      wheel:"zoom",
-
-      click:"toggleZoom",
-
-      Panzoom:{
-
-        maxScale:6
-      }
+        Panzoom: {
+            maxScale: 6
+        }
     },
-    Toolbar:{
-      display:[
-        "zoom",
-        "fullscreen",
-        "close"
-      ]
+
+    Toolbar: {
+        display: [
+            "close",
+            "fullscreen"
+        ]
     }
-  });
-  isLoading=false;
+}); 
+   isLoading=false;
 }
 
 
@@ -1483,52 +1540,36 @@ ${
   // =========================
   // FANCYBOX
   // =========================
+Fancybox.bind("[data-fancybox='gallery']", {
+    animated: true,
 
-  Fancybox.bind(
-    "[data-fancybox='gallery']",
-    {
+    dragToClose: false,
 
-      animated:true,
+    showClass: "fancybox-zoomIn",
+    hideClass: "fancybox-zoomOut",
 
-      dragToClose:false,
+    Video: {
+        autoplay: true,
+        controls: true
+    },
 
-      closeButton:"top",
+    Images: {
+        zoom: true,
+        wheel: "zoom",
+        click: "toggleZoom",
 
-      showClass:"fancybox-zoomIn",
-
-      hideClass:"fancybox-zoomOut",
-
-      Video:{
-        autoplay:true,
-        controls:true
-      },
-
-      Images:{
-
-        zoom:true,
-
-        wheel:"zoom",
-
-        click:"toggleZoom",
-
-        Panzoom:{
-          maxScale:6
+        Panzoom: {
+            maxScale: 6
         }
+    },
 
-      },
-
-      Toolbar:{
-
-        display:[
-          "zoom",
-          "fullscreen",
-          "close"
+    Toolbar: {
+        display: [
+            "close",
+            "fullscreen"
         ]
-
-      }
-
     }
-  );
+});
 
 }
   
