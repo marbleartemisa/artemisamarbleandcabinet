@@ -658,12 +658,21 @@ async function loadPhotos() {
 
   const loader = document.getElementById("loader");
 
+  // Timeout de seguridad: 12 segundos
+  const controller = new AbortController();
+
+  const timeout = setTimeout(() => {
+    controller.abort();
+  }, 12000);
+
   try {
 
     console.log("📡 Cargando catálogo desde API...");
 
     const res = await fetch(API, {
-      cache: "no-store"
+      method: "GET",
+      cache: "no-store",
+      signal: controller.signal
     });
 
     if (!res.ok) {
@@ -695,10 +704,15 @@ async function loadPhotos() {
       };
     });
 
-    // Guardar usando la misma clave que usaremos para recuperar
-    localStorage.setItem("photos_v2", JSON.stringify(photos));
+    // Guardar cache actualizado
+    localStorage.setItem(
+      "photos_v2",
+      JSON.stringify(photos)
+    );
 
-    console.log(`✅ API cargada correctamente: ${photos.length} proyectos`);
+    console.log(
+      `✅ API cargada correctamente: ${photos.length} registros`
+    );
 
     createFilters();
 
@@ -706,9 +720,25 @@ async function loadPhotos() {
 
   } catch (e) {
 
-    console.error("❌ Error cargando datos desde API:", e);
+    if (e.name === "AbortError") {
 
-    // Intentar recuperar el mismo cache que guardamos arriba
+      console.warn(
+        "⏱️ La API tardó más de 12 segundos. Usando cache."
+      );
+
+    } else {
+
+      console.error(
+        "❌ Error cargando datos desde API:",
+        e
+      );
+
+    }
+
+    // =========================
+    // CACHE FALLBACK
+    // =========================
+
     try {
 
       const cached = JSON.parse(
@@ -720,7 +750,7 @@ async function loadPhotos() {
         photos = cached;
 
         console.log(
-          `⚡ usando cache válido: ${photos.length} proyectos`
+          `⚡ usando cache válido: ${photos.length} registros`
         );
 
         createFilters();
@@ -728,21 +758,26 @@ async function loadPhotos() {
 
       } else {
 
-        console.warn("⚠️ No hay cache disponible");
+        console.warn(
+          "⚠️ No hay cache disponible"
+        );
 
       }
 
     } catch (cacheError) {
 
-      console.error("❌ Error leyendo cache:", cacheError);
+      console.error(
+        "❌ Error leyendo cache:",
+        cacheError
+      );
 
     }
 
   } finally {
 
-    // 🔥 MUY IMPORTANTE:
-    // El spinner se apaga SIEMPRE,
-    // tanto si API funciona como si falla.
+    clearTimeout(timeout);
+
+    // 🔥 EL SPINNER SE APAGA SIEMPRE
     if (loader) {
       loader.style.display = "none";
     }
