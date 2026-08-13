@@ -1218,7 +1218,11 @@ function renderSearch(query){
     .split(/\s+/)
     .filter(Boolean);
 
-  const filtered = photos.filter(p => {
+const filtered = photos.filter(p =>
+
+  (!p.ESTADO || p.ESTADO !== 'ELIMINADO') &&
+
+  (() => {
 
     const text = `
       ${p.STONE || ''}
@@ -1235,7 +1239,9 @@ function renderSearch(query){
       text.includes(word)
     );
 
-  });
+  })()
+
+);
 
 
   updateCounter(filtered, "Search");
