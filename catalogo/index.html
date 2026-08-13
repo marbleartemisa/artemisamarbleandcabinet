@@ -1755,22 +1755,45 @@ async function savePhoto(photoID){
         // 🔥 guardar posición del scroll
         const scrollPos = window.scrollY;
         
-        // 🔥 refrescar galería
-        renderGallery(currentCategory, true);
-        
-        // 🔥 volver a la misma imagen después del render
-        setTimeout(() => {
-          const el = document.querySelector(`[data-id="${photoID}"]`);
-        
-          if (el) {
-            el.scrollIntoView({
-              behavior: "auto",
-              block: "center"
-            });
-          } else {
-            window.scrollTo(0, scrollPos);
-          }
-        }, 120);
+// 🔥 refrescar galería conservando búsqueda actual
+
+if (isSearching) {
+
+  const currentQuery = searchBox
+    ? searchBox.value.trim()
+    : "";
+
+  renderSearch(currentQuery);
+
+} else {
+
+  renderGallery(currentCategory, true);
+
+}
+
+
+// 🔥 volver a la misma imagen después del render
+
+setTimeout(() => {
+
+  const el = document.querySelector(
+    `[data-id="${photoID}"]`
+  );
+
+  if (el) {
+
+    el.scrollIntoView({
+      behavior: "auto",
+      block: "center"
+    });
+
+  } else {
+
+    window.scrollTo(0, scrollPos);
+
+  }
+
+}, 120);
         
 
   
@@ -1809,66 +1832,179 @@ function deletePhoto(photoID){
 
   if(!confirm("¿Seguro que deseas eliminar esta foto?")) return;
 
+
+  // =========================
+  // DATOS DE ELIMINACIÓN
+  // =========================
+
   const usuario = "admin";
   const fecha = new Date().toLocaleString();
 
-  // 🔥 capturar elemento actual y vecino ANTES del render
-  const currentElement = document.querySelector(`[data-id="${photoID}"]`);
-  const nextElement = currentElement?.nextElementSibling || currentElement?.previousElementSibling;
 
-  const index = photos.findIndex(p => p.ID === photoID);
+  // =========================
+  // CAPTURAR FOTO ACTUAL
+  // Y SIGUIENTE FOTO
+  // ANTES DEL RENDER
+  // =========================
+
+  const currentElement =
+    document.querySelector(`[data-id="${photoID}"]`);
+
+  const nextElement =
+    currentElement?.nextElementSibling ||
+    currentElement?.previousElementSibling;
+
+
+  // 🔥 Guardamos solamente el ID
+  // porque después renderizaremos nuevamente la galería
+
+  const nextPhotoID =
+    nextElement?.getAttribute("data-id") || null;
+
+
+  // =========================
+  // BUSCAR FOTO EN MEMORIA
+  // =========================
+
+  const index =
+    photos.findIndex(p => p.ID === photoID);
+
 
   if(index !== -1){
+
     photos[index].ESTADO = "ELIMINADO";
-    photos[index].MEMO = (photos[index].MEMO || '') + 
+
+    photos[index].MEMO =
+      (photos[index].MEMO || '') +
       `\n[ELIMINADO por ${usuario} - ${fecha}]`;
+
   }
 
-  // 🔥 guardar posición scroll como fallback
+
+  // =========================
+  // GUARDAR SCROLL
+  // =========================
+
   const scrollPos = window.scrollY;
 
-  // 🔹 cache local
-   localStorage.setItem('photos_v2', JSON.stringify(photos));
-  // 🔹 refrescar UI
-  renderGallery(currentCategory, true);
 
-  // 🔥 volver a la misma zona correctamente
+  // =========================
+  // CACHE LOCAL
+  // =========================
+
+  localStorage.setItem(
+    'photos_v2',
+    JSON.stringify(photos)
+  );
+
+
+  // =========================
+  // REFRESCAR UI
+  // CONSERVANDO BÚSQUEDA
+  // =========================
+
+  if(isSearching){
+
+    // 🔥 Tu buscador REAL se llama searchBox
+
+    const currentQuery =
+      searchBox
+        ? searchBox.value.trim()
+        : "";
+
+    renderSearch(currentQuery);
+
+  } else {
+
+    renderGallery(
+      currentCategory,
+      true
+    );
+
+  }
+
+
+  // =========================
+  // VOLVER A LA SIGUIENTE FOTO
+  // =========================
+
   setTimeout(() => {
 
-    if(nextElement){
-      const id = nextElement.getAttribute("data-id");
-      const newTarget = document.querySelector(`[data-id="${id}"]`);
+    if(nextPhotoID){
+
+      const newTarget =
+        document.querySelector(
+          `[data-id="${nextPhotoID}"]`
+        );
+
 
       if(newTarget){
+
         newTarget.scrollIntoView({
-          behavior: "auto", // puedes cambiar a "smooth"
+          behavior: "auto",
           block: "center"
         });
+
         return;
+
       }
+
     }
 
-    // fallback si no encuentra elemento
-    window.scrollTo(0, scrollPos);
+
+    // =========================
+    // FALLBACK
+    // =========================
+
+    window.scrollTo(
+      0,
+      scrollPos
+    );
 
   }, 120);
 
-  // 🔹 backend
-  fetch(`${API}?${new URLSearchParams({
-    action: 'delete',
-    ID: photoID,
-    ESTADO: 'ELIMINADO',
-    MEMO: photos[index]?.MEMO || ''
-  })}`)
+
+  // =========================
+  // GUARDAR EN BACKEND
+  // =========================
+
+  fetch(
+    `${API}?${new URLSearchParams({
+
+      action: 'delete',
+
+      ID: photoID,
+
+      ESTADO: 'ELIMINADO',
+
+      MEMO:
+        photos[index]?.MEMO || ''
+
+    })}`
+  )
+
   .then(r => r.json())
+
   .then(resp => {
+
     if(!resp.success){
-      alert("Error en servidor, pero eliminado localmente");
+
+      alert(
+        "Error en servidor, pero eliminado localmente"
+      );
+
     }
+
   })
+
   .catch(() => {
-    alert("Sin conexión, eliminado localmente");
+
+    alert(
+      "Sin conexión, eliminado localmente"
+    );
+
   });
+
 }
   
 
