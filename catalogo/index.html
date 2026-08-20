@@ -411,7 +411,95 @@ header nav a:hover { text-decoration:underline; }
     overflow: hidden;
 }
 
+/* =========================================
+   CATALOG VIDEO VIEWER
+========================================= */
 
+#catalogVideoModal{
+  position:fixed;
+  inset:0;
+  z-index:999999;
+  display:none;
+}
+
+#catalogVideoModal.active{
+  display:block;
+}
+
+.catalog-video-backdrop{
+  position:absolute;
+  inset:0;
+
+  background:rgba(0,0,0,.94);
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  padding:30px;
+}
+
+#catalogVideoPlayer{
+  display:block;
+
+  width:auto;
+  max-width:92vw;
+  max-height:88vh;
+
+  background:#000;
+
+  border-radius:4px;
+}
+
+.catalog-video-close{
+  position:absolute;
+
+  top:20px;
+  right:25px;
+
+  width:44px;
+  height:44px;
+
+  border:none;
+  border-radius:50%;
+
+  background:rgba(255,255,255,.15);
+
+  color:#fff;
+
+  font-size:32px;
+  line-height:1;
+
+  cursor:pointer;
+
+  z-index:10;
+}
+
+@media (max-width:700px){
+
+  .catalog-video-backdrop{
+    padding:10px;
+  }
+
+  #catalogVideoPlayer{
+    width:100%;
+    max-width:100%;
+    max-height:80vh;
+
+    border-radius:0;
+  }
+
+  .catalog-video-close{
+    top:12px;
+    right:12px;
+
+    width:38px;
+    height:38px;
+
+    font-size:28px;
+  }
+
+}
    
 </style>
 </head>
@@ -969,7 +1057,6 @@ loadSubtypes();
 }
 
 
-
 function renderGallery(category='all', reset=true){
 
   if(isLoading) return;
@@ -1026,12 +1113,10 @@ function renderGallery(category='all', reset=true){
    const thumb = isVideo
        ? `https://drive.google.com/thumbnail?id=${fileId}&sz=w1200`
        : `https://lh3.googleusercontent.com/d/${fileId}=w400`;
-     
+
       const full = isVideo
-      ? `https://drive.google.com/file/d/${fileId}/preview`
-      : `https://lh3.googleusercontent.com/d/${fileId}=s0`;
-
-
+        ? `https://drive.google.com/uc?export=download&id=${fileId}`
+        : `https://lh3.googleusercontent.com/d/${fileId}=s0`;
 
     const item = document.createElement('div');
 
@@ -1086,43 +1171,41 @@ function renderGallery(category='all', reset=true){
 
     item.innerHTML = `
 
-${
-  isVideo
-
-  ?
-
-  `
-
-  <a
-    href="${full}"
-    data-fancybox="gallery"
-    data-type="iframe">
-
-    <img
-      src="${thumb}"
-      loading="lazy"
-    >
-
-
-      `
-
-
-      :
-
-      `
-
-      <a
-      data-fancybox="gallery"
-      href="${full}">
-
-
-      <img
-      src="${thumb}"
-      loading="lazy"
-      onerror="this.closest('.grid-item').remove()">
-    `
-
-    }
+      ${
+        isVideo
+      
+        ?
+      
+        `
+      
+        <a
+          href="javascript:void(0)"
+          onclick="event.preventDefault(); event.stopPropagation(); openCatalogVideo('${fileId}')">
+      
+          <img
+            src="${thumb}"
+            loading="lazy"
+          >
+      
+        `
+      
+        :
+      
+        `
+      
+        <a
+          data-fancybox="gallery"
+          href="${full}"
+        >
+      
+          <img
+            src="${thumb}"
+            loading="lazy"
+            onerror="this.closest('.grid-item').remove()"
+          >
+      
+        `
+      }
 
 
     <div class="photo-overlay">
@@ -1179,6 +1262,7 @@ Fancybox.bind(
    isLoading=false;
 }
 
+   
 
 function updateCounter(filteredList, category){
 
@@ -1190,6 +1274,111 @@ function updateCounter(filteredList, category){
     📸 ${label} <b>(${count})</b>
   `;
 }
+
+
+function openCatalogVideo(fileId){
+
+  const videoUrl =
+    `https://drive.google.com/uc?export=download&id=${fileId}`;
+
+  let modal = document.getElementById("catalogVideoModal");
+
+  if(!modal){
+
+    modal = document.createElement("div");
+
+    modal.id = "catalogVideoModal";
+
+    modal.innerHTML = `
+
+      <div class="catalog-video-backdrop">
+
+        <button
+          class="catalog-video-close"
+          onclick="closeCatalogVideo()">
+          ×
+        </button>
+
+        <video
+          id="catalogVideoPlayer"
+          controls
+          playsinline
+          autoplay>
+        </video>
+
+      </div>
+
+    `;
+
+    document.body.appendChild(modal);
+
+  }
+
+  const player =
+    document.getElementById("catalogVideoPlayer");
+
+  player.src = videoUrl;
+
+  modal.classList.add("active");
+
+  player.play().catch(() => {});
+
+}
+
+
+function closeCatalogVideo(){
+
+  const modal =
+    document.getElementById("catalogVideoModal");
+
+  const player =
+    document.getElementById("catalogVideoPlayer");
+
+  if(player){
+
+    player.pause();
+
+    player.removeAttribute("src");
+
+    player.load();
+
+  }
+
+  if(modal){
+
+    modal.classList.remove("active");
+
+  }
+
+}
+
+
+function closeCatalogVideo(){
+
+  const modal =
+    document.getElementById("catalogVideoModal");
+
+  const player =
+    document.getElementById("catalogVideoPlayer");
+
+  if(player){
+
+    player.pause();
+
+    player.removeAttribute("src");
+
+    player.load();
+
+  }
+
+  if(modal){
+
+    modal.classList.remove("active");
+
+  }
+
+}
+
   
 function renderSearch(query){
 
@@ -1279,12 +1468,12 @@ const filtered = photos.filter(p =>
 
 
     // 🔥 IMPORTANTE:
-    // Para VIDEO usamos exactamente
-    // el mismo preview que renderGallery()
+       // VIDEO usa la URL directa del archivo.
+      // FOTO usa la imagen completa.
 
-    const full = isVideo
-      ? `https://drive.google.com/file/d/${fileId}/preview`
-      : `https://lh3.googleusercontent.com/d/${fileId}=s0`;
+     const full = isVideo
+     ? `https://drive.google.com/uc?export=download&id=${fileId}`
+     : `https://lh3.googleusercontent.com/d/${fileId}=s0`;
 
 
     // =========================
@@ -1359,34 +1548,33 @@ ${
   `
 
   <a
-    href="${full}"
-    data-fancybox="gallery"
-    data-type="iframe">
+    href="javascript:void(0)"
+    onclick="event.preventDefault(); event.stopPropagation(); openCatalogVideo('${fileId}')">
 
     <img
       src="${thumb}"
       loading="lazy"
     >
 
-        `
+  `
 
-        :
+  :
 
-        `
+  `
 
-          <a
-            data-fancybox="gallery"
-            href="${full}"
-          >
+  <a
+    data-fancybox="gallery"
+    href="${full}"
+  >
 
-            <img
-              src="${thumb}"
-              loading="lazy"
-              onerror="this.closest('.grid-item').remove()"
-            >
+    <img
+      src="${thumb}"
+      loading="lazy"
+      onerror="this.closest('.grid-item').remove()"
+    >
 
-        `
-      }
+  `
+}
 
 
       <div class="photo-overlay">
@@ -1439,10 +1627,6 @@ ${
                    "close"
                ]
    
-           },
-   
-           Iframe: {
-               preload: true
            },
    
            Video: {
