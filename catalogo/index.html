@@ -500,6 +500,96 @@ header nav a:hover { text-decoration:underline; }
   }
 
 }
+
+   /* =========================================
+   VIDEO THUMBNAIL
+========================================= */
+
+.video-thumb{
+  position:relative;
+  width:100%;
+  height:100%;
+  overflow:hidden;
+}
+
+.video-thumb img{
+  display:block;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+
+.video-play-icon{
+  position:absolute;
+  top:50%;
+  left:50%;
+  transform:translate(-50%, -50%);
+
+  width:58px;
+  height:58px;
+
+  border-radius:50%;
+
+  background:rgba(0,0,0,.68);
+  color:#fff;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  font-size:25px;
+  padding-left:4px;
+
+  pointer-events:none;
+
+  box-shadow:0 4px 15px rgba(0,0,0,.35);
+
+  transition:
+    transform .2s ease,
+    background .2s ease;
+}
+
+.video-label{
+  position:absolute;
+  left:50%;
+  bottom:12px;
+
+  transform:translateX(-50%);
+
+  background:rgba(0,0,0,.75);
+  color:#fff;
+
+  padding:5px 10px;
+
+  border-radius:20px;
+
+  font-size:10px;
+  font-weight:600;
+  letter-spacing:.12em;
+
+  pointer-events:none;
+}
+
+.video-thumb:hover .video-play-icon{
+  background:rgba(0,0,0,.85);
+  transform:translate(-50%, -50%) scale(1.08);
+}
+
+@media(max-width:700px){
+
+  .video-play-icon{
+    width:50px;
+    height:50px;
+    font-size:22px;
+  }
+
+  .video-label{
+    bottom:9px;
+    font-size:9px;
+    padding:4px 8px;
+  }
+
+}
    
 </style>
 </head>
@@ -1114,10 +1204,11 @@ function renderGallery(category='all', reset=true){
        ? `https://drive.google.com/thumbnail?id=${fileId}&sz=w1200`
        : `https://lh3.googleusercontent.com/d/${fileId}=w400`;
 
-      const full = isVideo
-        ? `https://drive.google.com/uc?export=download&id=${fileId}`
-        : `https://lh3.googleusercontent.com/d/${fileId}=s0`;
 
+     const full = isVideo
+     ? `https://drive.google.com/file/d/${fileId}/preview`
+     : `https://lh3.googleusercontent.com/d/${fileId}=s0`;
+     
     const item = document.createElement('div');
 
     item.className = 'grid-item';
@@ -1177,22 +1268,29 @@ function renderGallery(category='all', reset=true){
         ?
       
         `
-      
         <a
-          href="javascript:void(0)"
-          onclick="event.preventDefault(); event.stopPropagation(); openCatalogVideo('${fileId}')">
+          href="https://drive.google.com/file/d/${fileId}/preview"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
       
-          <img
-            src="${thumb}"
-            loading="lazy"
-          >
+          <div class="video-thumb">
       
+            <img
+              src="${thumb}"
+              loading="lazy"
+            >
+      
+            <span class="video-play-icon">▶</span>
+      
+            <span class="video-label">VIDEO</span>
+      
+          </div>
         `
       
         :
       
         `
-      
         <a
           data-fancybox="gallery"
           href="${full}"
@@ -1203,10 +1301,9 @@ function renderGallery(category='all', reset=true){
             loading="lazy"
             onerror="this.closest('.grid-item').remove()"
           >
-      
         `
       }
-
+      
 
     <div class="photo-overlay">
 
@@ -1471,10 +1568,9 @@ const filtered = photos.filter(p =>
        // VIDEO usa la URL directa del archivo.
       // FOTO usa la imagen completa.
 
-     const full = isVideo
-     ? `https://drive.google.com/uc?export=download&id=${fileId}`
+   const full = isVideo
+     ? `https://drive.google.com/file/d/${fileId}/preview`
      : `https://lh3.googleusercontent.com/d/${fileId}=s0`;
-
 
     // =========================
     // BOTONES ADMIN
@@ -1546,22 +1642,29 @@ ${
   ?
 
   `
-
   <a
-    href="javascript:void(0)"
-    onclick="event.preventDefault(); event.stopPropagation(); openCatalogVideo('${fileId}')">
+    href="https://drive.google.com/file/d/${fileId}/preview"
+    target="_blank"
+    rel="noopener noreferrer"
+  >
 
-    <img
-      src="${thumb}"
-      loading="lazy"
-    >
+    <div class="video-thumb">
 
+      <img
+        src="${thumb}"
+        loading="lazy"
+      >
+
+      <span class="video-play-icon">▶</span>
+
+      <span class="video-label">VIDEO</span>
+
+    </div>
   `
 
   :
 
   `
-
   <a
     data-fancybox="gallery"
     href="${full}"
@@ -1572,7 +1675,6 @@ ${
       loading="lazy"
       onerror="this.closest('.grid-item').remove()"
     >
-
   `
 }
 
