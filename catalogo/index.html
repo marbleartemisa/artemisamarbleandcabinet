@@ -2088,10 +2088,9 @@ setTimeout(() => {
 
 }, 120);
         
-
-  
   // 4️⃣ Guardar en servidor en segundo plano
   try {
+
     const params = new URLSearchParams({
       action: 'update',
       ID: photoID,
@@ -2106,14 +2105,58 @@ setTimeout(() => {
     });
 
     const res = await fetch(`${API}?${params.toString()}`);
-    const resp = await res.json();
 
-    if(!resp.success){
-      alert("Error guardando en el servidor, cambios locales conservados.");
+    // Primero obtenemos la respuesta como texto
+    const raw = await res.text();
+
+    console.log("API update status:", res.status);
+    console.log("API update response:", raw);
+
+    // Si HTTP realmente falló
+    if (!res.ok) {
+      throw new Error(`HTTP ${res.status}`);
+    }
+
+    // Intentamos interpretar JSON solamente si existe
+    let resp = null;
+
+    if (raw && raw.trim() !== "") {
+
+      try {
+
+        resp = JSON.parse(raw);
+
+      } catch (jsonError) {
+
+        console.warn(
+          "La actualización fue enviada correctamente, " +
+          "pero la respuesta del servidor no es JSON válido:",
+          raw
+        );
+
+        // No mostramos error porque el request HTTP fue exitoso
+        resp = null;
+      }
+    }
+
+    // Si el servidor explícitamente dice success:false
+    if (resp && resp.success === false) {
+
+      alert(
+        "El servidor recibió la actualización pero informó un error."
+      );
+
     }
 
   } catch(err) {
-    alert("Error de conexión, cambios locales guardados.");
+
+    console.error("Error real al guardar:", err);
+
+    alert(
+      "No se pudo enviar la actualización al servidor. " +
+      "Los cambios locales fueron conservados."
+    );
+
   }
 
   btn.disabled = false;
