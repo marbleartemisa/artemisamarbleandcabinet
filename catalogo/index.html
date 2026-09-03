@@ -2088,82 +2088,155 @@ setTimeout(() => {
 
 }, 120);
         
-  // 4️⃣ Guardar en servidor en segundo plano
-  try {
+ // 4️⃣ Guardar en servidor en segundo plano
+try {
 
-    const params = new URLSearchParams({
-      action: 'update',
-      ID: photoID,
-      STONE: stone,
-      PROYECTO: proyecto,
-      MEMO: memo,
-      COLOURS: colours,
-      MATERIALES: materiales,
-      LOOKINGFOR: lookingfor,
-      TIPO: tipo,
-      SUBTIPO: subtipo
-    });
+  const params = new URLSearchParams({
+    action: 'update',
+    ID: photoID,
+    STONE: stone,
+    PROYECTO: proyecto,
+    MEMO: memo,
+    COLOURS: colours,
+    MATERIALES: materiales,
+    LOOKINGFOR: lookingfor,
+    TIPO: tipo,
+    SUBTIPO: subtipo
+  });
 
-    const res = await fetch(`${API}?${params.toString()}`);
+  const url = `${API}?${params.toString()}`;
 
-    // Primero obtenemos la respuesta como texto
-    const raw = await res.text();
+  let savedSuccessfully = false;
+  let lastError = null;
 
-    console.log("API update status:", res.status);
-    console.log("API update response:", raw);
+  // 🔄 Intentar hasta 3 veces
+  for (let attempt = 1; attempt <= 3; attempt++) {
 
-    // Si HTTP realmente falló
-    if (!res.ok) {
-      throw new Error(`HTTP ${res.status}`);
-    }
+    try {
 
-    // Intentamos interpretar JSON solamente si existe
-    let resp = null;
-
-    if (raw && raw.trim() !== "") {
-
-      try {
-
-        resp = JSON.parse(raw);
-
-      } catch (jsonError) {
-
-        console.warn(
-          "La actualización fue enviada correctamente, " +
-          "pero la respuesta del servidor no es JSON válido:",
-          raw
-        );
-
-        // No mostramos error porque el request HTTP fue exitoso
-        resp = null;
-      }
-    }
-
-    // Si el servidor explícitamente dice success:false
-    if (resp && resp.success === false) {
-
-      alert(
-        "El servidor recibió la actualización pero informó un error."
+      console.log(
+        `Guardando actualización... intento ${attempt}/3`
       );
 
+      const res = await fetch(url, {
+        method: "GET",
+        cache: "no-store"
+      });
+
+      const raw = await res.text();
+
+      console.log(
+        `API update status (intento ${attempt}):`,
+        res.status
+      );
+
+      console.log(
+        `API update response (intento ${attempt}):`,
+        raw
+      );
+
+      // HTTP realmente falló
+      if (!res.ok) {
+        throw new Error(`HTTP ${res.status}`);
+      }
+
+      // Intentar interpretar JSON
+      let resp = null;
+
+      if (raw && raw.trim() !== "") {
+
+        try {
+
+          resp = JSON.parse(raw);
+
+        } catch (jsonError) {
+
+          console.warn(
+            "La actualización fue enviada correctamente, " +
+            "pero la respuesta no es JSON válido:",
+            raw
+          );
+
+          // HTTP 200 significa que aceptamos el envío
+          resp = null;
+        }
+      }
+
+      // El servidor respondió explícitamente success:false
+      if (resp && resp.success === false) {
+
+        throw new Error(
+          resp.message || "El servidor informó un error."
+        );
+      }
+
+      // ✅ Llegamos aquí = actualización aceptada
+      savedSuccessfully = true;
+
+      console.log(
+        "✅ Actualización guardada correctamente."
+      );
+
+      break;
+
+    } catch (err) {
+
+      lastError = err;
+
+      console.warn(
+        `⚠️ Falló el intento ${attempt}/3:`,
+        err
+      );
+
+      // Esperar antes del siguiente intento
+      if (attempt < 3) {
+
+        await new Promise(resolve =>
+          setTimeout(resolve, 1000)
+        );
+
+      }
     }
-
-  } catch(err) {
-
-    console.error("Error real al guardar:", err);
-
-    alert(
-      "No se pudo enviar la actualización al servidor. " +
-      "Los cambios locales fueron conservados."
-    );
-
   }
 
+  // ❌ Los 3 intentos fallaron
+  if (!savedSuccessfully) {
+
+    console.error(
+      "❌ No se pudo confirmar la actualización después de 3 intentos:",
+      lastError
+    );
+
+    alert(
+      "No se pudo confirmar la comunicación con el servidor.\n\n" +
+      "Los cambios fueron conservados localmente. " +
+      "Puedes verificar el catálogo o intentar guardar nuevamente."
+    );
+  }
+
+} catch (err) {
+
+  console.error(
+    "❌ Error inesperado durante el guardado:",
+    err
+  );
+
+  alert(
+    "Ocurrió un problema al comunicarse con el servidor. " +
+    "Los cambios locales fueron conservados."
+  );
+
+} finally {
+
+  // 🔓 Siempre devolver el botón a su estado normal
   btn.disabled = false;
   spinner.style.display = "none";
   text.innerText = "💾 Guardar";
 }
+}
 
+
+   
 function deletePhoto(photoID){
 
   if(!confirm("¿Seguro que deseas eliminar esta foto?")) return;
