@@ -154,4 +154,3 @@
   if(document.readyState!=='loading') addButton();
   window.openAISmartBatchUpload=openModal;
 })();
-
