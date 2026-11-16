@@ -1,1 +1,474 @@
 
+/* ================================
+   BOTÓN DE LANZAMIENTO
+================================ */
+
+.ai-smart-launch {
+    margin: 0 10px;
+    padding: 14px 22px;
+    background: #171717;
+    color: #fff;
+    border: 1px solid #f15a24;
+    border-radius: 8px;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 4px 12px #0002;
+}
+
+.ai-smart-launch:hover,
+.ai-smart-primary:hover {
+    filter: brightness(1.08);
+}
+
+
+/* ================================
+   OVERLAY Y PANEL PRINCIPAL
+================================ */
+
+.ai-smart-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 2147483646;
+    background: #0009;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 18px;
+    font-family: Inter, Arial, sans-serif;
+}
+
+.ai-smart-panel {
+    position: relative;
+    background: #fff;
+    width: min(1100px, 96vw);
+    max-height: 94vh;
+    overflow: auto;
+    border-radius: 18px;
+    padding: 30px;
+    box-shadow: 0 24px 80px #0005;
+    color: #171717;
+}
+
+.ai-smart-close {
+    position: absolute;
+    right: 18px;
+    top: 12px;
+    border: 0;
+    background: none;
+    font-size: 30px;
+    cursor: pointer;
+}
+
+.ai-smart-kicker {
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: #f15a24;
+    font-weight: 800;
+}
+
+.ai-smart-panel h2 {
+    margin: 7px 0;
+    font-size: 25px;
+}
+
+.ai-smart-muted {
+    color: #777;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+
+/* ================================
+   PASOS
+================================ */
+
+.ai-smart-steps {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin: 20px 0;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 14px;
+}
+
+.ai-smart-steps span {
+    font-size: 11px;
+    color: #888;
+    padding: 7px 10px;
+    background: #f5f5f5;
+    border-radius: 20px;
+}
+
+.ai-smart-steps span.active {
+    background: #fff0e9;
+    color: #d94c19;
+    font-weight: 700;
+}
+
+
+/* ================================
+   FORMULARIOS E INPUTS
+================================ */
+
+.ai-smart-label {
+    display: block;
+    font-size: 12px;
+    font-weight: 700;
+    margin: 12px 0 6px;
+}
+
+.ai-smart-input {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font: inherit;
+}
+
+
+/* ================================
+   ÁREA DE CARGA DE ARCHIVOS
+================================ */
+
+.ai-smart-drop {
+    margin-top: 15px;
+    padding: 32px 15px;
+    border: 2px dashed #ccc;
+    border-radius: 12px;
+    background: #fafafa;
+    text-align: center;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+
+.ai-smart-drop.drag {
+    border-color: #f15a24;
+    background: #fff3ed;
+}
+
+.ai-smart-folder {
+    font-size: 30px;
+    color: #f15a24;
+}
+
+.ai-smart-drop span {
+    font-size: 12px;
+    color: #777;
+}
+
+.ai-smart-filelist {
+    font-size: 12px;
+    color: #555;
+    padding: 12px 2px;
+    min-height: 34px;
+}
+
+.ai-smart-filenames {
+    margin-top: 7px;
+    color: #777;
+    line-height: 1.7;
+}
+
+
+/* ================================
+   BOTONES
+================================ */
+
+.ai-smart-primary {
+    background: #f15a24;
+    color: #fff;
+    border: 0;
+    border-radius: 8px;
+    padding: 13px 18px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.ai-smart-primary:disabled {
+    opacity: .45;
+    cursor: not-allowed;
+}
+
+.ai-smart-secondary {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 7px;
+    padding: 9px 12px;
+    cursor: pointer;
+}
+
+
+/* ================================
+   PROGRESO
+================================ */
+
+.ai-smart-progress-title {
+    font-weight: 700;
+    margin: 24px 0 10px;
+}
+
+.ai-smart-progress {
+    height: 9px;
+    background: #eee;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.ai-smart-progress i {
+    display: block;
+    height: 100%;
+    width: 0;
+    background: #f15a24;
+    transition: width .2s;
+}
+
+
+/* ================================
+   REVISIÓN Y TARJETAS
+================================ */
+
+.ai-smart-review-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+}
+
+.ai-smart-review-head h3 {
+    margin: 10px 0 2px;
+}
+
+.ai-smart-cards {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin: 18px 0;
+}
+
+.ai-smart-card {
+    border: 1px solid #e5e5e5;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #fff;
+}
+
+.ai-smart-thumb {
+    height: 170px;
+    background: #f1f1f1;
+    display: flex;
+    justify-content: center;
+}
+
+.ai-smart-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.ai-smart-cardbody {
+    padding: 13px;
+}
+
+.ai-smart-cardtitle {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    align-items: center;
+    font-size: 12px;
+    margin-bottom: 10px;
+}
+
+
+/* ================================
+   ESTADOS
+================================ */
+
+.ai-smart-status {
+    font-size: 9px;
+    padding: 4px 7px;
+    border-radius: 12px;
+    background: #eee;
+}
+
+.ai-smart-status.analyzed {
+    background: #e7f5e9;
+    color: #167533;
+}
+
+.ai-smart-status.error {
+    background: #fff0ed;
+    color: #b42318;
+}
+
+
+/* ================================
+   CAMPOS DE LAS TARJETAS
+================================ */
+
+.ai-smart-fieldgrid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 9px;
+}
+
+.ai-smart-fieldgrid label {
+    font-size: 10px;
+    color: #777;
+    font-weight: 700;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.ai-smart-fieldgrid input,
+.ai-smart-fieldgrid select,
+.ai-smart-fieldgrid textarea {
+    box-sizing: border-box;
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font: 12px Inter, Arial, sans-serif;
+    color: #222;
+    background: #fff;
+}
+
+.ai-smart-fieldgrid textarea {
+    min-height: 55px;
+    resize: vertical;
+}
+
+.ai-smart-fieldgrid .wide {
+    grid-column: 1 / -1;
+}
+
+
+/* ================================
+   OBSERVACIONES
+================================ */
+
+.ai-smart-observations {
+    font-size: 10px;
+    color: #8a5a24;
+    background: #fff8ec;
+    padding: 8px;
+    border-radius: 6px;
+    margin-top: 10px;
+}
+
+.ai-smart-observations span {
+    display: block;
+    color: #777;
+    margin-top: 4px;
+}
+
+
+/* ================================
+   ACCIONES DE TARJETAS
+================================ */
+
+.ai-smart-cardactions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    margin-top: 12px;
+    font-size: 11px;
+}
+
+.ai-smart-cardactions button {
+    border: 1px solid #ddd;
+    background: #fff;
+    padding: 7px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+
+/* ================================
+   BARRA DE PUBLICACIÓN
+================================ */
+
+.ai-smart-publishbar {
+    position: sticky;
+    bottom: -30px;
+    background: #fff;
+    padding: 14px 0;
+    border-top: 1px solid #eee;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    font-size: 12px;
+}
+
+
+/* ================================
+   MENSAJES Y ERRORES
+================================ */
+
+.ai-smart-message {
+    margin-top: 12px;
+    font-size: 12px;
+    color: #167533;
+}
+
+.ai-smart-message.error,
+.ai-smart-error {
+    color: #b42318;
+}
+
+.ai-smart-error {
+    font-size: 11px;
+}
+
+
+/* ================================
+   REANUDAR PROCESO
+================================ */
+
+.ai-smart-resume {
+    background: #fafafa;
+    border: 1px solid #eee;
+    border-radius: 9px;
+    padding: 12px;
+    margin: 14px 0;
+}
+
+.ai-smart-resume-row {
+    display: flex;
+    gap: 8px;
+}
+
+.ai-smart-resume-row .ai-smart-input {
+    flex: 1;
+}
+
+
+/* ================================
+   RESPONSIVE
+================================ */
+
+@media (max-width: 760px) {
+    .ai-smart-panel {
+        padding: 22px 15px;
+    }
+
+    .ai-smart-cards {
+        grid-template-columns: 1fr;
+    }
+
+    .ai-smart-review-head,
+    .ai-smart-publishbar {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .ai-smart-thumb {
+        height: 190px;
+    }
+}
+
