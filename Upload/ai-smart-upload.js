@@ -1178,11 +1178,11 @@
 
                             <label>
 
-                                <input
-                                    class="ai-smart-approve"
-                                    type="checkbox"
-                                    ${approved ? 'checked' : ''}
-                                     ${aiStatus !== 'ANALYZED' ? 'disabled' : ''}>
+                              <input
+                                  class="ai-smart-approve"
+                                  type="checkbox"
+                                  ${approved ? 'checked' : ''}
+                                  ${!['ANALYZED', 'ERROR'].includes(aiStatus) ? 'disabled' : ''}>
                                   
                                 Revisado y aprobado
 
