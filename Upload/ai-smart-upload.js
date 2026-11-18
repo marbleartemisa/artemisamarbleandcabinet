@@ -944,8 +944,19 @@
 
             /* ESTADO DE APROBACIÓN */
 
-            const approved = !!a.APPROVED;
+           const approved = !!a.APPROVED;
 
+            const aiStatus = String(item.AI_STATUS || '')
+                .trim()
+                .toUpperCase();
+            
+            const uncertainFields = Array.isArray(a.UNCERTAIN_FIELDS)
+                ? a.UNCERTAIN_FIELDS
+                : [];
+            
+            const observations = Array.isArray(a.OBSERVATIONS)
+                ? a.OBSERVATIONS
+                : [];
 
             /* CALCULAR CONFIANZA */
 
@@ -1003,9 +1014,9 @@
 
                             <b>${esc(item.FICHERO)}</b>
 
-                            <span class="ai-smart-status ${String(item.AI_STATUS).toLowerCase()}">
+                            <span class="ai-smart-status ${aiStatus.toLowerCase()}">
 
-                                ${esc(item.AI_STATUS)}
+                              ${esc(aiStatus || 'UNKNOWN')}
 
                             </span>
 
@@ -1132,7 +1143,8 @@
                         <div class="ai-smart-observations">
 
                             ${
-                                (a.UNCERTAIN_FIELDS || []).length
+                                 uncertainFields.length
+                              
                                     ? `
                                         <b>Verificar:</b>
                                         ${esc((a.UNCERTAIN_FIELDS || []).join(', '))}
@@ -1141,9 +1153,9 @@
                             }
 
                             ${
-                                (a.OBSERVATIONS || [])
-                                    .map(x => esc(x))
-                                    .join(' · ')
+                               observations
+                                  .map(x => esc(String(x)))
+                                  .join(' · ')
                             }
 
                             ${
@@ -1170,8 +1182,8 @@
                                     class="ai-smart-approve"
                                     type="checkbox"
                                     ${approved ? 'checked' : ''}
-                                    ${item.AI_STATUS !== 'ANALYZED' ? 'disabled' : ''}>
-
+                                     ${aiStatus !== 'ANALYZED' ? 'disabled' : ''}>
+                                  
                                 Revisado y aprobado
 
                             </label>
