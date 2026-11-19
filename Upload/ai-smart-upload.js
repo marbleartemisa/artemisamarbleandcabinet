@@ -1323,81 +1323,78 @@
        18. PUBLICAR FOTOGRAFÍAS APROBADAS EN CATALOGO
     ===================================================== */
 
-    async function publishSelected() {
+async function publishSelected() {
 
-        const cards = Array.from(
-            document.querySelectorAll('.ai-smart-card')
+    const btn = $('aiSmartPublish');
+    const originalText = btn.textContent;
+
+    const cards = Array.from(
+        document.querySelectorAll('.ai-smart-card')
+    );
+
+    const selected = cards.filter(c => {
+        const approve = c.querySelector('.ai-smart-approve');
+        return approve && approve.checked && !approve.disabled;
+    });
+
+    if (!selected.length) {
+        message(
+            'Marca como aprobadas las fotografías que deseas publicar.',
+            true
+        );
+        return;
+    }
+
+    try {
+
+        // INDICADOR VISUAL DE PROCESAMIENTO
+        btn.disabled = true;
+        btn.textContent = 'Publicando fotografías…';
+
+        message(
+            `Procesando ${selected.length} fotografía(s)...`
         );
 
+        // GUARDAR LOS DATOS DE REVISIÓN
+        for (const c of selected) {
+            await saveCard(c);
+        }
 
-        /* OBTENER TARJETAS SELECCIONADAS */
+        // PUBLICAR EN CATALOGO
+        const r = await api({
+            action: 'AI_PUBLISH',
+            queueIds: selected.map(c => c.dataset.qid)
+        });
 
-        const selected = cards.filter(c =>
-            c.querySelector('.ai-smart-approve').checked
+        const published = Number(r.count || 0);
+
+        message(
+            `${published} fotografía(s) publicadas correctamente en CATALOGO.`
         );
 
+        // ACTUALIZAR LA REVISIÓN
+        await loadReview();
 
-        if (!selected.length) {
-
-            message(
-                'Marca como aprobadas las fotografías que deseas publicar.',
-                true
-            );
-
-            return;
+        if (typeof window.loadPhotos === 'function') {
+            window.loadPhotos();
         }
 
+    } catch (e) {
 
-        try {
+        message(
+            'Error durante la publicación: ' + e.message,
+            true
+        );
 
-            /* GUARDAR TODAS LAS REVISIONES */
+    } finally {
 
-            for (const c of selected) {
-
-                await saveCard(c);
-
-            }
-
-
-            /* PUBLICAR EN CATALOGO */
-
-            const r = await api({
-
-                action: 'AI_PUBLISH',
-
-                queueIds: selected.map(c => c.dataset.qid)
-
-            });
-
-
-            /* CONFIRMAR PUBLICACIÓN */
-
-            message(
-                `${r.count} fotografía(s) publicadas correctamente en CATALOGO.`
-            );
-
-
-            /* ACTUALIZAR REVISIÓN */
-
-            await loadReview();
-
-
-            /* ACTUALIZAR GALERÍA SI EXISTE */
-
-            if (typeof window.loadPhotos === 'function') {
-
-                window.loadPhotos();
-
-            }
-
-
-        } catch (e) {
-
-            message(e.message, true);
-
-        }
+        // RESTAURAR EL BOTÓN
+        btn.disabled = false;
+        btn.textContent = originalText;
 
     }
+}
+
 
 
     /* =====================================================
