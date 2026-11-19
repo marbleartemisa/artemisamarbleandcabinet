@@ -394,7 +394,7 @@
 
 .ai-smart-publishbar {
     position: sticky;
-    bottom: -30px;
+    bottom: 0;
     background: #fff;
     padding: 14px 0;
     border-top: 1px solid #eee;
@@ -404,6 +404,8 @@
     gap: 10px;
     font-size: 12px;
 }
+
+
 
 
 /* ================================
