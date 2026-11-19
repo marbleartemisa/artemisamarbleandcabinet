@@ -1197,6 +1197,19 @@
 
                             </button>
 
+                              ${
+                                  aiStatus === 'ERROR'
+                                      ? `
+                                          <button
+                                              type="button"
+                                              class="ai-smart-retry">
+                              
+                                              Reintentar con Gemini
+                              
+                                          </button>
+                                      `
+                                      : ''
+                              }
                         </div>
 
 
@@ -1265,7 +1278,43 @@
                 });
 
             });
-
+            /* REINTENTAR ANÁLISIS CON GEMINI */
+            
+            $('aiSmartCards')
+                .querySelectorAll('.ai-smart-retry')
+                .forEach(btn => {
+            
+                    btn.addEventListener('click', async () => {
+            
+                        const card = btn.closest('.ai-smart-card');
+                        const queueId = card.dataset.qid;
+            
+                        try {
+            
+                            btn.disabled = true;
+                            btn.textContent = 'Enviando a Gemini...';
+            
+                            await api({
+                                action: 'AI_ANALYZE_FILE',
+                                queueId: queueId
+                            });
+            
+                            message('Análisis de Gemini completado.');
+            
+                            await loadReview();
+            
+                        } catch (e) {
+            
+                            btn.disabled = false;
+                            btn.textContent = 'Reintentar con Gemini';
+            
+                            message(e.message, true);
+            
+                        }
+            
+                    });
+            
+                });
     }
 
 
